@@ -9,11 +9,22 @@ import {
   CardActionArea,
   CardContent,
   Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import {
   Description as DocumentIcon,
   CampaignOutlined as BannerIcon,
   PhotoCamera as SnsIcon,
+  MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
 import RecentWorkCard from '../components/RecentWorkCard';
@@ -50,6 +61,8 @@ const Home: React.FC = () => {
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [availableFormats, setAvailableFormats] = useState<UnifiedFormat[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedWork, setSelectedWork] = useState<RecentWork | null>(null);
 
   useEffect(() => {
     // 로컬 스토리지에서 최근 작업 불러오기
@@ -240,6 +253,61 @@ const Home: React.FC = () => {
     localStorage.setItem('recentWorks', JSON.stringify(updatedAllWorks));
   };
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, work: RecentWork) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedWork(work);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedWork(null);
+  };
+
+  const handleMenuAction = (action: 'edit' | 'duplicate' | 'delete' | 'rename') => {
+    if (!selectedWork) return;
+
+    switch (action) {
+      case 'edit':
+        handleEdit(selectedWork);
+        break;
+      case 'duplicate':
+        handleDuplicate(selectedWork);
+        break;
+      case 'delete':
+        handleDelete(selectedWork);
+        break;
+      case 'rename':
+        const newName = prompt('Enter new name:', selectedWork.name);
+        if (newName) {
+          handleRename(selectedWork, newName);
+        }
+        break;
+    }
+    handleMenuClose();
+  };
+
+  const formatDate = (date: Date) => {
+    const now = new Date();
+    const diffInMs = now.getTime() - new Date(date).getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    const diffInMonths = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 30));
+
+    if (diffInHours < 1) {
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+      return `${diffInMinutes} minutes ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours} hours ago`;
+    } else if (diffInDays < 30) {
+      return `${diffInDays} days ago`;
+    } else if (diffInMonths < 12) {
+      return `${diffInMonths} months ago`;
+    } else {
+      const diffInYears = Math.floor(diffInMonths / 12);
+      return `${diffInYears} year${diffInYears > 1 ? 's' : ''} ago`;
+    }
+  };
+
   const getIcon = (iconName: string) => {
     const iconSize = 48;
     const iconColor = '#000000';
@@ -312,8 +380,7 @@ const Home: React.FC = () => {
   return (
     <Box sx={{ 
       paddingBottom: 6,
-      paddingTop:16, 
-      
+      paddingTop:14, 
       maxWidth: '1200px',
       margin: '0 auto',
       paddingLeft: '280px'
@@ -407,7 +474,7 @@ const Home: React.FC = () => {
       {/* Recent Works Section */}
       {recentWorks.length > 0 && (
         <Box sx={{ mt: 12 }}>
-          <Divider sx={{ mb: 6 }} />
+        
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography variant="h4" gutterBottom>
               Recent Works
@@ -416,9 +483,11 @@ const Home: React.FC = () => {
               Check your recently worked content and continue editing.
             </Typography>
           </Box>
+
+    
           <Grid container spacing={4} justifyContent="center">
             {recentWorks.map((work) => (
-              <Grid item xs={12} sm={6} md={4} key={work.id}>
+              <Grid item size={{xs:12,sm:6,md:6}}  key={work.id}>
                 <RecentWorkCard
                   work={work}
                   onEdit={handleEdit}

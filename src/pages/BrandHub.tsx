@@ -47,9 +47,9 @@ interface TabPanelProps {
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
   return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
+    <Box role="tabpanel" hidden={value !== index} sx={{p:3}}>
+      {value === index && <Box >{children}</Box>}
+    </Box>
   );
 };
 
@@ -283,17 +283,23 @@ const BrandHub: React.FC = () => {
 
   return (
     <Box sx={{ 
-      py: 4, 
-      px: 4, 
+      paddingBottom: 6,
+      paddingTop:14, 
       maxWidth: '1200px',
-      margin: '0 auto'
+      margin: '0 auto',
+      paddingLeft: '280px'
     }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-        Brand Hub
-      </Typography>
-      <Typography variant="subtitle1" color="text.secondary" paragraph>
+
+      <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 0 ,lineHeight:1.3,letterSpacing:"-1px"}}>
+      Brand Hub
+      </Typography>  
+      <Typography variant="subtitle1" color="text.secondary" paragraph sx={{mb:3}}>
         Manage your brand assets to maintain consistency.
       </Typography>
+
+      
+      
+      
 
         <Paper sx={{ width: '100%' }}>
           <Tabs 
@@ -301,14 +307,14 @@ const BrandHub: React.FC = () => {
             onChange={(_, newValue) => setCurrentTab(newValue)}
             sx={{ borderBottom: 1, borderColor: 'divider' }}
           >
-            <Tab icon={<LogoIcon />} label="Logo" />
-            <Tab icon={<PaletteIcon />} label="Colors" />
-            <Tab icon={<ImageIcon />} label="Vehicle Models" />
-            <Tab icon={<ImageIcon />} label="Background Images" />
+            <Tab icon={<LogoIcon />} label="Logo" sx={{py:2}}/>
+            <Tab icon={<PaletteIcon />} label="Colors" sx={{py:2}} />
+            <Tab icon={<ImageIcon />} label="Vehicle Models" sx={{py:2}}/>
+            <Tab icon={<ImageIcon />} label="Background Images" sx={{py:2}}/>
           </Tabs>
 
           {/* Logo Management */}
-          <TabPanel value={currentTab} index={0}>
+          <TabPanel value={currentTab} index={0} >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
               <Typography variant="h6">Brand Logos</Typography>
               <Button
@@ -421,14 +427,14 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {vehicleModels.map((vehicle) => (
-                  <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
+                  <Grid item size={{md:4,sm:6,xs:12}} key={vehicle.id}>
                     <Card>
                       <CardMedia
                         component="img"
                         height="200"
                         image={vehicle.url}
                         alt={vehicle.name}
-                        sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
+                        sx={{ objectFit: 'cover', bgcolor: 'grey.100' }}
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{vehicle.name}</Typography>
@@ -468,7 +474,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {backgroundImages.map((bg) => (
-                  <Grid item xs={12} sm={6} md={4} key={bg.id}>
+                  <Grid item size={{xs:12,sm:6,md:4}} key={bg.id}>
                     <Card>
                       <CardMedia
                         component="img"
