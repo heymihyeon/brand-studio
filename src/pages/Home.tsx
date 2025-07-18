@@ -27,7 +27,6 @@ import {
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
-import RecentWorkCard from '../components/RecentWorkCard';
 import FormatSelector from '../components/FormatSelector';
 import { getFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
 
@@ -479,25 +478,97 @@ const Home: React.FC = () => {
             <Typography variant="h4" gutterBottom>
               Recent Works
             </Typography>
-            <Typography variant="body1" color="text.secondary" paragraph sx={{ mb: 4 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
               Check your recently worked content and continue editing.
             </Typography>
           </Box>
 
-    
-          <Grid container spacing={4} justifyContent="center">
-            {recentWorks.map((work) => (
-              <Grid item size={{xs:12,sm:6,md:6}}  key={work.id}>
-                <RecentWorkCard
-                  work={work}
-                  onEdit={handleEdit}
-                  onDuplicate={handleDuplicate}
-                  onDelete={handleDelete}
-                  onRename={handleRename}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <TableContainer component={Paper} sx={{ 
+            boxShadow: 'none', 
+            border: '1px solid #e5e7eb',
+            borderRadius: 2,
+            bgcolor: '#ffffff'
+          }}>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: '#f3f4f6' }}>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Last modified</TableCell>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Created</TableCell>
+                  <TableCell width={50} sx={{ borderBottom: '1px solid #e5e7eb' }}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {recentWorks.map((work) => (
+                  <TableRow 
+                    key={work.id}
+                    hover
+                    sx={{ 
+                      cursor: 'pointer',
+                      '&:hover': {
+                        bgcolor: '#f5f5f5'
+                      }
+                    }}
+                  >
+                    <TableCell 
+                      onClick={() => handleEdit(work)}
+                      sx={{ py: 1.5 }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Box
+                          component="img"
+                          src={work.thumbnail}
+                          alt={work.name}
+                          sx={{
+                            width: 60,
+                            height: 45,
+                            objectFit: 'cover',
+                            borderRadius: 1,
+                            border: '1px solid #e5e7eb',
+                            bgcolor: '#fff'
+                          }}
+                        />
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: '#1f2937' }}>
+                          {work.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ color: '#6b7280', fontSize: '13px' }}>
+                      {formatDate(work.lastModified)}
+                    </TableCell>
+                    <TableCell sx={{ color: '#6b7280', fontSize: '13px' }}>
+                      {formatDate(work.lastModified)}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleMenuOpen(e, work);
+                        }}
+                        sx={{ padding: '4px' }}
+                      >
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* Context Menu */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={() => handleMenuAction('edit')}>Edit</MenuItem>
+            <MenuItem onClick={() => handleMenuAction('duplicate')}>Duplicate</MenuItem>
+            <MenuItem onClick={() => handleMenuAction('rename')}>Rename</MenuItem>
+            <Divider />
+            <MenuItem onClick={() => handleMenuAction('delete')}>Delete</MenuItem>
+          </Menu>
         </Box>
       )}
 
