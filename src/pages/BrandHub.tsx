@@ -527,7 +527,20 @@ const BrandHub: React.FC = () => {
                   type="file"
                   hidden
                   accept="image/*"
-                  onChange={(e) => setLogoForm({ ...logoForm, file: e.target.files?.[0] || null })}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    if (file) {
+                      // 파일명에서 확장자 제거
+                      const fileName = file.name.replace(/\.[^/.]+$/, '');
+                      setLogoForm({ 
+                        ...logoForm, 
+                        file: file,
+                        name: fileName // 파일명으로 자동 대체
+                      });
+                    } else {
+                      setLogoForm({ ...logoForm, file: null });
+                    }
+                  }}
                 />
               </Button>
               {logoForm.file && (
@@ -615,7 +628,20 @@ const BrandHub: React.FC = () => {
                   type="file"
                   hidden
                   accept="image/*"
-                  onChange={(e) => setVehicleForm({ ...vehicleForm, file: e.target.files?.[0] || null })}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    if (file) {
+                      // 파일명에서 확장자 제거
+                      const fileName = file.name.replace(/\.[^/.]+$/, '');
+                      setVehicleForm({ 
+                        ...vehicleForm, 
+                        file: file,
+                        name: fileName // 파일명으로 자동 대체
+                      });
+                    } else {
+                      setVehicleForm({ ...vehicleForm, file: null });
+                    }
+                  }}
                 />
               </Button>
               {vehicleForm.file && (
@@ -656,7 +682,20 @@ const BrandHub: React.FC = () => {
                   type="file"
                   hidden
                   accept="image/*"
-                  onChange={(e) => setBackgroundForm({ ...backgroundForm, file: e.target.files?.[0] || null })}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    if (file) {
+                      // 파일명에서 확장자 제거
+                      const fileName = file.name.replace(/\.[^/.]+$/, '');
+                      setBackgroundForm({ 
+                        ...backgroundForm, 
+                        file: file,
+                        name: fileName // 파일명으로 자동 대체
+                      });
+                    } else {
+                      setBackgroundForm({ ...backgroundForm, file: null });
+                    }
+                  }}
                 />
               </Button>
               {backgroundForm.file && (

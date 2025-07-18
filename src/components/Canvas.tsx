@@ -57,7 +57,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
         return (value as BrandAsset).url;
       }
       // Try to get from canvas objects
-      const canvasObj = template.canvas.objects?.find((obj: any) => obj.type === 'image' && obj.id === bgElement.id);
+      const canvasObj = template.canvas.objects?.find((obj: any) => obj.type === 'image' && obj.id === bgElement.id) as any;
       return canvasObj?.src || bgElement.src;
     }
     
@@ -122,6 +122,37 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           />
         )}
 
+        {/* Logo image layer - render logo from brandLogo if available */}
+        {editableValues['brandLogo'] && (
+          <Box
+            onClick={() => onImageEdit && onImageEdit('brandLogo')}
+            sx={{
+              position: 'absolute',
+              right: 20,
+              top: 20,
+              width: template.format.id === 'banner-square' ? 150 : 120,
+              height: template.format.id === 'banner-square' ? 75 : 60,
+              cursor: 'pointer',
+              zIndex: 10, // Increased z-index to ensure logo is always on top
+              '&:hover': {
+                filter: 'drop-shadow(0 0 10px rgba(31, 122, 252, 0.5))',
+              }
+            }}
+          >
+            {(editableValues['brandLogo'] as BrandAsset).url ? (
+              <img 
+                src={(editableValues['brandLogo'] as BrandAsset).url} 
+                alt="Brand Logo"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+              />
+            ) : null}
+          </Box>
+        )}
+
         {/* Vehicle/Product images layer */}
         {template.editableElements.images
           .filter(img => img.id !== 'background' && img.id !== 'bg-image' && img.label !== 'Background Image')
@@ -129,20 +160,41 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             const value = editableValues[imageElement.id];
             const canvasImgObj = template.canvas.objects?.find(
               (obj: any) => obj.type === 'image' && obj.id === imageElement.id
-            );
+            ) as any;
             
             const imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
             
-            const position = {
-              left: canvasImgObj?.left || imageElement.position.x,
-              top: canvasImgObj?.top || imageElement.position.y,
-            };
+            // Increase vehicle image size by 1.4x
+            const isVehicleImage = imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model';
+            const scaleFactor = isVehicleImage ? 1.4 : 1;
             
             const size = {
-              width: canvasImgObj?.width || imageElement.size.width,
-              height: canvasImgObj?.height || imageElement.size.height,
+              width: (canvasImgObj?.width || imageElement.size.width) * scaleFactor,
+              height: (canvasImgObj?.height || imageElement.size.height) * scaleFactor,
+            };
+            
+            // Add margins for vehicle images (right and bottom)
+            const rightMargin = isVehicleImage ? 40 : 0;
+            const bottomMargin = isVehicleImage ? 40 : 0;
+            
+            // Adjust position to ensure margins
+            let adjustedLeft = canvasImgObj?.left || imageElement.position.x;
+            let adjustedTop = canvasImgObj?.top || imageElement.position.y;
+            
+            // Ensure the vehicle doesn't go beyond canvas bounds with margins
+            if (isVehicleImage) {
+              const maxLeft = template.canvas.width - size.width - rightMargin;
+              const maxTop = template.canvas.height - size.height - bottomMargin;
+              
+              adjustedLeft = Math.min(adjustedLeft, maxLeft);
+              adjustedTop = Math.min(adjustedTop, maxTop);
+            }
+            
+            const position = {
+              left: adjustedLeft,
+              top: adjustedTop,
             };
             
             return (
@@ -202,21 +254,36 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           // Get position from canvas objects or use default
           const canvasTextObj = template.canvas.objects?.find(
             (obj: any) => obj.type === 'text' && obj.id === textElement.id
-          );
+          ) as any;
+          
+          // Apply position adjustment for promotion banner titles
+          const isPromotionBanner = template.category === 'Promotion Banner';
+          const isHeading = textElement.type === 'heading';
+          // Check if it's Vertical or Square Banner
+          const isVerticalBanner = template.format.id === 'banner-vertical';
+          const isSquareBanner = template.format.id === 'banner-square';
+          const isSpecialBanner = isVerticalBanner || isSquareBanner;
+          const topOffset = (isPromotionBanner && isHeading && !isSpecialBanner) ? -30 : 0; // Move title up by 30px (except for Vertical/Square banners)
           
           const position = {
             left: canvasTextObj?.left || textElement.position.x,
-            top: canvasTextObj?.top || textElement.position.y,
+            top: (canvasTextObj?.top || textElement.position.y) + topOffset,
           };
           
+          // Apply larger font size for promotion banner titles and specific banners
+          const headingSize = (isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 72;
+          
           const fontSize = canvasTextObj?.fontSize || 
-                          (textElement.type === 'heading' ? 48 : 
+                          (textElement.type === 'heading' ? headingSize : 
                            textElement.type === 'subheading' ? 32 : 18);
           const fontWeight = canvasTextObj?.fontWeight || 
                             (textElement.type === 'heading' ? 'bold' : 
                              textElement.type === 'subheading' ? '500' : 'normal');
           const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
           const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
+          
+          // Calculate max width for text wrapping
+          const maxWidth = template.canvas.width - (position.left * 2);
           
           return (
             <Box
@@ -231,6 +298,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                 borderRadius: '4px',
                 zIndex: 3,
                 transition: 'all 0.2s ease',
+                maxWidth: maxWidth,
                 '&:hover': {
                   backgroundColor: 'rgba(0, 0, 0, 0.2)',
                   transform: 'translateY(-1px)',
@@ -244,7 +312,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                   fontFamily: fontFamily,
                   color: color,
                   lineHeight: canvasTextObj?.lineHeight || 1.2,
-                  whiteSpace: textElement.type === 'body' ? 'pre-wrap' : 'nowrap',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
                   textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                   letterSpacing: textElement.type === 'heading' ? '0.5px' : 'normal',
                 }}

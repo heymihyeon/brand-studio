@@ -1,6 +1,6 @@
 export interface Category {
   id: string;
-  name: '문서' | '프로모션 배너' | 'SNS';
+  name: 'Document' | 'Promotion Banner' | 'Brochure';
   icon: string;
   description: string;
   defaultTemplate: string;
@@ -10,7 +10,7 @@ export interface RecentWork {
   id: string;
   name: string;
   thumbnail: string;
-  category: '문서' | '프로모션 배너' | 'SNS';
+  category: 'Document' | 'Promotion Banner' | 'Brochure';
   templateId: string;
   lastModified: Date;
   canEdit: boolean;
@@ -23,7 +23,7 @@ export interface RecentWork {
 export interface Template {
   id: string;
   name: string;
-  category: '문서' | '프로모션 배너' | 'SNS';
+  category: 'Document' | 'Promotion Banner' | 'Brochure';
   format: FormatOption;
   thumbnail: string;
   canvas: CanvasData;
@@ -63,7 +63,7 @@ export interface FormatOption {
   id: string;
   name: string;
   dimensions: { width: number; height: number };
-  category: '문서' | '프로모션 배너' | 'SNS';
+  category: 'Document' | 'Promotion Banner' | 'Brochure';
 }
 
 export interface CanvasData {
@@ -138,7 +138,7 @@ export interface Content {
   id: string;
   name: string;
   templateId: string;
-  category: '문서' | '프로모션 배너' | 'SNS';
+  category: 'Document' | 'Promotion Banner' | 'Brochure';
   editedElements: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;

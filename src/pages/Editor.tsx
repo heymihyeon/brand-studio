@@ -94,8 +94,36 @@ useEffect(() => {
             initialValues[text.id] = text.text || '';
           });
           convertedTemplate.editableElements.images.forEach((image) => {
-            initialValues[image.id] = image.src || '';
+            // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
+            if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
+              // 로컬 스토리지에서 차량 이미지 가져오기
+              const savedVehicles = localStorage.getItem('brandVehicles');
+              if (savedVehicles) {
+                const vehicles = JSON.parse(savedVehicles);
+                if (vehicles.length > 0) {
+                  // 첫 번째 차량을 기본값으로 설정
+                  initialValues[image.id] = vehicles[0];
+                } else {
+                  initialValues[image.id] = image.src || '';
+                }
+              } else {
+                initialValues[image.id] = image.src || '';
+              }
+            } else {
+              initialValues[image.id] = image.src || '';
+            }
           });
+          
+          // 로고 이미지 기본값 설정
+          const savedLogos = localStorage.getItem('brandLogos');
+          if (savedLogos) {
+            const logos = JSON.parse(savedLogos);
+            if (logos.length > 0) {
+              // 첫 번째 로고를 기본값으로 설정
+              initialValues['brandLogo'] = logos[0];
+            }
+          }
+          
           setEditableValues(initialValues);
         } else if (!template) {
           // 포맷 선택 다이얼로그 열기
@@ -122,8 +150,36 @@ useEffect(() => {
         initialValues[text.id] = text.text || '';
       });
       template.editableElements.images.forEach((image) => {
-        initialValues[image.id] = image.src || '';
+        // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
+        if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
+          // 로컬 스토리지에서 차량 이미지 가져오기
+          const savedVehicles = localStorage.getItem('brandVehicles');
+          if (savedVehicles) {
+            const vehicles = JSON.parse(savedVehicles);
+            if (vehicles.length > 0) {
+              // 첫 번째 차량을 기본값으로 설정
+              initialValues[image.id] = vehicles[0];
+            } else {
+              initialValues[image.id] = image.src || '';
+            }
+          } else {
+            initialValues[image.id] = image.src || '';
+          }
+        } else {
+          initialValues[image.id] = image.src || '';
+        }
       });
+      
+      // 로고 이미지 기본값 설정
+      const savedLogos = localStorage.getItem('brandLogos');
+      if (savedLogos) {
+        const logos = JSON.parse(savedLogos);
+        if (logos.length > 0) {
+          // 첫 번째 로고를 기본값으로 설정
+          initialValues['brandLogo'] = logos[0];
+        }
+      }
+      
       setEditableValues(initialValues);
     }
   };
@@ -144,20 +200,25 @@ useEffect(() => {
   const handleImageSelect = (elementId: string) => {
     setCurrentEditingElement(elementId);
     
-    // Set filter category based on image element label
-    const imageElement = template?.editableElements.images.find(img => img.id === elementId);
-    console.log('Editor: Image element found:', imageElement);
-    console.log('Editor: Image element label:', imageElement?.label);
-    
-    if (imageElement?.label === 'Background Image') {
-      console.log('Editor: Setting filter to Background Images');
-      setAssetFilterCategory('Background Images');
-    } else if (imageElement?.label === 'Vehicle Model') {
-      console.log('Editor: Setting filter to Vehicle Models');
-      setAssetFilterCategory('Vehicle Models');
+    // Set filter category based on image element label or ID
+    if (elementId === 'brandLogo') {
+      console.log('Editor: Setting filter to Logos');
+      setAssetFilterCategory('Logo');
     } else {
-      console.log('Editor: No specific filter set');
-      setAssetFilterCategory(undefined);
+      const imageElement = template?.editableElements.images.find(img => img.id === elementId);
+      console.log('Editor: Image element found:', imageElement);
+      console.log('Editor: Image element label:', imageElement?.label);
+      
+      if (imageElement?.label === 'Background Image') {
+        console.log('Editor: Setting filter to Background Images');
+        setAssetFilterCategory('Background Images');
+      } else if (imageElement?.label === 'Vehicle Model') {
+        console.log('Editor: Setting filter to Vehicle Models');
+        setAssetFilterCategory('Vehicle Models');
+      } else {
+        console.log('Editor: No specific filter set');
+        setAssetFilterCategory(undefined);
+      }
     }
     
     setAssetSelectorOpen(true);
@@ -190,20 +251,25 @@ useEffect(() => {
   const handleCanvasImageEdit = (elementId: string) => {
     setCurrentEditingElement(elementId);
     
-    // Set filter category based on image element label
-    const imageElement = template?.editableElements.images.find(img => img.id === elementId);
-    console.log('Editor (Canvas): Image element found:', imageElement);
-    console.log('Editor (Canvas): Image element label:', imageElement?.label);
-    
-    if (imageElement?.label === 'Background Image') {
-      console.log('Editor (Canvas): Setting filter to Background Images');
-      setAssetFilterCategory('Background Images');
-    } else if (imageElement?.label === 'Vehicle Model') {
-      console.log('Editor (Canvas): Setting filter to Vehicle Models');
-      setAssetFilterCategory('Vehicle Models');
+    // Set filter category based on image element label or ID
+    if (elementId === 'brandLogo') {
+      console.log('Editor (Canvas): Setting filter to Logos');
+      setAssetFilterCategory('Logo');
     } else {
-      console.log('Editor (Canvas): No specific filter set');
-      setAssetFilterCategory(undefined);
+      const imageElement = template?.editableElements.images.find(img => img.id === elementId);
+      console.log('Editor (Canvas): Image element found:', imageElement);
+      console.log('Editor (Canvas): Image element label:', imageElement?.label);
+      
+      if (imageElement?.label === 'Background Image') {
+        console.log('Editor (Canvas): Setting filter to Background Images');
+        setAssetFilterCategory('Background Images');
+      } else if (imageElement?.label === 'Vehicle Model') {
+        console.log('Editor (Canvas): Setting filter to Vehicle Models');
+        setAssetFilterCategory('Vehicle Models');
+      } else {
+        console.log('Editor (Canvas): No specific filter set');
+        setAssetFilterCategory(undefined);
+      }
     }
     
     setAssetSelectorOpen(true);
@@ -299,7 +365,7 @@ useEffect(() => {
         id: workFromState?.id || Date.now().toString(),
         name: workFromState?.name || `${template.name} - ${new Date().toLocaleDateString('ko-KR')}`,
         thumbnail: thumbnailData || '',
-        category: currentCategory as '문서' | '프로모션 배너' | 'SNS',
+        category: currentCategory as 'Document' | 'Promotion Banner' | 'Brochure',
         templateId: template.id,
         lastModified: new Date(),
         canEdit: true,
@@ -482,6 +548,22 @@ useEffect(() => {
                       </Button>
                     </Box>
                   ))}
+                  
+                  {/* Logo Image - Always show for all templates */}
+                  <Box>
+                    <Typography variant="body2" gutterBottom>
+                      Logo Image
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      onClick={() => handleImageSelect('brandLogo')}
+                    >
+                      {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
+                        ? (editableValues['brandLogo'] as BrandAsset).name
+                        : 'Select Logo'}
+                    </Button>
+                  </Box>
                 </>
               )}
             </>
@@ -542,8 +624,36 @@ useEffect(() => {
             initialValues[text.id] = text.text || '';
           });
           convertedTemplate.editableElements.images.forEach((image) => {
-            initialValues[image.id] = image.src || '';
+            // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
+            if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
+              // 로컬 스토리지에서 차량 이미지 가져오기
+              const savedVehicles = localStorage.getItem('brandVehicles');
+              if (savedVehicles) {
+                const vehicles = JSON.parse(savedVehicles);
+                if (vehicles.length > 0) {
+                  // 첫 번째 차량을 기본값으로 설정
+                  initialValues[image.id] = vehicles[0];
+                } else {
+                  initialValues[image.id] = image.src || '';
+                }
+              } else {
+                initialValues[image.id] = image.src || '';
+              }
+            } else {
+              initialValues[image.id] = image.src || '';
+            }
           });
+          
+          // 로고 이미지 기본값 설정
+          const savedLogos = localStorage.getItem('brandLogos');
+          if (savedLogos) {
+            const logos = JSON.parse(savedLogos);
+            if (logos.length > 0) {
+              // 첫 번째 로고를 기본값으로 설정
+              initialValues['brandLogo'] = logos[0];
+            }
+          }
+          
           setEditableValues(initialValues);
           setFormatSelectorOpen(false);
         }}

@@ -11,6 +11,7 @@ import {
   Box,
   IconButton,
   Chip,
+  Stack
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { UnifiedFormat } from '../data/unifiedFormats';
@@ -46,7 +47,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
     >
       <DialogTitle>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">{category} 포맷 선택</Typography>
+          <Typography variant="h4" sx={{ fontWeight: 600 }}>{category}</Typography>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
           </IconButton>
@@ -55,15 +56,42 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
       <DialogContent>
         <Grid container spacing={3} sx={{ mt: 1 }}>
           {formats.map((format) => (
-            <Grid item xs={12} sm={6} md={4} key={format.id}>
-              <Card>
-                <CardActionArea onClick={() => onSelect(format)}>
-                  <CardContent>
+            <Grid item size={{xs:12,sm:12,sm:6,md:formats.length <= 3 ? 4 : formats.length === 4 ? 3 : 4}}  key={format.id}>
+              <Card sx={{ height: '100%' }}>
+                <CardActionArea onClick={() => onSelect(format)} sx={{ height: '100%' }}>
+                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <Box sx={{ textAlign: 'center', mb: 2 }}>
+
+                      <Stack height="143px" justifyContent="center" alignItems="center">
                       <Box
                         sx={{
-                          width: 120,
-                          height: 80,
+                          width: (() => {
+                            const ratio = format.dimensions.width / format.dimensions.height;
+                            const maxWidth = 120;
+                            const maxHeight = 120;
+
+                            
+                            if (ratio > 1) {
+                              // 가로가 더 긴 경우
+                              return maxWidth;
+                            } else {
+                              // 세로가 더 길거나 정사각형인 경우
+                              return Math.round(maxHeight * ratio);
+                            }
+                          })(),
+                          height: (() => {
+                            const ratio = format.dimensions.width / format.dimensions.height;
+                            const maxWidth = 120;
+                            const maxHeight = 120;
+                            
+                            if (ratio > 1) {
+                              // 가로가 더 긴 경우
+                              return Math.round(maxWidth / ratio);
+                            } else {
+                              // 세로가 더 길거나 정사각형인 경우
+                              return maxHeight;
+                            }
+                          })(),
                           border: '2px solid',
                           borderColor: 'divider',
                           borderRadius: 1,
@@ -75,10 +103,19 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                           bgcolor: 'grey.50',
                         }}
                       >
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography 
+                          variant="caption" 
+                          color="text.secondary"
+                          sx={{ 
+                            fontSize: '10px',
+                            textAlign: 'center',
+                            px: 1
+                          }}
+                        >
                           {format.dimensions.width} × {format.dimensions.height}
                         </Typography>
                       </Box>
+                      </Stack>
                       <Typography variant="h6" gutterBottom>
                         {format.name}
                       </Typography>

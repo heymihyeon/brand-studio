@@ -25,6 +25,10 @@ import {
   CampaignOutlined as BannerIcon,
   PhotoCamera as SnsIcon,
   MoreVert as MoreVertIcon,
+  Article,
+  Campaign,
+  MenuBook,
+  ViewCarousel,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
 import FormatSelector from '../components/FormatSelector';
@@ -35,7 +39,7 @@ const categories: Category[] = [
     id: 'document',
     name: 'Document',
     icon: 'description',
-    description: 'Create documents such as proposals, contracts, and brochures.',
+    description: 'Create contract, Quote, Purchase Order, and more.',
     defaultTemplate: 'doc-template-1',
   },
   {
@@ -46,11 +50,11 @@ const categories: Category[] = [
     defaultTemplate: 'banner-template-1',
   },
   {
-    id: 'sns',
-    name: 'SNS',
+    id: 'brochure',
+    name: 'Brochure',
     icon: 'camera',
-    description: 'Create content for social media like Instagram and Facebook.',
-    defaultTemplate: 'sns-template-1',
+    description: 'Create A3 brochure, A4 brochure, 2-fold brochure, and more.',
+    defaultTemplate: 'brochure-template-1',
   },
 ];
 
@@ -152,7 +156,7 @@ const Home: React.FC = () => {
               <rect x="140" y="100" width="20" height="20" fill="#ffffff" fill-opacity="0.3" rx="3"/>
             </svg>
           `)}`,
-          category: 'SNS',
+          category: 'Brochure',
           templateId: 'sns-instagram-1',
           lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
           canEdit: true,
@@ -168,10 +172,16 @@ const Home: React.FC = () => {
   }, []);
 
   const handleCategoryClick = (category: Category) => {
+    // Check if brochure category is clicked
+    if (category.id === 'brochure') {
+      alert('Feature is under development.');
+      return;
+    }
+    
     const categoryMap: Record<string, string> = {
       'document': 'Document',
       'banner': 'Promotion Banner',
-      'sns': 'SNS',
+      'brochure': 'Brochure',
     };
     const categoryName = categoryMap[category.id] || category.name;
     const categoryFormats = getFormatsByCategory(categoryName);
@@ -203,7 +213,7 @@ const Home: React.FC = () => {
     const categoryMap: Record<string, string> = {
       'Document': 'document',
       'Promotion Banner': 'banner',
-      'SNS': 'sns',
+      'Brochure': 'brochure',
     };
     const categoryId = categoryMap[work.category] || 'document';
     navigate(`/editor/${categoryId}`, { state: { work } });
@@ -308,49 +318,49 @@ const Home: React.FC = () => {
   };
 
   const getIcon = (iconName: string) => {
-    const iconSize = 48;
-    const iconColor = '#000000';
+    const iconSize = 64;
     
     switch (iconName) {
       case 'description':
+        // Document icon
         return (
-          <Box sx={{ position: 'relative', width: iconSize, height: iconSize }}>
-            <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="12" y="8" width="24" height="32" rx="2" fill={iconColor}/>
-              <rect x="14" y="12" width="20" height="2" rx="1" fill="#ffffff"/>
-              <rect x="14" y="16" width="16" height="2" rx="1" fill="#ffffff"/>
-              <rect x="14" y="20" width="18" height="2" rx="1" fill="#ffffff"/>
-              <rect x="14" y="24" width="14" height="2" rx="1" fill="#ffffff"/>
-              <rect x="14" y="28" width="16" height="2" rx="1" fill="#ffffff"/>
-              <rect x="14" y="32" width="12" height="2" rx="1" fill="#ffffff"/>
-            </svg>
+          <Box sx={{ 
+            position: 'relative', 
+            width: iconSize, 
+            height: iconSize,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Article sx={{ fontSize: 48, color: '#1F7AFC' }} />
           </Box>
         );
       case 'campaign':
+        // Carousel/Banner icon
         return (
-          <Box sx={{ position: 'relative', width: iconSize, height: iconSize }}>
-            <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="16" width="32" height="16" rx="2" fill={iconColor}/>
-              <rect x="12" y="20" width="8" height="2" rx="1" fill="#ffffff"/>
-              <rect x="12" y="24" width="12" height="2" rx="1" fill="#ffffff"/>
-              <circle cx="28" cy="24" r="3" fill="#ffffff"/>
-              <rect x="18" y="8" width="12" height="8" rx="1" fill={iconColor}/>
-              <rect x="20" y="10" width="8" height="2" rx="1" fill="#ffffff"/>
-              <rect x="20" y="13" width="6" height="1" rx="0.5" fill="#ffffff"/>
-            </svg>
+          <Box sx={{ 
+            position: 'relative', 
+            width: iconSize, 
+            height: iconSize,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <ViewCarousel sx={{ fontSize: 48, color: '#FF70FA' }} />
           </Box>
         );
       case 'camera':
+        // Brochure/Book icon
         return (
-          <Box sx={{ position: 'relative', width: iconSize, height: iconSize }}>
-            <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="16" width="32" height="24" rx="3" fill={iconColor}/>
-              <circle cx="24" cy="28" r="6" fill="#ffffff"/>
-              <circle cx="24" cy="28" r="3" fill={iconColor}/>
-              <rect x="16" y="8" width="16" height="8" rx="2" fill={iconColor}/>
-              <rect x="34" y="20" width="3" height="2" rx="1" fill="#ffffff"/>
-              <rect x="18" y="10" width="12" height="2" rx="1" fill="#ffffff"/>
-            </svg>
+          <Box sx={{ 
+            position: 'relative', 
+            width: iconSize, 
+            height: iconSize,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <MenuBook sx={{ fontSize: 48, color: '#FF8C00' }} />
           </Box>
         );
       default:
@@ -368,7 +378,7 @@ const Home: React.FC = () => {
         background: '#ffffff',
         iconBg: '#f8f9fa',
       },
-      'sns': {
+      'brochure': {
         background: '#ffffff',
         iconBg: '#f8f9fa',
       },
