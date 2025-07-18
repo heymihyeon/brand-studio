@@ -281,6 +281,56 @@ const Editor: React.FC = () => {
     setExportDialogOpen(true);
   };
 
+  const handleSave = () => {
+    if (!template || !canvasRef.current) {
+      alert('Unable to save. Please make sure the template is loaded.');
+      return;
+    }
+
+    try {
+      const workFromState = location.state?.work as RecentWork | undefined;
+      const thumbnailData = canvasRef.current.exportCanvas('png', 0.8);
+      
+      const newWork: RecentWork = {
+        id: workFromState?.id || Date.now().toString(),
+        name: workFromState?.name || `${template.name} - ${new Date().toLocaleDateString('ko-KR')}`,
+        thumbnail: thumbnailData || '',
+        category: currentCategory as '문서' | '프로모션 배너' | 'SNS',
+        templateId: template.id,
+        lastModified: new Date(),
+        canEdit: true,
+        canDuplicate: true,
+        canDelete: true,
+        canRename: true,
+        data: editableValues,
+      };
+      
+      const savedWorks = JSON.parse(localStorage.getItem('recentWorks') || '[]');
+      const existingIndex = savedWorks.findIndex((w: RecentWork) => w.id === newWork.id);
+      
+      if (existingIndex >= 0) {
+        savedWorks[existingIndex] = newWork;
+      } else {
+        savedWorks.unshift(newWork);
+      }
+      
+      localStorage.setItem('recentWorks', JSON.stringify(savedWorks));
+      
+      // 저장 완료 다이얼로그 표시
+      console.log('Setting dialog open to true');
+      setSaveSuccessDialogOpen(true);
+      
+      // Force update to ensure dialog shows
+      setTimeout(() => {
+        console.log('Dialog state is:', saveSuccessDialogOpen);
+      }, 0);
+    } catch (error) {
+      // 에러 발생 시 사용자에게 알림
+      console.error('Save error:', error);
+      alert('An error occurred while saving. Please try again.');
+    }
+  };
+
   if (!template && !formatSelectorOpen) {
     return (
       <Box sx={{ p: 4 }}>
@@ -336,38 +386,7 @@ const Editor: React.FC = () => {
           <Button
             variant="outlined"
             startIcon={<SaveIcon />}
-            onClick={() => {
-              // 저장 로직 - 현재 작업을 localStorage에 저장
-              if (template) {
-                const workFromState = location.state?.work as RecentWork | undefined;
-                const newWork: RecentWork = {
-                  id: workFromState?.id || Date.now().toString(),
-                  name: workFromState?.name || `${template.name} - ${new Date().toLocaleDateString()}`,
-                  thumbnail: canvasRef.current?.exportCanvas('png', 0.3) || '',
-                  category: currentCategory as '문서' | '프로모션 배너' | 'SNS',
-                  templateId: template.id,
-                  lastModified: new Date(),
-                  canEdit: true,
-                  canDuplicate: true,
-                  canDelete: true,
-                  canRename: true,
-                  data: editableValues,
-                };
-                
-                const savedWorks = JSON.parse(localStorage.getItem('recentWorks') || '[]');
-                const existingIndex = savedWorks.findIndex((w: RecentWork) => w.id === newWork.id);
-                
-                if (existingIndex >= 0) {
-                  savedWorks[existingIndex] = newWork;
-                } else {
-                  savedWorks.unshift(newWork);
-                }
-                
-                localStorage.setItem('recentWorks', JSON.stringify(savedWorks));
-                // 저장 완료 다이얼로그 표시
-                setSaveSuccessDialogOpen(true);
-              }
-            }}
+            onClick={handleSave}
           >
             Save
           </Button>
@@ -378,7 +397,7 @@ const Editor: React.FC = () => {
             startIcon={<DownloadIcon />}
             onClick={handleExportClick}
           >
-            Export
+            내보내기
           </Button>
         </Stack>
       </Paper>
@@ -550,21 +569,30 @@ const Editor: React.FC = () => {
       <Dialog
         open={saveSuccessDialogOpen}
         onClose={() => setSaveSuccessDialogOpen(false)}
+        aria-labelledby="save-dialog-title"
+        aria-describedby="save-dialog-description"
+        maxWidth="sm"
+        fullWidth
+        sx={{ zIndex: 1400 }}
       >
-        <DialogTitle>Save Complete</DialogTitle>
+        <DialogTitle id="save-dialog-title">Save Complete</DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText id="save-dialog-description">
             Your work has been saved successfully.
             You can continue editing or return to the home screen.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSaveSuccessDialogOpen(false)}>
+          <Button onClick={() => setSaveSuccessDialogOpen(false)} color="primary">
             Continue Editing
           </Button>
           <Button 
-            onClick={() => navigate('/')} 
+            onClick={() => {
+              setSaveSuccessDialogOpen(false);
+              navigate('/');
+            }} 
             variant="contained"
+            color="primary"
           >
             Go to Home
           </Button>

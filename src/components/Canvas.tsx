@@ -116,7 +116,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           }
           
           // Non-editable images (background, etc.)
-          FabricImage.fromURL(obj.src).then((img) => {
+          FabricImage.fromURL(obj.src, { crossOrigin: 'anonymous' }).then((img) => {
             img.set({
               left: obj.left,
               top: obj.top,
@@ -216,7 +216,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                       : canvasImgObj?.src || imageElement.src;
       
       if (imageSrc) {
-        FabricImage.fromURL(imageSrc).then((img) => {
+        FabricImage.fromURL(imageSrc, { crossOrigin: 'anonymous' }).then((img) => {
           // Use properties from canvas.objects or defaults
           const imgWidth = canvasImgObj?.width || imageElement.size.width;
           const imgHeight = canvasImgObj?.height || imageElement.size.height;
