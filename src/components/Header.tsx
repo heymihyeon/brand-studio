@@ -18,7 +18,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 에디터 페이지에서는 사이드바를 렌더링하지 않음
+  // Don't render sidebar on editor pages
   if (location.pathname.startsWith('/editor')) {
     return null;
   }
@@ -30,13 +30,13 @@ const Header: React.FC = () => {
   const menuItems = [
     { 
       path: '/', 
-      label: '홈', 
+      label: 'Home', 
       icon: <HomeIcon />,
       exact: true
     },
     { 
       path: '/brand-hub', 
-      label: '브랜드 허브', 
+      label: 'Brand Hub', 
       icon: <LibraryIcon />,
       exact: false
     },

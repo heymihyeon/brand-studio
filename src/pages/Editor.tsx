@@ -35,8 +35,8 @@ import { getFormatsByCategory } from '../data/formats';
 import { UnifiedFormat, convertToTemplate, getFormatsByCategory as getUnifiedFormatsByCategory } from '../data/unifiedFormats';
 
 const categoryMap: Record<string, string> = {
-  'document': '문서',
-  'banner': '프로모션 배너',
+  'document': 'Document',
+  'banner': 'Promotion Banner',
   'sns': 'SNS',
 };
 
@@ -135,8 +135,27 @@ const Editor: React.FC = () => {
     saveCurrentWork();
   };
 
+  const [assetFilterCategory, setAssetFilterCategory] = useState<string | undefined>(undefined);
+  
   const handleImageSelect = (elementId: string) => {
     setCurrentEditingElement(elementId);
+    
+    // Set filter category based on image element label
+    const imageElement = template?.editableElements.images.find(img => img.id === elementId);
+    console.log('Editor: Image element found:', imageElement);
+    console.log('Editor: Image element label:', imageElement?.label);
+    
+    if (imageElement?.label === 'Background Image') {
+      console.log('Editor: Setting filter to Background Images');
+      setAssetFilterCategory('Background Images');
+    } else if (imageElement?.label === 'Vehicle Model') {
+      console.log('Editor: Setting filter to Vehicle Models');
+      setAssetFilterCategory('Vehicle Models');
+    } else {
+      console.log('Editor: No specific filter set');
+      setAssetFilterCategory(undefined);
+    }
+    
     setAssetSelectorOpen(true);
   };
 
@@ -166,6 +185,23 @@ const Editor: React.FC = () => {
 
   const handleCanvasImageEdit = (elementId: string) => {
     setCurrentEditingElement(elementId);
+    
+    // Set filter category based on image element label
+    const imageElement = template?.editableElements.images.find(img => img.id === elementId);
+    console.log('Editor (Canvas): Image element found:', imageElement);
+    console.log('Editor (Canvas): Image element label:', imageElement?.label);
+    
+    if (imageElement?.label === 'Background Image') {
+      console.log('Editor (Canvas): Setting filter to Background Images');
+      setAssetFilterCategory('Background Images');
+    } else if (imageElement?.label === 'Vehicle Model') {
+      console.log('Editor (Canvas): Setting filter to Vehicle Models');
+      setAssetFilterCategory('Vehicle Models');
+    } else {
+      console.log('Editor (Canvas): No specific filter set');
+      setAssetFilterCategory(undefined);
+    }
+    
     setAssetSelectorOpen(true);
   };
   
@@ -248,13 +284,13 @@ const Editor: React.FC = () => {
   if (!template && !formatSelectorOpen) {
     return (
       <Box sx={{ p: 4 }}>
-        <Alert severity="info">포맷을 선택해주세요.</Alert>
+        <Alert severity="info">Please select a format.</Alert>
         <Button 
           variant="contained" 
           sx={{ mt: 2 }}
           onClick={() => setFormatSelectorOpen(true)}
         >
-          포맷 선택
+          Select Format
         </Button>
       </Box>
     );
@@ -281,11 +317,11 @@ const Editor: React.FC = () => {
             onClick={() => navigate('/')}
             sx={{ minWidth: 'auto' }}
           >
-            뒤로가기
+            Back
           </Button>
           <Box>
             <Typography variant="h6">
-              콘텐츠 편집
+              Content Editor
             </Typography>
             {template && (
               <Typography variant="body2" color="text.secondary">
@@ -308,7 +344,7 @@ const Editor: React.FC = () => {
                   id: workFromState?.id || Date.now().toString(),
                   name: workFromState?.name || `${template.name} - ${new Date().toLocaleDateString()}`,
                   thumbnail: canvasRef.current?.exportCanvas('png', 0.3) || '',
-                  category: currentCategory,
+                  category: currentCategory as '문서' | '프로모션 배너' | 'SNS',
                   templateId: template.id,
                   lastModified: new Date(),
                   canEdit: true,
@@ -333,7 +369,7 @@ const Editor: React.FC = () => {
               }
             }}
           >
-            저장하기
+            Save
           </Button>
           
           {/* 내보내기 버튼 */}
@@ -342,7 +378,7 @@ const Editor: React.FC = () => {
             startIcon={<DownloadIcon />}
             onClick={handleExportClick}
           >
-            내보내기
+            Export
           </Button>
         </Stack>
       </Paper>
@@ -367,7 +403,7 @@ const Editor: React.FC = () => {
             fullWidth
             onClick={() => setFormatSelectorOpen(true)}
           >
-            포맷 변경
+            Change Format
           </Button>
         </Stack>
 
@@ -377,15 +413,15 @@ const Editor: React.FC = () => {
           {template && (
             <>
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                텍스트 편집
+                Text Edit
               </Typography>
               {template.editableElements.texts.map((textElement) => (
                 <TextField
                   key={textElement.id}
                   fullWidth
                   label={
-                    textElement.type === 'heading' ? '제목' :
-                    textElement.type === 'subheading' ? '부제목' : '본문'
+                    textElement.type === 'heading' ? 'Title' :
+                    textElement.type === 'subheading' ? 'Subtitle' : 'Body'
                   }
                   value={editableValues[textElement.id] || ''}
                   onChange={(e) => handleTextChange(textElement.id, e.target.value)}
@@ -398,19 +434,19 @@ const Editor: React.FC = () => {
                 <>
                   <Divider />
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    이미지 편집
+                    Image Edit
                   </Typography>
                   {template.editableElements.images.map((imageElement) => (
                     <Box key={imageElement.id}>
                       <Typography variant="body2" gutterBottom>
                         {imageElement.label || 
-                         (imageElement.id === 'logo' ? '로고' :
-                          imageElement.id === 'main' ? '메인 이미지' :
-                          imageElement.id === 'background' ? '배경 이미지' :
-                          imageElement.id === 'product' ? '제품 이미지' :
-                          imageElement.id === 'cover' ? '커버 이미지' : 
-                          imageElement.id === 'bg-image' ? '배경 이미지' :
-                          imageElement.id === 'vehicle' ? '차량 모델' : '이미지')}
+                         (imageElement.id === 'logo' ? 'Logo' :
+                          imageElement.id === 'main' ? 'Main Image' :
+                          imageElement.id === 'background' ? 'Background Image' :
+                          imageElement.id === 'product' ? 'Product Image' :
+                          imageElement.id === 'cover' ? 'Cover Image' : 
+                          imageElement.id === 'bg-image' ? 'Background Image' :
+                          imageElement.id === 'vehicle' ? 'Vehicle Model' : 'Image')}
                       </Typography>
                       <Button
                         variant="outlined"
@@ -419,7 +455,7 @@ const Editor: React.FC = () => {
                       >
                         {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
                           ? (editableValues[imageElement.id] as BrandAsset).name
-                          : `${imageElement.label || '이미지'} 선택`}
+                          : `Select ${imageElement.label || 'Image'}`}
                       </Button>
                     </Box>
                   ))}
@@ -499,11 +535,15 @@ const Editor: React.FC = () => {
         template={template}
       />
       
-      {/* 자산 선택 모달 */}
+      {/* Asset Selection Modal */}
       <AssetSelector
         open={assetSelectorOpen}
-        onClose={() => setAssetSelectorOpen(false)}
+        onClose={() => {
+          setAssetSelectorOpen(false);
+          setAssetFilterCategory(undefined);
+        }}
         onSelect={handleAssetSelect}
+        filterCategory={assetFilterCategory}
       />
 
       {/* 저장 성공 다이얼로그 */}
@@ -511,22 +551,22 @@ const Editor: React.FC = () => {
         open={saveSuccessDialogOpen}
         onClose={() => setSaveSuccessDialogOpen(false)}
       >
-        <DialogTitle>저장 완료</DialogTitle>
+        <DialogTitle>Save Complete</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            작업이 성공적으로 저장되었습니다.
-            계속 편집하시거나 홈 화면으로 돌아가실 수 있습니다.
+            Your work has been saved successfully.
+            You can continue editing or return to the home screen.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setSaveSuccessDialogOpen(false)}>
-            계속 편집
+            Continue Editing
           </Button>
           <Button 
             onClick={() => navigate('/')} 
             variant="contained"
           >
-            홈으로 이동
+            Go to Home
           </Button>
         </DialogActions>
       </Dialog>

@@ -21,20 +21,22 @@ interface AssetSelectorProps {
   open: boolean;
   onClose: () => void;
   onSelect: (asset: BrandAsset) => void;
+  filterCategory?: string; // 특정 카테고리만 표시
 }
 
-const assetCategories = ['전체', '로고', '배경', '제품', '아이콘', '기타'];
+const assetCategories = ['All', 'Logo', 'Background', 'Vehicle', 'Icon', 'Other'];
 
-const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect }) => {
-  const [selectedCategory, setSelectedCategory] = useState('전체');
+const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, filterCategory }) => {
+  const [selectedCategory, setSelectedCategory] = useState(filterCategory || 'All');
   const [selectedAsset, setSelectedAsset] = useState<BrandAsset | null>(null);
   const [assets, setAssets] = useState<BrandAsset[]>([]);
 
-  // 브랜드 허브에서 자산 불러오기
+  // Load assets from Brand Hub
   useEffect(() => {
     if (open) {
       const savedLogos = localStorage.getItem('brandLogos');
-      const savedImages = localStorage.getItem('brandImages');
+      const savedVehicles = localStorage.getItem('brandVehicles');
+      const savedBackgrounds = localStorage.getItem('brandBackgrounds');
       
       const allAssets: BrandAsset[] = [];
       
@@ -43,18 +45,44 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect }
         allAssets.push(...logos);
       }
       
-      if (savedImages) {
-        const images = JSON.parse(savedImages);
-        allAssets.push(...images);
+      if (savedVehicles) {
+        const vehicles = JSON.parse(savedVehicles);
+        // Product 카테고리를 Vehicle로 변경
+        vehicles.forEach((v: BrandAsset) => v.category = 'Vehicle');
+        allAssets.push(...vehicles);
+      }
+      
+      if (savedBackgrounds) {
+        const backgrounds = JSON.parse(savedBackgrounds);
+        allAssets.push(...backgrounds);
       }
       
       setAssets(allAssets);
     }
   }, [open]);
 
-  const filteredAssets = selectedCategory === '전체'
-    ? assets
-    : assets.filter((asset) => asset.category === selectedCategory);
+  // filterCategory가 있으면 해당 카테고리만 표시
+  const baseAssets = filterCategory 
+    ? assets.filter((asset) => {
+        // 브랜드 허브의 실제 카테고리와 매핑
+        console.log('AssetSelector: Filtering asset', asset.name, 'with category', asset.category, 'against filter', filterCategory);
+        if (filterCategory === 'Vehicle Models') {
+          return asset.category === 'Product' || asset.category === 'Vehicle';
+        }
+        if (filterCategory === 'Background Images') {
+          return asset.category === 'Background';
+        }
+        return asset.category === filterCategory;
+      })
+    : assets;
+    
+  console.log('AssetSelector: filterCategory =', filterCategory);
+  console.log('AssetSelector: Total assets =', assets.length);
+  console.log('AssetSelector: Filtered assets =', baseAssets.length);
+    
+  const filteredAssets = selectedCategory === 'All'
+    ? baseAssets
+    : baseAssets.filter((asset) => asset.category === selectedCategory);
 
   const handleAssetClick = (asset: BrandAsset) => {
     setSelectedAsset(asset);
@@ -74,27 +102,33 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect }
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>브랜드 자산 선택</DialogTitle>
+      <DialogTitle>
+        {filterCategory === 'Background Images' ? 'Select Background Image' : 
+         filterCategory === 'Vehicle Models' ? 'Select Vehicle Model' : 
+         'Select Brand Asset'}
+      </DialogTitle>
       <DialogContent>
-        {/* 카테고리 필터 */}
-        <Box sx={{ mb: 2 }}>
-          {assetCategories.map((category) => (
-            <Chip
-              key={category}
-              label={category}
-              onClick={() => setSelectedCategory(category)}
-              color={selectedCategory === category ? 'primary' : 'default'}
-              sx={{ mr: 1, mb: 1 }}
-            />
-          ))}
-        </Box>
+        {/* Category filter - filterCategory가 없을 때만 표시 */}
+        {!filterCategory && (
+          <Box sx={{ mb: 2 }}>
+            {assetCategories.map((category) => (
+              <Chip
+                key={category}
+                label={category}
+                onClick={() => setSelectedCategory(category)}
+                color={selectedCategory === category ? 'primary' : 'default'}
+                sx={{ mr: 1, mb: 1 }}
+              />
+            ))}
+          </Box>
+        )}
 
-        {/* 자산 그리드 */}
+        {/* Asset grid */}
         {filteredAssets.length === 0 ? (
           <Alert severity="info" sx={{ mb: 2 }}>
-            {selectedCategory === '전체' 
-              ? '등록된 브랜드 자산이 없습니다.' 
-              : `${selectedCategory} 카테고리에 등록된 자산이 없습니다.`}
+            {selectedCategory === 'All' 
+              ? 'No brand assets registered.' 
+              : `No assets registered in ${selectedCategory} category.`}
             <br />
             <Link 
               href="/brand-hub" 
@@ -105,7 +139,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect }
               }}
               sx={{ cursor: 'pointer' }}
             >
-              브랜드 허브에서 자산을 추가하세요.
+              Add assets from Brand Hub.
             </Link>
           </Alert>
         ) : (
@@ -142,13 +176,13 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect }
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>취소</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={handleSelect}
           variant="contained"
           disabled={!selectedAsset}
         >
-          선택
+          Select
         </Button>
       </DialogActions>
     </Dialog>

@@ -56,99 +56,103 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 const BrandHub: React.FC = () => {
   const [currentTab, setCurrentTab] = useState(0);
   
-  // 로고 관리
+  // Logo management
   const [logos, setLogos] = useState<BrandAsset[]>([]);
   const [logoDialogOpen, setLogoDialogOpen] = useState(false);
   const [logoForm, setLogoForm] = useState({ name: '', file: null as File | null });
   
-  // 색상 관리
+  // Color management
   const [colorPalettes, setColorPalettes] = useState<ColorPalette[]>([]);
   const [colorDialogOpen, setColorDialogOpen] = useState(false);
   const [colorForm, setColorForm] = useState({ name: '', colors: ['#1F7AFC'] });
   
-  // 폰트 관리
-  const [fonts, setFonts] = useState<FontStyle[]>([]);
-  const [fontDialogOpen, setFontDialogOpen] = useState(false);
-  const [fontForm, setFontForm] = useState({
-    name: '',
-    fontFamily: '',
-    fontSize: 16,
-    fontWeight: 400,
-    lineHeight: 1.5,
-    file: null as File | null,
-  });
+  // Vehicle Models management
+  const [vehicleModels, setVehicleModels] = useState<BrandAsset[]>([]);
+  const [vehicleDialogOpen, setVehicleDialogOpen] = useState(false);
+  const [vehicleForm, setVehicleForm] = useState({ name: '', file: null as File | null });
   
-  // 이미지 관리
-  const [images, setImages] = useState<BrandAsset[]>([]);
-  const [imageDialogOpen, setImageDialogOpen] = useState(false);
-  const [imageForm, setImageForm] = useState({ name: '', category: '배경', file: null as File | null });
+  // Background Images management
+  const [backgroundImages, setBackgroundImages] = useState<BrandAsset[]>([]);
+  const [backgroundDialogOpen, setBackgroundDialogOpen] = useState(false);
+  const [backgroundForm, setBackgroundForm] = useState({ name: '', file: null as File | null });
   
-  // 로컬 스토리지에서 데이터 로드
+  
+  // Load data from local storage
   useEffect(() => {
     const savedLogos = localStorage.getItem('brandLogos');
     const savedColors = localStorage.getItem('brandColors');
-    const savedFonts = localStorage.getItem('brandFonts');
-    const savedImages = localStorage.getItem('brandImages');
+    const savedVehicles = localStorage.getItem('brandVehicles');
+    const savedBackgrounds = localStorage.getItem('brandBackgrounds');
     
     if (savedLogos) setLogos(JSON.parse(savedLogos));
     if (savedColors) setColorPalettes(JSON.parse(savedColors));
-    if (savedFonts) setFonts(JSON.parse(savedFonts));
-    if (savedImages) {
-      setImages(JSON.parse(savedImages));
+    
+    if (savedVehicles) {
+      setVehicleModels(JSON.parse(savedVehicles));
     } else {
-      // 샘플 이미지 추가
+      // Add sample images
       const sampleImages: BrandAsset[] = [
-        // 차량 이미지
+        // Vehicle images
         {
           id: 'vehicle-1',
-          name: '아이오닉 5 (Gravity Gold)',
+          name: 'IONIQ 5 (Gravity Gold)',
           url: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          category: '제품',
+          category: 'Product',
           type: 'image',
         },
         {
           id: 'vehicle-2',
-          name: '아이오닉 6 (Serenity White)',
+          name: 'IONIQ 6 (Serenity White)',
           url: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq6-24pe-side-45-serenity-white-pearl.png',
-          category: '제품',
+          category: 'Product',
           type: 'image',
         },
         {
           id: 'vehicle-3',
-          name: '코나 일렉트릭',
+          name: 'Kona Electric',
           url: 'https://www.hyundai.com/contents/repn-car/side-45/kona-electric-24pe-side-45-ecotronic-gray.png',
-          category: '제품',
+          category: 'Product',
           type: 'image',
         },
-        // 배경 이미지
+        // Background images
         {
           id: 'bg-1',
-          name: '오키나와 해변',
+          name: 'Okinawa Beach',
           url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&h=360&fit=crop',
-          category: '배경',
+          category: 'Background',
           type: 'image',
         },
         {
           id: 'bg-2',
-          name: '도시 야경',
+          name: 'City Night View',
           url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=2000&h=360&fit=crop',
-          category: '배경',
+          category: 'Background',
           type: 'image',
         },
         {
           id: 'bg-3',
-          name: '산 풍경',
+          name: 'Mountain Landscape',
           url: 'https://images.unsplash.com/photo-1444927714506-8492d94b4e3d?w=2000&h=360&fit=crop',
-          category: '배경',
+          category: 'Background',
           type: 'image',
         },
       ];
-      setImages(sampleImages);
-      localStorage.setItem('brandImages', JSON.stringify(sampleImages));
+      // 차량 모델과 배경 이미지 분리
+      const vehicles = sampleImages.filter(img => img.category === 'Product');
+      const backgrounds = sampleImages.filter(img => img.category === 'Background');
+      
+      setVehicleModels(vehicles);
+      setBackgroundImages(backgrounds);
+      localStorage.setItem('brandVehicles', JSON.stringify(vehicles));
+      localStorage.setItem('brandBackgrounds', JSON.stringify(backgrounds));
+    }
+    
+    if (savedBackgrounds) {
+      setBackgroundImages(JSON.parse(savedBackgrounds));
     }
   }, []);
 
-  // 로고 관리 함수들
+  // Logo management functions
   const handleLogoUpload = () => {
     if (logoForm.file && logoForm.name) {
       const newLogo: BrandAsset = {
@@ -157,7 +161,7 @@ const BrandHub: React.FC = () => {
         type: 'logo',
         url: URL.createObjectURL(logoForm.file),
         thumbnailUrl: URL.createObjectURL(logoForm.file),
-        category: '로고',
+        category: 'Logo',
         uploadedAt: new Date(),
         fileSize: logoForm.file.size,
         dimensions: { width: 300, height: 200 },
@@ -171,14 +175,14 @@ const BrandHub: React.FC = () => {
   };
 
   const handleLogoDelete = (id: string) => {
-    if (confirm('로고를 삭제하시겠습니까?')) {
+    if (confirm('Are you sure you want to delete this logo?')) {
       const newLogos = logos.filter(logo => logo.id !== id);
       setLogos(newLogos);
       localStorage.setItem('brandLogos', JSON.stringify(newLogos));
     }
   };
 
-  // 색상 관리 함수들
+  // Color management functions
   const handleColorPaletteAdd = () => {
     if (colorForm.name && colorForm.colors.length > 0) {
       const newPalette: ColorPalette = {
@@ -195,7 +199,7 @@ const BrandHub: React.FC = () => {
   };
 
   const handleColorPaletteDelete = (id: string) => {
-    if (confirm('색상 팔레트를 삭제하시겠습니까?')) {
+    if (confirm('Are you sure you want to delete this color palette?')) {
       const newPalettes = colorPalettes.filter(palette => palette.id !== id);
       setColorPalettes(newPalettes);
       localStorage.setItem('brandColors', JSON.stringify(newPalettes));
@@ -217,60 +221,63 @@ const BrandHub: React.FC = () => {
     setColorForm({ ...colorForm, colors: newColors });
   };
 
-  // 폰트 관리 함수들
-  const handleFontUpload = () => {
-    if (fontForm.name && fontForm.fontFamily) {
-      const newFont: FontStyle = {
+  // Vehicle Model management functions
+  const handleVehicleUpload = () => {
+    if (vehicleForm.file && vehicleForm.name) {
+      const newVehicle: BrandAsset = {
         id: Date.now().toString(),
-        name: fontForm.name,
-        fontFamily: fontForm.fontFamily,
-        fontSize: fontForm.fontSize,
-        fontWeight: fontForm.fontWeight,
-        lineHeight: fontForm.lineHeight,
-      };
-      const newFonts = [...fonts, newFont];
-      setFonts(newFonts);
-      localStorage.setItem('brandFonts', JSON.stringify(newFonts));
-      setFontDialogOpen(false);
-      setFontForm({ name: '', fontFamily: '', fontSize: 16, fontWeight: 400, lineHeight: 1.5, file: null });
-    }
-  };
-
-  const handleFontDelete = (id: string) => {
-    if (confirm('폰트를 삭제하시겠습니까?')) {
-      const newFonts = fonts.filter(font => font.id !== id);
-      setFonts(newFonts);
-      localStorage.setItem('brandFonts', JSON.stringify(newFonts));
-    }
-  };
-
-  // 이미지 관리 함수들
-  const handleImageUpload = () => {
-    if (imageForm.file && imageForm.name) {
-      const newImage: BrandAsset = {
-        id: Date.now().toString(),
-        name: imageForm.name,
+        name: vehicleForm.name,
         type: 'image',
-        url: URL.createObjectURL(imageForm.file),
-        thumbnailUrl: URL.createObjectURL(imageForm.file),
-        category: imageForm.category,
+        url: URL.createObjectURL(vehicleForm.file),
+        thumbnailUrl: URL.createObjectURL(vehicleForm.file),
+        category: 'Product',
         uploadedAt: new Date(),
-        fileSize: imageForm.file.size,
-        dimensions: { width: 400, height: 300 },
+        fileSize: vehicleForm.file.size,
+        dimensions: { width: 600, height: 300 },
       };
-      const newImages = [...images, newImage];
-      setImages(newImages);
-      localStorage.setItem('brandImages', JSON.stringify(newImages));
-      setImageDialogOpen(false);
-      setImageForm({ name: '', category: '배경', file: null });
+      const newVehicles = [...vehicleModels, newVehicle];
+      setVehicleModels(newVehicles);
+      localStorage.setItem('brandVehicles', JSON.stringify(newVehicles));
+      setVehicleDialogOpen(false);
+      setVehicleForm({ name: '', file: null });
     }
   };
 
-  const handleImageDelete = (id: string) => {
-    if (confirm('이미지를 삭제하시겠습니까?')) {
-      const newImages = images.filter(image => image.id !== id);
-      setImages(newImages);
-      localStorage.setItem('brandImages', JSON.stringify(newImages));
+  const handleVehicleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this vehicle model?')) {
+      const newVehicles = vehicleModels.filter(vehicle => vehicle.id !== id);
+      setVehicleModels(newVehicles);
+      localStorage.setItem('brandVehicles', JSON.stringify(newVehicles));
+    }
+  };
+
+  // Background Image management functions
+  const handleBackgroundUpload = () => {
+    if (backgroundForm.file && backgroundForm.name) {
+      const newBackground: BrandAsset = {
+        id: Date.now().toString(),
+        name: backgroundForm.name,
+        type: 'image',
+        url: URL.createObjectURL(backgroundForm.file),
+        thumbnailUrl: URL.createObjectURL(backgroundForm.file),
+        category: 'Background',
+        uploadedAt: new Date(),
+        fileSize: backgroundForm.file.size,
+        dimensions: { width: 1280, height: 700 },
+      };
+      const newBackgrounds = [...backgroundImages, newBackground];
+      setBackgroundImages(newBackgrounds);
+      localStorage.setItem('brandBackgrounds', JSON.stringify(newBackgrounds));
+      setBackgroundDialogOpen(false);
+      setBackgroundForm({ name: '', file: null });
+    }
+  };
+
+  const handleBackgroundDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this background image?')) {
+      const newBackgrounds = backgroundImages.filter(bg => bg.id !== id);
+      setBackgroundImages(newBackgrounds);
+      localStorage.setItem('brandBackgrounds', JSON.stringify(newBackgrounds));
     }
   };
 
@@ -282,10 +289,10 @@ const BrandHub: React.FC = () => {
       margin: '0 auto'
     }}>
         <Typography variant="h4" component="h1" gutterBottom>
-        브랜드 허브
+        Brand Hub
       </Typography>
       <Typography variant="subtitle1" color="text.secondary" paragraph>
-        브랜드 일관성을 유지하기 위한 자산들을 관리하세요.
+        Manage your brand assets to maintain consistency.
       </Typography>
 
         <Paper sx={{ width: '100%' }}>
@@ -294,27 +301,27 @@ const BrandHub: React.FC = () => {
             onChange={(_, newValue) => setCurrentTab(newValue)}
             sx={{ borderBottom: 1, borderColor: 'divider' }}
           >
-            <Tab icon={<LogoIcon />} label="로고" />
-            <Tab icon={<PaletteIcon />} label="색상" />
-            <Tab icon={<FontIcon />} label="폰트" />
-            <Tab icon={<ImageIcon />} label="이미지" />
+            <Tab icon={<LogoIcon />} label="Logo" />
+            <Tab icon={<PaletteIcon />} label="Colors" />
+            <Tab icon={<ImageIcon />} label="Vehicle Models" />
+            <Tab icon={<ImageIcon />} label="Background Images" />
           </Tabs>
 
-          {/* 로고 관리 */}
+          {/* Logo Management */}
           <TabPanel value={currentTab} index={0}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">브랜드 로고</Typography>
+              <Typography variant="h6">Brand Logos</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={() => setLogoDialogOpen(true)}
               >
-                로고 추가
+                Add Logo
               </Button>
             </Box>
             
             {logos.length === 0 ? (
-              <Alert severity="info">등록된 로고가 없습니다. 로고를 추가해보세요.</Alert>
+              <Alert severity="info">No logos registered. Please add a logo.</Alert>
             ) : (
               <Grid container spacing={3}>
                 {logos.map((logo) => (
@@ -345,21 +352,21 @@ const BrandHub: React.FC = () => {
             )}
           </TabPanel>
 
-          {/* 색상 관리 */}
+          {/* Color Management */}
           <TabPanel value={currentTab} index={1}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">브랜드 색상</Typography>
+              <Typography variant="h6">Brand Colors</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={() => setColorDialogOpen(true)}
               >
-                색상 팔레트 추가
+                Add Color Palette
               </Button>
             </Box>
             
             {colorPalettes.length === 0 ? (
-              <Alert severity="info">등록된 색상 팔레트가 없습니다. 색상을 추가해보세요.</Alert>
+              <Alert severity="info">No color palettes registered. Please add colors.</Alert>
             ) : (
               <Grid container spacing={3}>
                 {colorPalettes.map((palette) => (
@@ -396,46 +403,43 @@ const BrandHub: React.FC = () => {
             )}
           </TabPanel>
 
-          {/* 폰트 관리 */}
+          {/* Vehicle Models Management */}
           <TabPanel value={currentTab} index={2}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">브랜드 폰트</Typography>
+              <Typography variant="h6">Vehicle Models</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setFontDialogOpen(true)}
+                onClick={() => setVehicleDialogOpen(true)}
               >
-                폰트 추가
+                Add Vehicle Model
               </Button>
             </Box>
             
-            {fonts.length === 0 ? (
-              <Alert severity="info">등록된 폰트가 없습니다. 폰트를 추가해보세요.</Alert>
+            {vehicleModels.length === 0 ? (
+              <Alert severity="info">No vehicle models registered. Please add a vehicle model.</Alert>
             ) : (
               <Grid container spacing={3}>
-                {fonts.map((font) => (
-                  <Grid item xs={12} sm={6} md={4} key={font.id}>
+                {vehicleModels.map((vehicle) => (
+                  <Grid item xs={12} sm={6} md={4} key={vehicle.id}>
                     <Card>
+                      <CardMedia
+                        component="img"
+                        height="200"
+                        image={vehicle.url}
+                        alt={vehicle.name}
+                        sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
+                      />
                       <CardContent>
-                        <Typography variant="h6" gutterBottom>{font.name}</Typography>
-                        <Typography 
-                          variant="body1" 
-                          sx={{ 
-                            fontFamily: font.fontFamily,
-                            fontSize: font.fontSize,
-                            fontWeight: font.fontWeight,
-                            lineHeight: font.lineHeight,
-                            mb: 1
-                          }}
-                        >
-                          {font.fontFamily}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          크기: {font.fontSize}px, 굵기: {font.fontWeight}
-                        </Typography>
+                        <Typography variant="h6" noWrap>{vehicle.name}</Typography>
+                        {vehicle.uploadedAt && (
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(vehicle.uploadedAt).toLocaleDateString()}
+                          </Typography>
+                        )}
                       </CardContent>
                       <CardActions>
-                        <IconButton onClick={() => handleFontDelete(font.id)}>
+                        <IconButton onClick={() => handleVehicleDelete(vehicle.id)}>
                           <DeleteIcon />
                         </IconButton>
                       </CardActions>
@@ -446,39 +450,43 @@ const BrandHub: React.FC = () => {
             )}
           </TabPanel>
 
-          {/* 이미지 관리 */}
+          {/* Background Images Management */}
           <TabPanel value={currentTab} index={3}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">브랜드 이미지</Typography>
+              <Typography variant="h6">Background Images</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                onClick={() => setImageDialogOpen(true)}
+                onClick={() => setBackgroundDialogOpen(true)}
               >
-                이미지 추가
+                Add Background Image
               </Button>
             </Box>
             
-            {images.length === 0 ? (
-              <Alert severity="info">등록된 이미지가 없습니다. 이미지를 추가해보세요.</Alert>
+            {backgroundImages.length === 0 ? (
+              <Alert severity="info">No background images registered. Please add a background image.</Alert>
             ) : (
               <Grid container spacing={3}>
-                {images.map((image) => (
-                  <Grid item xs={12} sm={6} md={4} key={image.id}>
+                {backgroundImages.map((bg) => (
+                  <Grid item xs={12} sm={6} md={4} key={bg.id}>
                     <Card>
                       <CardMedia
                         component="img"
                         height="200"
-                        image={image.url}
-                        alt={image.name}
+                        image={bg.url}
+                        alt={bg.name}
                         sx={{ objectFit: 'cover' }}
                       />
                       <CardContent>
-                        <Typography variant="h6" noWrap>{image.name}</Typography>
-                        <Chip label={image.category} size="small" />
+                        <Typography variant="h6" noWrap>{bg.name}</Typography>
+                        {bg.uploadedAt && (
+                          <Typography variant="caption" color="text.secondary">
+                            {new Date(bg.uploadedAt).toLocaleDateString()}
+                          </Typography>
+                        )}
                       </CardContent>
                       <CardActions>
-                        <IconButton onClick={() => handleImageDelete(image.id)}>
+                        <IconButton onClick={() => handleBackgroundDelete(bg.id)}>
                           <DeleteIcon />
                         </IconButton>
                       </CardActions>
@@ -490,14 +498,14 @@ const BrandHub: React.FC = () => {
           </TabPanel>
         </Paper>
 
-        {/* 로고 업로드 다이얼로그 */}
+        {/* Logo Upload Dialog */}
         <Dialog open={logoDialogOpen} onClose={() => setLogoDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>로고 추가</DialogTitle>
+          <DialogTitle>Add Logo</DialogTitle>
           <DialogContent>
             <Box sx={{ pt: 2 }}>
               <TextField
                 fullWidth
-                label="로고 이름"
+                label="Logo Name"
                 value={logoForm.name}
                 onChange={(e) => setLogoForm({ ...logoForm, name: e.target.value })}
                 sx={{ mb: 2 }}
@@ -508,7 +516,7 @@ const BrandHub: React.FC = () => {
                 fullWidth
                 startIcon={<UploadIcon />}
               >
-                로고 파일 선택
+                Select Logo File
                 <input
                   type="file"
                   hidden
@@ -518,32 +526,32 @@ const BrandHub: React.FC = () => {
               </Button>
               {logoForm.file && (
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                  선택된 파일: {logoForm.file.name}
+                  Selected file: {logoForm.file.name}
                 </Typography>
               )}
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setLogoDialogOpen(false)}>취소</Button>
+            <Button onClick={() => setLogoDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleLogoUpload} variant="contained" disabled={!logoForm.name || !logoForm.file}>
-              추가
+              Add
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* 색상 팔레트 추가 다이얼로그 */}
+        {/* Add Color Palette Dialog */}
         <Dialog open={colorDialogOpen} onClose={() => setColorDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>색상 팔레트 추가</DialogTitle>
+          <DialogTitle>Add Color Palette</DialogTitle>
           <DialogContent>
             <Box sx={{ pt: 2 }}>
               <TextField
                 fullWidth
-                label="팔레트 이름"
+                label="Palette Name"
                 value={colorForm.name}
                 onChange={(e) => setColorForm({ ...colorForm, name: e.target.value })}
                 sx={{ mb: 3 }}
               />
-              <Typography variant="subtitle1" gutterBottom>색상</Typography>
+              <Typography variant="subtitle1" gutterBottom>Colors</Typography>
               <Stack spacing={2}>
                 {colorForm.colors.map((color, index) => (
                   <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -566,114 +574,96 @@ const BrandHub: React.FC = () => {
                 ))}
               </Stack>
               <Button onClick={handleColorAdd} sx={{ mt: 2 }}>
-                색상 추가
+                Add Color
               </Button>
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setColorDialogOpen(false)}>취소</Button>
+            <Button onClick={() => setColorDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleColorPaletteAdd} variant="contained" disabled={!colorForm.name}>
-              추가
+              Add
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* 폰트 추가 다이얼로그 */}
-        <Dialog open={fontDialogOpen} onClose={() => setFontDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>폰트 추가</DialogTitle>
+        {/* Add Vehicle Model Dialog */}
+        <Dialog open={vehicleDialogOpen} onClose={() => setVehicleDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Vehicle Model</DialogTitle>
           <DialogContent>
             <Box sx={{ pt: 2 }}>
               <TextField
                 fullWidth
-                label="폰트 이름"
-                value={fontForm.name}
-                onChange={(e) => setFontForm({ ...fontForm, name: e.target.value })}
+                label="Vehicle Model Name"
+                value={vehicleForm.name}
+                onChange={(e) => setVehicleForm({ ...vehicleForm, name: e.target.value })}
                 sx={{ mb: 2 }}
               />
-              <TextField
-                fullWidth
-                label="폰트 패밀리"
-                value={fontForm.fontFamily}
-                onChange={(e) => setFontForm({ ...fontForm, fontFamily: e.target.value })}
-                placeholder="예: Arial, Helvetica, sans-serif"
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="폰트 크기"
-                type="number"
-                value={fontForm.fontSize}
-                onChange={(e) => setFontForm({ ...fontForm, fontSize: Number(e.target.value) })}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="폰트 굵기"
-                type="number"
-                value={fontForm.fontWeight}
-                onChange={(e) => setFontForm({ ...fontForm, fontWeight: Number(e.target.value) })}
-                sx={{ mb: 2 }}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setFontDialogOpen(false)}>취소</Button>
-            <Button onClick={handleFontUpload} variant="contained" disabled={!fontForm.name || !fontForm.fontFamily}>
-              추가
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* 이미지 추가 다이얼로그 */}
-        <Dialog open={imageDialogOpen} onClose={() => setImageDialogOpen(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>이미지 추가</DialogTitle>
-          <DialogContent>
-            <Box sx={{ pt: 2 }}>
-              <TextField
-                fullWidth
-                label="이미지 이름"
-                value={imageForm.name}
-                onChange={(e) => setImageForm({ ...imageForm, name: e.target.value })}
-                sx={{ mb: 2 }}
-              />
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>카테고리</InputLabel>
-                <Select
-                  value={imageForm.category}
-                  onChange={(e) => setImageForm({ ...imageForm, category: e.target.value })}
-                  label="카테고리"
-                >
-                  <MenuItem value="배경">배경</MenuItem>
-                  <MenuItem value="제품">제품</MenuItem>
-                  <MenuItem value="아이콘">아이콘</MenuItem>
-                  <MenuItem value="기타">기타</MenuItem>
-                </Select>
-              </FormControl>
               <Button
                 variant="outlined"
                 component="label"
                 fullWidth
                 startIcon={<UploadIcon />}
               >
-                이미지 파일 선택
+                Select Vehicle Image
                 <input
                   type="file"
                   hidden
                   accept="image/*"
-                  onChange={(e) => setImageForm({ ...imageForm, file: e.target.files?.[0] || null })}
+                  onChange={(e) => setVehicleForm({ ...vehicleForm, file: e.target.files?.[0] || null })}
                 />
               </Button>
-              {imageForm.file && (
+              {vehicleForm.file && (
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                  선택된 파일: {imageForm.file.name}
+                  Selected file: {vehicleForm.file.name}
                 </Typography>
               )}
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setImageDialogOpen(false)}>취소</Button>
-            <Button onClick={handleImageUpload} variant="contained" disabled={!imageForm.name || !imageForm.file}>
-              추가
+            <Button onClick={() => setVehicleDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleVehicleUpload} variant="contained" disabled={!vehicleForm.name || !vehicleForm.file}>
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Add Background Image Dialog */}
+        <Dialog open={backgroundDialogOpen} onClose={() => setBackgroundDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Background Image</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 2 }}>
+              <TextField
+                fullWidth
+                label="Background Image Name"
+                value={backgroundForm.name}
+                onChange={(e) => setBackgroundForm({ ...backgroundForm, name: e.target.value })}
+                sx={{ mb: 2 }}
+              />
+              <Button
+                variant="outlined"
+                component="label"
+                fullWidth
+                startIcon={<UploadIcon />}
+              >
+                Select Background Image
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={(e) => setBackgroundForm({ ...backgroundForm, file: e.target.files?.[0] || null })}
+                />
+              </Button>
+              {backgroundForm.file && (
+                <Typography variant="body2" sx={{ mt: 1 }}>
+                  Selected file: {backgroundForm.file.name}
+                </Typography>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setBackgroundDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleBackgroundUpload} variant="contained" disabled={!backgroundForm.name || !backgroundForm.file}>
+              Add
             </Button>
           </DialogActions>
         </Dialog>

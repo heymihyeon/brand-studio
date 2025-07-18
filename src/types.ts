@@ -48,6 +48,7 @@ export interface ImageElement {
   position: { x: number; y: number };
   size: { width: number; height: number };
   editable: boolean;
+  label?: string; // Add label property for better categorization
 }
 
 export interface ColorElement {

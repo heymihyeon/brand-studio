@@ -23,23 +23,23 @@ import { getFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
 const categories: Category[] = [
   {
     id: 'document',
-    name: '문서',
+    name: 'Document',
     icon: 'description',
-    description: '제안서, 계약서, 브로슈어 등의 문서를 제작합니다.',
+    description: 'Create documents such as proposals, contracts, and brochures.',
     defaultTemplate: 'doc-template-1',
   },
   {
     id: 'banner',
-    name: '프로모션 배너',
+    name: 'Promotion Banner',
     icon: 'campaign',
-    description: '웹 배너, 광고 배너 등을 제작합니다.',
+    description: 'Create web banners, advertising banners, and more.',
     defaultTemplate: 'banner-template-1',
   },
   {
     id: 'sns',
     name: 'SNS',
     icon: 'camera',
-    description: '인스타그램, 페이스북 등 SNS 콘텐츠를 제작합니다.',
+    description: 'Create content for social media like Instagram and Facebook.',
     defaultTemplate: 'sns-template-1',
   },
 ];
@@ -58,37 +58,37 @@ const Home: React.FC = () => {
       const works = JSON.parse(savedWorks);
       setRecentWorks(works.sort((a: RecentWork, b: RecentWork) => 
         new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
-      ).slice(0, 6)); // 최근 6개만 표시
+      ).slice(0, 6)); // Show only recent 6
     } else {
-      // 샘플 데이터 추가 (최초 실행 시)
+      // Add sample data (on first run)
       const sampleWorks: RecentWork[] = [
         {
           id: 'sample-1',
-          name: '제품 소개서',
+          name: 'Product Introduction',
           thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect width="200" height="150" fill="#ffffff" stroke="#eeeeee" stroke-width="2"/>
               <circle cx="40" cy="40" r="15" fill="#1F7AFC"/>
-              <text x="100" y="25" fill="#333333" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">제품 소개서</text>
+              <text x="100" y="25" fill="#333333" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">Product Introduction</text>
               <rect x="20" y="55" width="160" height="3" fill="#dddddd"/>
               <rect x="20" y="65" width="120" height="3" fill="#dddddd"/>
               <rect x="20" y="75" width="140" height="3" fill="#dddddd"/>
               <rect x="20" y="95" width="80" height="30" fill="#1F7AFC" rx="5"/>
-              <text x="60" y="113" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="10">더 알아보기</text>
+              <text x="60" y="113" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="10">Learn More</text>
             </svg>
           `)}`,
-          category: '문서',
+          category: 'Document',
           templateId: 'doc-proposal-1',
-          lastModified: new Date(Date.now() - 1000 * 60 * 30), // 30분 전
+          lastModified: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
           canEdit: true,
           canDuplicate: true,
           canDelete: true,
           canRename: true,
-          data: { title: '제품 소개서', content: '우리 제품의 특징과 장점을 소개합니다.' }
+          data: { title: 'Product Introduction', content: 'Introducing the features and benefits of our product.' }
         },
         {
           id: 'sample-2',
-          name: '프로모션 배너',
+          name: 'Promotion Banner',
           thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -100,24 +100,24 @@ const Home: React.FC = () => {
               <rect width="200" height="150" fill="url(#gradient)"/>
               <circle cx="30" cy="30" r="30" fill="#ffffff" fill-opacity="0.2"/>
               <circle cx="170" cy="120" r="20" fill="#ffffff" fill-opacity="0.15"/>
-              <text x="100" y="60" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold">특별 할인</text>
-              <text x="100" y="85" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="14">50% 할인 이벤트</text>
+              <text x="100" y="60" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold">Special Sale</text>
+              <text x="100" y="85" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="14">50% OFF Event</text>
               <rect x="70" y="100" width="60" height="25" fill="#ffffff" rx="5"/>
-              <text x="100" y="116" fill="#FF6B35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">지금 확인하기</text>
+              <text x="100" y="116" fill="#FF6B35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Check Now</text>
             </svg>
           `)}`,
-          category: '프로모션 배너',
+          category: 'Promotion Banner',
           templateId: 'banner-web-1',
-          lastModified: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2시간 전
+          lastModified: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           canEdit: true,
           canDuplicate: true,
           canDelete: true,
           canRename: true,
-          data: { title: '특별 할인 이벤트', cta: '지금 확인하기' }
+          data: { title: 'Special Sale Event', cta: 'Check Now' }
         },
         {
           id: 'sample-3',
-          name: '인스타그램 포스트',
+          name: 'Instagram Post',
           thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
             <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
               <rect width="200" height="150" fill="url(#instagradient)"/>
               <rect x="30" y="30" width="140" height="90" fill="#ffffff" fill-opacity="0.1" rx="10"/>
               <circle cx="50" cy="50" r="10" fill="#ffffff"/>
-              <text x="100" y="55" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">새로운 소식</text>
+              <text x="100" y="55" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">New Updates</text>
               <rect x="40" y="70" width="50" height="3" fill="#ffffff"/>
               <rect x="40" y="80" width="70" height="3" fill="#ffffff"/>
               <rect x="40" y="90" width="60" height="3" fill="#ffffff"/>
@@ -142,12 +142,12 @@ const Home: React.FC = () => {
           `)}`,
           category: 'SNS',
           templateId: 'sns-instagram-1',
-          lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1일 전
+          lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
           canEdit: true,
           canDuplicate: true,
           canDelete: true,
           canRename: true,
-          data: { title: '새로운 소식', content: '팔로우해주세요!' }
+          data: { title: 'New Updates', content: 'Follow us!' }
         }
       ];
       setRecentWorks(sampleWorks);
@@ -157,8 +157,8 @@ const Home: React.FC = () => {
 
   const handleCategoryClick = (category: Category) => {
     const categoryMap: Record<string, string> = {
-      'document': '문서',
-      'banner': '프로모션 배너',
+      'document': 'Document',
+      'banner': 'Promotion Banner',
       'sns': 'SNS',
     };
     const categoryName = categoryMap[category.id] || category.name;
@@ -189,8 +189,8 @@ const Home: React.FC = () => {
 
   const handleEdit = (work: RecentWork) => {
     const categoryMap: Record<string, string> = {
-      '문서': 'document',
-      '프로모션 배너': 'banner',
+      'Document': 'document',
+      'Promotion Banner': 'banner',
       'SNS': 'sns',
     };
     const categoryId = categoryMap[work.category] || 'document';
@@ -201,7 +201,7 @@ const Home: React.FC = () => {
     const duplicatedWork: RecentWork = {
       ...work,
       id: Date.now().toString(),
-      name: `${work.name} (복사본)`,
+      name: `${work.name} (Copy)`,
       lastModified: new Date(),
     };
     
@@ -215,7 +215,7 @@ const Home: React.FC = () => {
   };
 
   const handleDelete = (work: RecentWork) => {
-    if (confirm(`"${work.name}"을(를) 삭제하시겠습니까?`)) {
+    if (confirm(`Delete "${work.name}"?`)) {
       const updatedWorks = recentWorks.filter(w => w.id !== work.id);
       setRecentWorks(updatedWorks);
       
@@ -311,19 +311,18 @@ const Home: React.FC = () => {
 
   return (
     <Box sx={{ 
-      py: 6, 
+      paddingBottom: 6,
+      paddingTop:16, 
       
       maxWidth: '1200px',
       margin: '0 auto',
       paddingLeft: '280px'
     }}>
         <Box sx={{ mb: 10 }}>
-        <Typography variant="h3" component="h1" gutterBottom align="center">
-          콘텐츠 제작하기
+        <Typography variant="h2" component="h1" gutterBottom align="center"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
+        Welcome to Brand Studio. <br/> What content would you like to create?
         </Typography>
-        <Typography variant="h6" color="text.secondary" align="center" paragraph sx={{ mb: 6 }}>
-          어떤 콘텐츠를 만들고 싶으신가요?
-        </Typography>
+        
 
         <Grid container  justifyContent="center" spacing={4}>
           {categories.map((category) => {
@@ -359,7 +358,7 @@ const Home: React.FC = () => {
                       alignItems: 'flex-start',
                       backgroundColor: categoryStyle.background
                     }}>
-                      {/* 아이콘 */}
+                      {/* Icon */}
                       <Box
                         sx={{
                           display: 'flex',
@@ -371,7 +370,7 @@ const Home: React.FC = () => {
                         {getIcon(category.icon)}
                       </Box>
                       
-                      {/* 텍스트 */}
+                      {/* Text */}
                       <Box sx={{ textAlign: 'left', width: '100%' }}>
                         <Typography 
                           variant="h5" 
@@ -405,16 +404,16 @@ const Home: React.FC = () => {
         </Grid>
       </Box>
 
-      {/* 최근 작업 섹션 */}
+      {/* Recent Works Section */}
       {recentWorks.length > 0 && (
         <Box sx={{ mt: 12 }}>
           <Divider sx={{ mb: 6 }} />
           <Box sx={{ textAlign: 'center', mb: 6 }}>
             <Typography variant="h4" gutterBottom>
-              최근 작업
+              Recent Works
             </Typography>
             <Typography variant="body1" color="text.secondary" paragraph sx={{ mb: 4 }}>
-              최근에 작업한 콘텐츠를 확인하고 계속 편집하세요.
+              Check your recently worked content and continue editing.
             </Typography>
           </Box>
           <Grid container spacing={4} justifyContent="center">
@@ -433,7 +432,7 @@ const Home: React.FC = () => {
         </Box>
       )}
 
-      {/* 포맷 선택 모달 */}
+      {/* Format Selection Modal */}
       <FormatSelector
         open={formatSelectorOpen}
         onClose={handleFormatSelectorClose}

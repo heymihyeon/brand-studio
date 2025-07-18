@@ -90,7 +90,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
     template: Template,
     values: Record<string, any>
   ) => {
-    // 먼저 canvas.objects 렌더링 (배경, 오버레이 등)
+    // First render canvas.objects (background, overlay, etc.)
     if (template.canvas.objects && template.canvas.objects.length > 0) {
       template.canvas.objects.forEach((obj: any) => {
         if (obj.type === 'rect') {
@@ -107,15 +107,15 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           });
           canvas.add(rect);
         } else if (obj.type === 'image' && obj.src) {
-          // 이미지가 editableElements에 있는지 확인
+          // Check if image is in editableElements
           const isEditable = template.editableElements.images.some(img => img.id === obj.id);
           
           if (isEditable) {
-            // 편집 가능한 이미지는 나중에 처리
+            // Editable images are processed later
             return;
           }
           
-          // 편집 불가능한 이미지 (배경 등)
+          // Non-editable images (background, etc.)
           FabricImage.fromURL(obj.src).then((img) => {
             img.set({
               left: obj.left,
@@ -131,7 +131,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             canvas.renderAll();
           });
         } else if (obj.type === 'text' && !template.editableElements.texts.some(t => t.id === obj.id)) {
-          // 편집 불가능한 텍스트
+          // Non-editable text
           const text = new Text(obj.text, {
             left: obj.left,
             top: obj.top,
@@ -148,11 +148,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
       });
     }
     
-    // 텍스트 요소 렌더링
+    // Render text elements
     template.editableElements.texts.forEach((textElement) => {
       const value = values[textElement.id] || textElement.text;
       if (value) {
-        // canvas.objects에서 해당 텍스트 객체 찾기
+        // Find corresponding text object from canvas.objects
         const canvasTextObj = template.canvas.objects?.find((obj: any) => obj.type === 'text' && obj.id === textElement.id);
         
         const fontSize = canvasTextObj?.fontSize || 
@@ -183,19 +183,19 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           transparentCorners: false,
         });
         
-        // 텍스트 요소 ID 저장
+        // Save text element ID
         text.set('elementId', textElement.id);
         
-        // 더블클릭 이벤트 처리
+        // Handle double-click event
         text.on('mouse:dblclick', () => {
           if (onTextEdit) {
             onTextEdit(textElement.id, text.text || '');
           }
         });
         
-        // 텍스트 변경 이벤트 처리
+        // Handle text change event
         text.on('changed', () => {
-          // 상위 컴포넌트에 변경사항 알림
+          // Notify parent component of changes
           if (onTextEdit) {
             onTextEdit(textElement.id, text.text || '');
           }
@@ -205,11 +205,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
       }
     });
 
-    // 이미지 요소 렌더링
+    // Render image elements
     template.editableElements.images.forEach((imageElement) => {
       const value = values[imageElement.id];
       
-      // canvas.objects에서 해당 이미지 객체 찾기
+      // Find corresponding image object from canvas.objects
       const canvasImgObj = template.canvas.objects?.find((obj: any) => obj.type === 'image' && obj.id === imageElement.id);
       const imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                       ? (value as BrandAsset).url 
@@ -217,7 +217,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
       
       if (imageSrc) {
         FabricImage.fromURL(imageSrc).then((img) => {
-          // canvas.objects의 속성 사용 또는 기본값
+          // Use properties from canvas.objects or defaults
           const imgWidth = canvasImgObj?.width || imageElement.size.width;
           const imgHeight = canvasImgObj?.height || imageElement.size.height;
           const scaleX = imgWidth / img.width!;
@@ -237,10 +237,10 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             transparentCorners: false,
           });
           
-          // 이미지 요소 ID 저장
+          // Save image element ID
           img.set('elementId', imageElement.id);
           
-          // 더블클릭 이벤트 처리
+          // Handle double-click event
           img.on('mouse:dblclick', () => {
             if (onImageEdit) {
               onImageEdit(imageElement.id);
@@ -251,7 +251,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           canvas.renderAll();
         });
       } else {
-        // 이미지가 없을 때 플레이스홀더 표시
+        // Show placeholder when no image
         const placeholder = new Rect({
           left: imageElement.position.x,
           top: imageElement.position.y,
@@ -267,7 +267,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           borderColor: '#1F7AFC',
         });
         
-        const placeholderText = new Text('이미지를 선택하세요', {
+        const placeholderText = new Text('Select an image', {
           left: imageElement.position.x + imageElement.size.width / 2,
           top: imageElement.position.y + imageElement.size.height / 2,
           fontSize: 16,
@@ -293,7 +293,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
     });
   };
 
-  // 캔버스 스케일 계산 (반응형)
+  // Calculate canvas scale (responsive)
   const [containerSize, setContainerSize] = React.useState({ width: 0, height: 0 });
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -303,7 +303,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
         const parentElement = containerRef.current.parentElement;
         if (parentElement) {
           setContainerSize({
-            width: parentElement.clientWidth - 40, // 패딩 고려
+            width: parentElement.clientWidth - 40, // Consider padding
             height: parentElement.clientHeight - 40,
           });
         }
@@ -318,7 +318,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
   const scale = Math.min(
     containerSize.width / template.canvas.width,
     containerSize.height / template.canvas.height,
-    1 // 최대 스케일 1
+    1 // Maximum scale 1
   );
 
   return (
