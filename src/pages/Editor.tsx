@@ -57,6 +57,10 @@ const Editor: React.FC = () => {
   const [saveSuccessDialogOpen, setSaveSuccessDialogOpen] = useState(false);
   const canvasRef = useRef<CanvasRef>(null);
 
+useEffect(() => {
+  console.log(template);
+}, [template]);
+
   useEffect(() => {
     // 카테고리에 따른 포맷과 템플릿 로드
     if (categoryId) {
@@ -485,6 +489,8 @@ const Editor: React.FC = () => {
 
         </Stack>
       </Paper>
+
+      
 
         {/* 중앙 캔버스 영역 */}
         <Box 
