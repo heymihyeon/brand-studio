@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import { Canvas as FabricCanvas, Rect, Text, Textbox, FabricImage } from 'fabric';
 import { Template, BrandAsset } from '../types';
 
@@ -228,13 +228,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             top: canvasImgObj?.top || imageElement.position.y,
             scaleX: canvasImgObj?.scaleX || scaleX,
             scaleY: canvasImgObj?.scaleY || scaleY,
-            selectable: true,
+            selectable: false,
+            evented: true,
             hasControls: false,
-            hasBorders: true,
-            borderColor: '#1F7AFC',
-            cornerColor: '#1F7AFC',
-            cornerSize: 8,
-            transparentCorners: false,
+            hasBorders: false,
+            lockMovementX: true,
+            lockMovementY: true,
           });
           
           // Save image element ID
@@ -261,10 +260,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           stroke: '#ddd',
           strokeWidth: 2,
           strokeDashArray: [5, 5],
-          selectable: true,
+          selectable: false,
+          evented: true,
           hasControls: false,
-          hasBorders: true,
-          borderColor: '#1F7AFC',
+          hasBorders: false,
+          lockMovementX: true,
+          lockMovementY: true,
         });
         
         const placeholderText = new Text('Select an image', {
@@ -300,13 +301,10 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
   React.useEffect(() => {
     const updateSize = () => {
       if (containerRef.current) {
-        const parentElement = containerRef.current.parentElement;
-        if (parentElement) {
-          setContainerSize({
-            width: parentElement.clientWidth - 40, // Consider padding
-            height: parentElement.clientHeight - 40,
-          });
-        }
+        setContainerSize({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight,
+        });
       }
     };
 
@@ -317,8 +315,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
 
   const scale = Math.min(
     containerSize.width / template.canvas.width,
-    containerSize.height / template.canvas.height,
-    1 // Maximum scale 1
+    containerSize.height / template.canvas.height
   );
 
   return (
@@ -330,18 +327,21 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
         alignItems: 'center',
         width: '100%',
         height: '100%',
+        
       }}
     >
-      <Paper
-        elevation={3}
+      <Box
         sx={{
           transform: `scale(${scale})`,
           transformOrigin: 'center',
           transition: 'transform 0.2s ease',
+          boxShadow: 3,
+          backgroundColor: 'white',
+          display: 'inline-block',
         }}
       >
         <canvas ref={canvasRef} />
-      </Paper>
+      </Box>
     </Box>
   );
 });
