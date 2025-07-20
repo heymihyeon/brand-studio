@@ -283,27 +283,49 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
           
           // Calculate max width for text wrapping
-          const maxWidth = template.canvas.width - (position.left * 2);
+          // Check if text is center-aligned
+          const textAlign = canvasTextObj?.textAlign || 'left';
+          const originX = canvasTextObj?.originX || 'left';
           
+          let maxWidth;
+          if (textAlign === 'center' && originX === 'center') {
+            // For center-aligned text, use 95% of canvas width for more space
+            maxWidth = template.canvas.width * 0.95;
+          } else {
+            // For left/right aligned text, calculate based on position
+            maxWidth = template.canvas.width - (position.left * 2);
+          }
+          
+          const boxStyles: any = {
+            position: 'absolute',
+            left: textAlign === 'center' && originX === 'center' ? '50%' : position.left,
+            top: position.top,
+            transform: textAlign === 'center' && originX === 'center' ? 'translateX(-50%)' : 'none',
+            cursor: 'text',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            zIndex: 3,
+            transition: 'all 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              transform: textAlign === 'center' && originX === 'center' 
+                ? 'translateX(-50%) translateY(-1px)' 
+                : 'translateY(-1px)',
+            }
+          };
+
+          // Use width for center-aligned text, maxWidth for others
+          if (textAlign === 'center' && originX === 'center') {
+            boxStyles.width = maxWidth;
+          } else {
+            boxStyles.maxWidth = maxWidth;
+          }
+
           return (
             <Box
               key={textElement.id}
               onClick={() => onTextEdit && onTextEdit(textElement.id, value)}
-              sx={{
-                position: 'absolute',
-                left: position.left,
-                top: position.top,
-                cursor: 'text',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                zIndex: 3,
-                transition: 'all 0.2s ease',
-                maxWidth: maxWidth,
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                  transform: 'translateY(-1px)',
-                }
-              }}
+              sx={boxStyles}
             >
               <Typography
                 sx={{
@@ -317,6 +339,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                   overflowWrap: 'break-word',
                   textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                   letterSpacing: textElement.type === 'heading' ? '0.5px' : 'normal',
+                  textAlign: textAlign || 'left',
                 }}
               >
                 {displayText}

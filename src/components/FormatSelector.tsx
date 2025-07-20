@@ -116,7 +116,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                         </Typography>
                       </Box>
                       </Stack>
-                      <Typography variant="h6" gutterBottom>
+                      <Typography variant="h6" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
                         {format.name}
                       </Typography>
                       <Chip 

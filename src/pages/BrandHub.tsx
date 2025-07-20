@@ -84,71 +84,135 @@ const BrandHub: React.FC = () => {
     const savedVehicles = localStorage.getItem('brandVehicles');
     const savedBackgrounds = localStorage.getItem('brandBackgrounds');
     
-    if (savedLogos) setLogos(JSON.parse(savedLogos));
+    if (savedLogos) {
+      setLogos(JSON.parse(savedLogos));
+    } else {
+      // Add preset logos
+      const presetLogos: BrandAsset[] = [
+        {
+          id: 'logo-preset-1',
+          name: 'Hyundai Horizontal Logo',
+          type: 'logo',
+          url: '/images/logos/horizontal.svg',
+          thumbnailUrl: '/images/logos/horizontal.svg',
+          category: 'Logo',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 300, height: 100 },
+        },
+        {
+          id: 'logo-preset-2',
+          name: 'Hyundai Square Logo',
+          type: 'logo',
+          url: '/images/logos/square.svg',
+          thumbnailUrl: '/images/logos/square.svg',
+          category: 'Logo',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 200, height: 200 },
+        },
+      ];
+      setLogos(presetLogos);
+      localStorage.setItem('brandLogos', JSON.stringify(presetLogos));
+    }
+    
     if (savedColors) setColorPalettes(JSON.parse(savedColors));
     
     if (savedVehicles) {
       setVehicleModels(JSON.parse(savedVehicles));
     } else {
-      // Add sample images
-      const sampleImages: BrandAsset[] = [
-        // Vehicle images
+      // Add preset vehicle images
+      const presetVehicles: BrandAsset[] = [
         {
-          id: 'vehicle-1',
-          name: 'IONIQ 5 (Gravity Gold)',
-          url: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          category: 'Product',
+          id: 'vehicle-preset-1',
+          name: 'INSTER',
+          url: '/images/cars/inster.png',
+          thumbnailUrl: '/images/cars/inster.png',
+          category: 'Vehicle Models',
           type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 800, height: 450 },
         },
         {
-          id: 'vehicle-2',
-          name: 'IONIQ 6 (Serenity White)',
-          url: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq6-24pe-side-45-serenity-white-pearl.png',
-          category: 'Product',
+          id: 'vehicle-preset-2',
+          name: 'KONA Electronic',
+          url: '/images/cars/kona_electronic.png',
+          thumbnailUrl: '/images/cars/kona_electronic.png',
+          category: 'Vehicle Models',
           type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 800, height: 450 },
         },
         {
-          id: 'vehicle-3',
-          name: 'Kona Electric',
-          url: 'https://www.hyundai.com/contents/repn-car/side-45/kona-electric-24pe-side-45-ecotronic-gray.png',
-          category: 'Product',
+          id: 'vehicle-preset-3',
+          name: 'IONIQ 9',
+          url: '/images/cars/ioniq9.png',
+          thumbnailUrl: '/images/cars/ioniq9.png',
+          category: 'Vehicle Models',
           type: 'image',
-        },
-        // Background images
-        {
-          id: 'bg-1',
-          name: 'Okinawa Beach',
-          url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&h=360&fit=crop',
-          category: 'Background',
-          type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 800, height: 450 },
         },
         {
-          id: 'bg-2',
-          name: 'City Night View',
-          url: 'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=2000&h=360&fit=crop',
-          category: 'Background',
+          id: 'vehicle-preset-4',
+          name: 'All About EV',
+          url: '/images/cars/all_about_EV.png',
+          thumbnailUrl: '/images/cars/all_about_EV.png',
+          category: 'Vehicle Models',
           type: 'image',
-        },
-        {
-          id: 'bg-3',
-          name: 'Mountain Landscape',
-          url: 'https://images.unsplash.com/photo-1444927714506-8492d94b4e3d?w=2000&h=360&fit=crop',
-          category: 'Background',
-          type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 800, height: 450 },
         },
       ];
-      // 차량 모델과 배경 이미지 분리
-      const vehicles = sampleImages.filter(img => img.category === 'Product');
-      const backgrounds = sampleImages.filter(img => img.category === 'Background');
-      
-      setVehicleModels(vehicles);
-      setBackgroundImages(backgrounds);
-      localStorage.setItem('brandVehicles', JSON.stringify(vehicles));
-      localStorage.setItem('brandBackgrounds', JSON.stringify(backgrounds));
+      setVehicleModels(presetVehicles);
+      localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
     }
     
     if (savedBackgrounds) {
       setBackgroundImages(JSON.parse(savedBackgrounds));
+    } else {
+      // Add preset background images
+      const presetBackgrounds: BrandAsset[] = [
+        {
+          id: 'bg-preset-1',
+          name: 'Black',
+          url: '/images/backgrounds/black.jpg',
+          thumbnailUrl: '/images/backgrounds/black.jpg',
+          category: 'Background Images',
+          type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 1920, height: 1080 },
+        },
+        {
+          id: 'bg-preset-2',
+          name: 'Road 1',
+          url: '/images/backgrounds/road_1.jpg',
+          thumbnailUrl: '/images/backgrounds/road_1.jpg',
+          category: 'Background Images',
+          type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 1920, height: 1080 },
+        },
+        {
+          id: 'bg-preset-3',
+          name: 'Road 2',
+          url: '/images/backgrounds/road_2.jpg',
+          thumbnailUrl: '/images/backgrounds/road_2.jpg',
+          category: 'Background Images',
+          type: 'image',
+          uploadedAt: new Date(),
+          fileSize: 0,
+          dimensions: { width: 1920, height: 1080 },
+        },
+      ];
+      setBackgroundImages(presetBackgrounds);
+      localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
     }
   }, []);
 
@@ -293,7 +357,7 @@ const BrandHub: React.FC = () => {
       <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 0 ,lineHeight:1.3,letterSpacing:"-1px"}}>
       Brand Hub
       </Typography>  
-      <Typography variant="subtitle1" color="text.secondary" paragraph sx={{mb:3}}>
+      <Typography variant="subtitle1" color="text.secondary" sx={{mb:3}}>
         Manage your brand assets to maintain consistency.
       </Typography>
 
@@ -331,7 +395,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {logos.map((logo) => (
-                  <Grid item size={{xs:12,sm:6,md:4}} key={logo.id}>
+                  <Grid size={{xs:12,sm:6,md:4}} key={logo.id}>
                     <Card>
                       <CardMedia
                         component="img"
@@ -376,7 +440,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {colorPalettes.map((palette) => (
-                  <Grid item xs={12} sm={6} md={4} key={palette.id}>
+                  <Grid size={{xs:12,sm:6,md:3}} key={palette.id}>
                     <Card>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>{palette.name}</Typography>
@@ -427,7 +491,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {vehicleModels.map((vehicle) => (
-                  <Grid item size={{md:4,sm:6,xs:12}} key={vehicle.id}>
+                  <Grid size={{md:4,sm:6,xs:12}} key={vehicle.id}>
                     <Card>
                       <CardMedia
                         component="img"
@@ -438,11 +502,9 @@ const BrandHub: React.FC = () => {
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{vehicle.name}</Typography>
-                        {vehicle.uploadedAt && (
-                          <Typography variant="caption" color="text.secondary">
-                            {new Date(vehicle.uploadedAt).toLocaleDateString()}
-                          </Typography>
-                        )}
+                        <Typography variant="body2" color="text.secondary">
+                          {vehicle.dimensions?.width} × {vehicle.dimensions?.height}
+                        </Typography>
                       </CardContent>
                       <CardActions>
                         <IconButton onClick={() => handleVehicleDelete(vehicle.id)}>
@@ -474,7 +536,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {backgroundImages.map((bg) => (
-                  <Grid item size={{xs:12,sm:6,md:4}} key={bg.id}>
+                  <Grid size={{xs:12,sm:6,md:4}} key={bg.id}>
                     <Card>
                       <CardMedia
                         component="img"
@@ -485,11 +547,9 @@ const BrandHub: React.FC = () => {
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{bg.name}</Typography>
-                        {bg.uploadedAt && (
-                          <Typography variant="caption" color="text.secondary">
-                            {new Date(bg.uploadedAt).toLocaleDateString()}
-                          </Typography>
-                        )}
+                        <Typography variant="body2" color="text.secondary">
+                          {bg.dimensions?.width} × {bg.dimensions?.height}
+                        </Typography>
                       </CardContent>
                       <CardActions>
                         <IconButton onClick={() => handleBackgroundDelete(bg.id)}>

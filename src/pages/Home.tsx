@@ -32,7 +32,7 @@ import {
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
 import FormatSelector from '../components/FormatSelector';
-import { getFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
+import { getUniqueFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
 
 const categories: Category[] = [
   {
@@ -184,7 +184,7 @@ const Home: React.FC = () => {
       'brochure': 'Brochure',
     };
     const categoryName = categoryMap[category.id] || category.name;
-    const categoryFormats = getFormatsByCategory(categoryName);
+    const categoryFormats = getUniqueFormatsByCategory(categoryName);
     
     setSelectedCategory(category);
     setAvailableFormats(categoryFormats);

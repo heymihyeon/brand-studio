@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Grid,
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
@@ -32,12 +33,80 @@ import ExportDialog from '../components/ExportDialog';
 import { Template, FormatOption, BrandAsset, Category, RecentWork } from '../types';
 import { templates, getTemplatesByCategory } from '../data/templates';
 import { getFormatsByCategory } from '../data/formats';
-import { UnifiedFormat, convertToTemplate, getFormatsByCategory as getUnifiedFormatsByCategory } from '../data/unifiedFormats';
+import { 
+  UnifiedFormat, 
+  convertToTemplate, 
+  getFormatsByCategory as getUnifiedFormatsByCategory,
+  getTemplatesByFormatGroup,
+  getUniqueFormatsByCategory 
+} from '../data/unifiedFormats';
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
   'banner': 'Promotion Banner',
   'sns': 'SNS',
+};
+
+// Template Preview Component
+const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
+  // Get actual layout from variant
+  const vehicleImage = variant.editableElements.images.find(img => img.id === 'vehicle');
+  const titleText = variant.editableElements.texts.find(txt => txt.id === 'title');
+  
+  // Find overlay object for positioning
+  const overlayObj = variant.canvas.objects?.find((obj: any) => obj.id === 'overlay') as any;
+  const vehicleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'vehicle') as any;
+  const titleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'title') as any;
+  
+  return (
+    <Box sx={{ 
+      width: '100%', 
+      height: '100%', 
+      position: 'relative',
+      backgroundColor: '#f1f1f1',
+      overflow: 'hidden',
+    }}>
+      
+      {/* Text Preview */}
+      {titleObj && (
+        <Box
+          sx={{
+            position: 'absolute',
+            left: titleObj.textAlign === 'center' && titleObj.originX === 'center' 
+              ? '50%' 
+              : `${(titleObj.left / variant.canvas.width) * 100}%`,
+            top: `${(titleObj.top / variant.canvas.height) * 100}%`,
+            transform: titleObj.textAlign === 'center' && titleObj.originX === 'center' 
+              ? 'translateX(-50%)' 
+              : 'none',
+            color: 'black',
+            fontSize: '8px',
+            fontWeight: 'bold',
+            whiteSpace: 'pre-line',
+            textAlign: titleObj.textAlign || 'left',
+          }}
+        >
+          Hyundai EV
+        </Box>
+      )}
+      
+      {/* Vehicle Image */}
+      {vehicleImage && vehicleObj && variant.templateVariant !== 'center' && (
+        <Box
+          component="img"
+          src="/images/cars/ioniq6.png"
+          sx={{
+            position: 'absolute',
+            left: `${(vehicleObj.left / variant.canvas.width) * 100}%`,
+            top: `${(vehicleObj.top / variant.canvas.height) * 100}%`,
+            width: `${(vehicleObj.width / variant.canvas.width) * 100}%`,
+            height: `${(vehicleObj.height / variant.canvas.height) * 100}%`,
+            objectFit: 'contain',
+          }}
+        />
+      )}
+    </Box>
+  );
 };
 
 const Editor: React.FC = () => {
@@ -55,6 +124,8 @@ const Editor: React.FC = () => {
   const [selectedFormat, setSelectedFormat] = useState<FormatOption | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [saveSuccessDialogOpen, setSaveSuccessDialogOpen] = useState(false);
+  const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
+  const [selectedTemplateVariant, setSelectedTemplateVariant] = useState<string>('default');
   const canvasRef = useRef<CanvasRef>(null);
 
 useEffect(() => {
@@ -84,47 +155,100 @@ useEffect(() => {
         } else if (location.state?.selectedFormat) {
           // 홈에서 선택된 통합 포맷이 있는 경우
           const selectedUnifiedFormat = location.state.selectedFormat as UnifiedFormat;
-          const convertedTemplate = convertToTemplate(selectedUnifiedFormat);
-          setTemplate(convertedTemplate);
-          setSelectedFormat(convertedTemplate.format);
           
-          // 초기 편집 가능 값 설정
-          const initialValues: Record<string, any> = {};
-          convertedTemplate.editableElements.texts.forEach((text) => {
-            initialValues[text.id] = text.text || '';
-          });
-          convertedTemplate.editableElements.images.forEach((image) => {
-            // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
-            if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
-              // 로컬 스토리지에서 차량 이미지 가져오기
-              const savedVehicles = localStorage.getItem('brandVehicles');
-              if (savedVehicles) {
-                const vehicles = JSON.parse(savedVehicles);
-                if (vehicles.length > 0) {
-                  // 첫 번째 차량을 기본값으로 설정
-                  initialValues[image.id] = vehicles[0];
+          // 해당 포맷 그룹의 모든 템플릿 변형 로드
+          if (selectedUnifiedFormat.formatGroup) {
+            const variants = getTemplatesByFormatGroup(selectedUnifiedFormat.formatGroup);
+            setAvailableTemplateVariants(variants);
+            // 기본적으로 default 템플릿 선택
+            const defaultVariant = variants.find(v => v.templateVariant === 'default') || selectedUnifiedFormat;
+            setSelectedTemplateVariant(defaultVariant.templateVariant || 'default');
+            
+            const convertedTemplate = convertToTemplate(defaultVariant);
+            setTemplate(convertedTemplate);
+            setSelectedFormat(convertedTemplate.format);
+            
+            // 초기 편집 가능 값 설정
+            const initialValues: Record<string, any> = {};
+            convertedTemplate.editableElements.texts.forEach((text) => {
+              initialValues[text.id] = text.text || '';
+            });
+            convertedTemplate.editableElements.images.forEach((image) => {
+              // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
+              if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
+                // 로컬 스토리지에서 차량 이미지 가져오기
+                const savedVehicles = localStorage.getItem('brandVehicles');
+                if (savedVehicles) {
+                  const vehicles = JSON.parse(savedVehicles);
+                  if (vehicles.length > 0) {
+                    // 첫 번째 차량을 기본값으로 설정
+                    initialValues[image.id] = vehicles[0];
+                  } else {
+                    initialValues[image.id] = image.src || '';
+                  }
                 } else {
                   initialValues[image.id] = image.src || '';
                 }
               } else {
                 initialValues[image.id] = image.src || '';
               }
-            } else {
-              initialValues[image.id] = image.src || '';
+            });
+            
+            // 로고 이미지 기본값 설정
+            const savedLogos = localStorage.getItem('brandLogos');
+            if (savedLogos) {
+              const logos = JSON.parse(savedLogos);
+              if (logos.length > 0) {
+                // 첫 번째 로고를 기본값으로 설정
+                initialValues['brandLogo'] = logos[0];
+              }
             }
-          });
-          
-          // 로고 이미지 기본값 설정
-          const savedLogos = localStorage.getItem('brandLogos');
-          if (savedLogos) {
-            const logos = JSON.parse(savedLogos);
-            if (logos.length > 0) {
-              // 첫 번째 로고를 기본값으로 설정
-              initialValues['brandLogo'] = logos[0];
+            
+            setEditableValues(initialValues);
+          } else {
+            // formatGroup이 없는 경우 기존 방식대로 처리
+            const convertedTemplate = convertToTemplate(selectedUnifiedFormat);
+            setTemplate(convertedTemplate);
+            setSelectedFormat(convertedTemplate.format);
+            
+            // 초기 편집 가능 값 설정
+            const initialValues: Record<string, any> = {};
+            convertedTemplate.editableElements.texts.forEach((text) => {
+              initialValues[text.id] = text.text || '';
+            });
+            convertedTemplate.editableElements.images.forEach((image) => {
+              // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
+              if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
+                // 로컬 스토리지에서 차량 이미지 가져오기
+                const savedVehicles = localStorage.getItem('brandVehicles');
+                if (savedVehicles) {
+                  const vehicles = JSON.parse(savedVehicles);
+                  if (vehicles.length > 0) {
+                    // 첫 번째 차량을 기본값으로 설정
+                    initialValues[image.id] = vehicles[0];
+                  } else {
+                    initialValues[image.id] = image.src || '';
+                  }
+                } else {
+                  initialValues[image.id] = image.src || '';
+                }
+              } else {
+                initialValues[image.id] = image.src || '';
+              }
+            });
+            
+            // 로고 이미지 기본값 설정
+            const savedLogos = localStorage.getItem('brandLogos');
+            if (savedLogos) {
+              const logos = JSON.parse(savedLogos);
+              if (logos.length > 0) {
+                // 첫 번째 로고를 기본값으로 설정
+                initialValues['brandLogo'] = logos[0];
+              }
             }
+            
+            setEditableValues(initialValues);
           }
-          
-          setEditableValues(initialValues);
         } else if (!template) {
           // 포맷 선택 다이얼로그 열기
           setFormatSelectorOpen(true);
@@ -193,6 +317,32 @@ useEffect(() => {
     
     // 실시간 업데이트를 위한 자동 저장 (디바운스 사용)
     saveCurrentWork();
+  };
+
+  // 템플릿 변형 변경 핸들러
+  const handleTemplateVariantChange = (variant: UnifiedFormat) => {
+    setSelectedTemplateVariant(variant.templateVariant || 'default');
+    const convertedTemplate = convertToTemplate(variant);
+    setTemplate(convertedTemplate);
+    
+    // 기존 편집 값을 유지하면서 템플릿만 변경
+    const currentValues = { ...editableValues };
+    
+    // 차량 이미지가 없는 center 템플릿인 경우 vehicle 이미지 제거
+    if (variant.templateVariant === 'center') {
+      delete currentValues['vehicle'];
+    } else if (!currentValues['vehicle'] && variant.templateVariant !== 'center') {
+      // center에서 다른 템플릿으로 변경 시 기본 차량 이미지 추가
+      const savedVehicles = localStorage.getItem('brandVehicles');
+      if (savedVehicles) {
+        const vehicles = JSON.parse(savedVehicles);
+        if (vehicles.length > 0) {
+          currentValues['vehicle'] = vehicles[0];
+        }
+      }
+    }
+    
+    setEditableValues(currentValues);
   };
 
   const [assetFilterCategory, setAssetFilterCategory] = useState<string | undefined>(undefined);
@@ -433,21 +583,22 @@ useEffect(() => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
-            startIcon={<ArrowBackIcon />}
             onClick={() => navigate('/')}
-            sx={{ minWidth: 'auto' }}
+            sx={{ 
+              minWidth: 'auto',
+              p: 1,
+              color: 'black',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+              }
+            }}
           >
-            Back
+            <ArrowBackIcon />
           </Button>
           <Box>
             <Typography variant="h6">
-              Content Editor
+              {template ? template.name : 'Content Editor'}
             </Typography>
-            {template && (
-              <Typography variant="body2" color="text.secondary">
-                {template.name} ({template.format.name})
-              </Typography>
-            )}
           </Box>
         </Box>
         
@@ -497,7 +648,6 @@ useEffect(() => {
         </Stack>
 
         <Stack spacing={3}>
-
           {/* 편집 가능한 텍스트 요소들 */}
           {template && (
             <>
@@ -566,6 +716,67 @@ useEffect(() => {
                   </Box>
                 </>
               )}
+            </>
+          )}
+
+          {/* 템플릿 선택 섹션 - 템플릿 변형이 있는 경우 표시 */}
+          {availableTemplateVariants.length > 0 && (
+            <>
+              <Divider />
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                Layout
+              </Typography>
+              <Grid container spacing={1}>
+                {availableTemplateVariants.map((variant) => (
+                  <Grid item size={6} key={variant.id}>
+                    <Box
+                      onClick={() => handleTemplateVariantChange(variant)}
+                      sx={{
+                        cursor: 'pointer',
+                        border: selectedTemplateVariant === variant.templateVariant ? '2px solid' : '1px solid',
+                        borderColor: selectedTemplateVariant === variant.templateVariant ? 'primary.main' : 'divider',
+                        borderRadius: 1,
+                        overflow: 'hidden',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          transform: 'scale(1.02)',
+                        }
+                      }}
+                    >
+                      {/* Template Preview */}
+                      <Box
+                        sx={{
+                          aspectRatio: variant.dimensions.width / variant.dimensions.height,
+                          backgroundColor: '#f5f5f5',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <TemplatePreview variant={variant} />
+                      </Box>
+                      <Box sx={{ p: 0.5, textAlign: 'center' }}>
+                        <Typography variant="caption" sx={{ fontSize: '11px' }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
+                          {variant.templateVariant === 'default' && 
+                            (variant.formatGroup === 'banner-horizontal' ? 'Default Layout' :
+                             variant.formatGroup === 'banner-vertical' ? 'Top Text' :
+                             'Left Text')}
+                          {variant.templateVariant === 'bottom-left' && 'Bottom Left'}
+                          {variant.templateVariant === 'top-right' && 'Top Right'}
+                          {variant.templateVariant === 'center' && 'Center Text'}
+                          {variant.templateVariant === 'bottom' && 'Bottom Text'}
+                          {variant.templateVariant === 'middle' && 'Middle Text'}
+                          {variant.templateVariant === 'top' && 'Top Center'}
+                          {variant.templateVariant === 'right' && 'Right Text'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
             </>
           )}
 
@@ -657,7 +868,7 @@ useEffect(() => {
           setEditableValues(initialValues);
           setFormatSelectorOpen(false);
         }}
-        formats={getUnifiedFormatsByCategory(currentCategory)}
+        formats={getUniqueFormatsByCategory(currentCategory)}
         category={currentCategory}
       />
       
