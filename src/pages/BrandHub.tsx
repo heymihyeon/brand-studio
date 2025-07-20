@@ -331,7 +331,7 @@ const BrandHub: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {logos.map((logo) => (
-                  <Grid item xs={12} sm={6} md={4} key={logo.id}>
+                  <Grid item size={{xs:12,sm:6,md:4}} key={logo.id}>
                     <Card>
                       <CardMedia
                         component="img"
