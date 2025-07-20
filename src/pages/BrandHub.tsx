@@ -76,144 +76,138 @@ const BrandHub: React.FC = () => {
   const [backgroundDialogOpen, setBackgroundDialogOpen] = useState(false);
   const [backgroundForm, setBackgroundForm] = useState({ name: '', file: null as File | null });
   
+
+  const addPresetLogoImage =()=>{
+
+    // Add preset logos
+    const presetLogos: BrandAsset[] = [
+      {
+        id: 'logo-preset-1',
+        name: 'Hyundai Horizontal Logo',
+        type: 'logo',
+        url: '/images/logos/horizontal.svg',
+        thumbnailUrl: '/images/logos/horizontal.svg',
+        category: 'Logo',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 300, height: 100 },
+      },
+      {
+        id: 'logo-preset-2',
+        name: 'Hyundai Square Logo',
+        type: 'logo',
+        url: '/images/logos/square.svg',
+        thumbnailUrl: '/images/logos/square.svg',
+        category: 'Logo',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 200, height: 200 },
+      },
+    ];
+    setLogos(presetLogos);
+    localStorage.setItem('brandLogos', JSON.stringify(presetLogos));
+
+  }
   
   // Load data from local storage
   useEffect(() => {
-    const savedLogos = localStorage.getItem('brandLogos');
     const savedColors = localStorage.getItem('brandColors');
     const savedVehicles = localStorage.getItem('brandVehicles');
     const savedBackgrounds = localStorage.getItem('brandBackgrounds');
+
     
-    if (savedLogos) {
-      setLogos(JSON.parse(savedLogos));
-    } else {
-      // Add preset logos
-      const presetLogos: BrandAsset[] = [
-        {
-          id: 'logo-preset-1',
-          name: 'Hyundai Horizontal Logo',
-          type: 'logo',
-          url: '/images/logos/horizontal.svg',
-          thumbnailUrl: '/images/logos/horizontal.svg',
-          category: 'Logo',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 300, height: 100 },
-        },
-        {
-          id: 'logo-preset-2',
-          name: 'Hyundai Square Logo',
-          type: 'logo',
-          url: '/images/logos/square.svg',
-          thumbnailUrl: '/images/logos/square.svg',
-          category: 'Logo',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 200, height: 200 },
-        },
-      ];
-      setLogos(presetLogos);
-      localStorage.setItem('brandLogos', JSON.stringify(presetLogos));
-    }
+    addPresetLogoImage()
+    
+    
     
     if (savedColors) setColorPalettes(JSON.parse(savedColors));
     
-    if (savedVehicles) {
-      setVehicleModels(JSON.parse(savedVehicles));
-    } else {
-      // Add preset vehicle images
-      const presetVehicles: BrandAsset[] = [
-        {
-          id: 'vehicle-preset-1',
-          name: 'INSTER',
-          url: '/images/cars/inster.png',
-          thumbnailUrl: '/images/cars/inster.png',
-          category: 'Vehicle Models',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 800, height: 450 },
-        },
-        {
-          id: 'vehicle-preset-2',
-          name: 'KONA Electronic',
-          url: '/images/cars/kona_electronic.png',
-          thumbnailUrl: '/images/cars/kona_electronic.png',
-          category: 'Vehicle Models',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 800, height: 450 },
-        },
-        {
-          id: 'vehicle-preset-3',
-          name: 'IONIQ 9',
-          url: '/images/cars/ioniq9.png',
-          thumbnailUrl: '/images/cars/ioniq9.png',
-          category: 'Vehicle Models',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 800, height: 450 },
-        },
-        {
-          id: 'vehicle-preset-4',
-          name: 'All About EV',
-          url: '/images/cars/all_about_EV.png',
-          thumbnailUrl: '/images/cars/all_about_EV.png',
-          category: 'Vehicle Models',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 800, height: 450 },
-        },
-      ];
-      setVehicleModels(presetVehicles);
-      localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
-    }
+    // Add preset vehicle images
+    const presetVehicles: BrandAsset[] = [
+      {
+        id: 'vehicle-preset-1',
+        name: 'INSTER',
+        url: '/images/cars/inster.png',
+        thumbnailUrl: '/images/cars/inster.png',
+        category: 'Vehicle Models',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 800, height: 450 },
+      },
+      {
+        id: 'vehicle-preset-2',
+        name: 'KONA Electronic',
+        url: '/images/cars/kona_electronic.png',
+        thumbnailUrl: '/images/cars/kona_electronic.png',
+        category: 'Vehicle Models',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 800, height: 450 },
+      },
+      {
+        id: 'vehicle-preset-3',
+        name: 'IONIQ 9',
+        url: '/images/cars/ioniq9.png',
+        thumbnailUrl: '/images/cars/ioniq9.png',
+        category: 'Vehicle Models',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 800, height: 450 },
+      },
+      {
+        id: 'vehicle-preset-4',
+        name: 'All About EV',
+        url: '/images/cars/all_about_EV.png',
+        thumbnailUrl: '/images/cars/all_about_EV.png',
+        category: 'Vehicle Models',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 800, height: 450 },
+      },
+    ];
+    setVehicleModels(presetVehicles);
     
-    if (savedBackgrounds) {
-      setBackgroundImages(JSON.parse(savedBackgrounds));
-    } else {
-      // Add preset background images
-      const presetBackgrounds: BrandAsset[] = [
-        {
-          id: 'bg-preset-1',
-          name: 'Black',
-          url: '/images/backgrounds/black.jpg',
-          thumbnailUrl: '/images/backgrounds/black.jpg',
-          category: 'Background Images',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 1920, height: 1080 },
-        },
-        {
-          id: 'bg-preset-2',
-          name: 'Road 1',
-          url: '/images/backgrounds/road_1.jpg',
-          thumbnailUrl: '/images/backgrounds/road_1.jpg',
-          category: 'Background Images',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 1920, height: 1080 },
-        },
-        {
-          id: 'bg-preset-3',
-          name: 'Road 2',
-          url: '/images/backgrounds/road_2.jpg',
-          thumbnailUrl: '/images/backgrounds/road_2.jpg',
-          category: 'Background Images',
-          type: 'image',
-          uploadedAt: new Date(),
-          fileSize: 0,
-          dimensions: { width: 1920, height: 1080 },
-        },
-      ];
-      setBackgroundImages(presetBackgrounds);
-      localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
-    }
+    // Add preset background images
+    const presetBackgrounds: BrandAsset[] = [
+      {
+        id: 'bg-preset-1',
+        name: 'Black',
+        url: '/images/backgrounds/black.jpg',
+        thumbnailUrl: '/images/backgrounds/black.jpg',
+        category: 'Background Images',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 1920, height: 1080 },
+      },
+      {
+        id: 'bg-preset-2',
+        name: 'Road 1',
+        url: '/images/backgrounds/road_1.jpg',
+        thumbnailUrl: '/images/backgrounds/road_1.jpg',
+        category: 'Background Images',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 1920, height: 1080 },
+      },
+      {
+        id: 'bg-preset-3',
+        name: 'Road 2',
+        url: '/images/backgrounds/road_2.jpg',
+        thumbnailUrl: '/images/backgrounds/road_2.jpg',
+        category: 'Background Images',
+        type: 'image',
+        uploadedAt: new Date(),
+        fileSize: 0,
+        dimensions: { width: 1920, height: 1080 },
+      },
+    ];
+    setBackgroundImages(presetBackgrounds);
   }, []);
 
   // Logo management functions
