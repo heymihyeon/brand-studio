@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reset Brand Assets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        button {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #1565c0;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reset Brand Assets</h1>
+    <p>This page will help you reset the brand assets in localStorage.</p>
+    
+    <button onclick="resetAssets()">Reset Brand Assets</button>
+    <button onclick="checkStorage()">Check Current Storage</button>
+    
+    <pre id="output"></pre>
+
+    <script>
+        function resetAssets() {
+            // Remove existing data
+            localStorage.removeItem('brandVehicles');
+            localStorage.removeItem('brandBackgrounds');
+            
+            const output = document.getElementById('output');
+            output.textContent = '✅ Brand assets have been reset!\n\n';
+            output.textContent += '📌 Next steps:\n';
+            output.textContent += '1. Go to Brand Hub page\n';
+            output.textContent += '2. The preset images will automatically load\n';
+            output.textContent += '3. You can then use them in the Editor\n\n';
+            output.textContent += 'Status:\n';
+            output.textContent += '- brandVehicles: ' + (localStorage.getItem('brandVehicles') ? 'Still exists' : 'Removed ✓') + '\n';
+            output.textContent += '- brandBackgrounds: ' + (localStorage.getItem('brandBackgrounds') ? 'Still exists' : 'Removed ✓');
+        }
+        
+        function checkStorage() {
+            const output = document.getElementById('output');
+            const vehicles = localStorage.getItem('brandVehicles');
+            const backgrounds = localStorage.getItem('brandBackgrounds');
+            
+            output.textContent = '📊 Current Storage Status:\n\n';
+            
+            if (vehicles) {
+                const vehicleData = JSON.parse(vehicles);
+                output.textContent += `brandVehicles: ${vehicleData.length} items\n`;
+                if (vehicleData.length === 0) {
+                    output.textContent += '  ⚠️  Empty array - this is why images don\'t show!\n';
+                }
+            } else {
+                output.textContent += 'brandVehicles: Not found\n';
+            }
+            
+            if (backgrounds) {
+                const bgData = JSON.parse(backgrounds);
+                output.textContent += `brandBackgrounds: ${bgData.length} items\n`;
+                if (bgData.length === 0) {
+                    output.textContent += '  ⚠️  Empty array - this is why images don\'t show!\n';
+                }
+            } else {
+                output.textContent += 'brandBackgrounds: Not found\n';
+            }
+        }
+        
+        // Check storage on load
+        window.onload = checkStorage;
+    </script>
+</body>
+</html>

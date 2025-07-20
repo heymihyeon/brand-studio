@@ -129,7 +129,7 @@ const BrandHub: React.FC = () => {
         name: 'INSTER',
         url: '/images/cars/inster.png',
         thumbnailUrl: '/images/cars/inster.png',
-        category: 'Vehicle Models',
+        category: 'Vehicle',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
@@ -140,7 +140,7 @@ const BrandHub: React.FC = () => {
         name: 'KONA Electronic',
         url: '/images/cars/kona_electronic.png',
         thumbnailUrl: '/images/cars/kona_electronic.png',
-        category: 'Vehicle Models',
+        category: 'Vehicle',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
@@ -151,7 +151,7 @@ const BrandHub: React.FC = () => {
         name: 'IONIQ 9',
         url: '/images/cars/ioniq9.png',
         thumbnailUrl: '/images/cars/ioniq9.png',
-        category: 'Vehicle Models',
+        category: 'Vehicle',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
@@ -162,14 +162,28 @@ const BrandHub: React.FC = () => {
         name: 'All About EV',
         url: '/images/cars/all_about_EV.png',
         thumbnailUrl: '/images/cars/all_about_EV.png',
-        category: 'Vehicle Models',
+        category: 'Vehicle',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
         dimensions: { width: 800, height: 450 },
       },
     ];
-    setVehicleModels(presetVehicles);
+    
+    // Load saved vehicles or use presets
+    if (savedVehicles) {
+      const vehicles = JSON.parse(savedVehicles);
+      // If saved data is empty, use presets
+      if (vehicles.length === 0) {
+        setVehicleModels(presetVehicles);
+        localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
+      } else {
+        setVehicleModels(vehicles);
+      }
+    } else {
+      setVehicleModels(presetVehicles);
+      localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
+    }
     
     // Add preset background images
     const presetBackgrounds: BrandAsset[] = [
@@ -178,7 +192,7 @@ const BrandHub: React.FC = () => {
         name: 'Black',
         url: '/images/backgrounds/black.jpg',
         thumbnailUrl: '/images/backgrounds/black.jpg',
-        category: 'Background Images',
+        category: 'Background',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
@@ -189,7 +203,7 @@ const BrandHub: React.FC = () => {
         name: 'Road 1',
         url: '/images/backgrounds/road_1.jpg',
         thumbnailUrl: '/images/backgrounds/road_1.jpg',
-        category: 'Background Images',
+        category: 'Background',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
@@ -200,14 +214,28 @@ const BrandHub: React.FC = () => {
         name: 'Road 2',
         url: '/images/backgrounds/road_2.jpg',
         thumbnailUrl: '/images/backgrounds/road_2.jpg',
-        category: 'Background Images',
+        category: 'Background',
         type: 'image',
         uploadedAt: new Date(),
         fileSize: 0,
         dimensions: { width: 1920, height: 1080 },
       },
     ];
-    setBackgroundImages(presetBackgrounds);
+    
+    // Load saved backgrounds or use presets
+    if (savedBackgrounds) {
+      const backgrounds = JSON.parse(savedBackgrounds);
+      // If saved data is empty, use presets
+      if (backgrounds.length === 0) {
+        setBackgroundImages(presetBackgrounds);
+        localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
+      } else {
+        setBackgroundImages(backgrounds);
+      }
+    } else {
+      setBackgroundImages(presetBackgrounds);
+      localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
+    }
   }, []);
 
   // Logo management functions
@@ -288,7 +316,7 @@ const BrandHub: React.FC = () => {
         type: 'image',
         url: URL.createObjectURL(vehicleForm.file),
         thumbnailUrl: URL.createObjectURL(vehicleForm.file),
-        category: 'Product',
+        category: 'Vehicle',
         uploadedAt: new Date(),
         fileSize: vehicleForm.file.size,
         dimensions: { width: 600, height: 300 },

@@ -38,6 +38,11 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
       const savedVehicles = localStorage.getItem('brandVehicles');
       const savedBackgrounds = localStorage.getItem('brandBackgrounds');
       
+      console.log('AssetSelector Loading Assets:');
+      console.log('- Logos:', savedLogos ? 'found' : 'not found');
+      console.log('- Vehicles:', savedVehicles ? 'found' : 'not found');
+      console.log('- Backgrounds:', savedBackgrounds ? 'found' : 'not found');
+      
       const allAssets: BrandAsset[] = [];
       
       if (savedLogos) {
@@ -47,16 +52,17 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
       
       if (savedVehicles) {
         const vehicles = JSON.parse(savedVehicles);
-        // Product 카테고리를 Vehicle로 변경
-        vehicles.forEach((v: BrandAsset) => v.category = 'Vehicle');
+        console.log('Loaded vehicles:', vehicles);
         allAssets.push(...vehicles);
       }
       
       if (savedBackgrounds) {
         const backgrounds = JSON.parse(savedBackgrounds);
+        console.log('Loaded backgrounds:', backgrounds);
         allAssets.push(...backgrounds);
       }
       
+      console.log('Total assets loaded:', allAssets.length);
       setAssets(allAssets);
     }
   }, [open]);
@@ -67,7 +73,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
         // 브랜드 허브의 실제 카테고리와 매핑
         console.log('AssetSelector: Filtering asset', asset.name, 'with category', asset.category, 'against filter', filterCategory);
         if (filterCategory === 'Vehicle Models') {
-          return asset.category === 'Product' || asset.category === 'Vehicle';
+          return asset.category === 'Vehicle';
         }
         if (filterCategory === 'Background Images') {
           return asset.category === 'Background';
@@ -145,7 +151,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
         ) : (
           <Grid container spacing={2}>
             {filteredAssets.map((asset) => (
-              <Grid item xs={6} sm={4} md={3} key={asset.id}>
+              <Grid size={{xs:6, sm:4, md:3}} key={asset.id}>
                 <Card
                   sx={{
                     border: selectedAsset?.id === asset.id ? 2 : 0,
