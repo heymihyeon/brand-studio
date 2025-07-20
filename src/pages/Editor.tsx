@@ -40,6 +40,7 @@ import {
   getTemplatesByFormatGroup,
   getUniqueFormatsByCategory 
 } from '../data/unifiedFormats';
+import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data/brandPresets';
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
@@ -174,35 +175,22 @@ useEffect(() => {
               initialValues[text.id] = text.text || '';
             });
             convertedTemplate.editableElements.images.forEach((image) => {
-              // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
-              if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
-                // 로컬 스토리지에서 차량 이미지 가져오기
-                const savedVehicles = localStorage.getItem('brandVehicles');
-                if (savedVehicles) {
-                  const vehicles = JSON.parse(savedVehicles);
-                  if (vehicles.length > 0) {
-                    // 첫 번째 차량을 기본값으로 설정
-                    initialValues[image.id] = vehicles[0];
-                  } else {
-                    initialValues[image.id] = image.src || '';
-                  }
-                } else {
-                  initialValues[image.id] = image.src || '';
-                }
-              } else {
+              // 차량 이미지인 경우 기본 차량 이미지 설정
+              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                initialValues[image.id] = getDefaultVehicle();
+              } 
+              // 배경 이미지인 경우 기본 배경 이미지 설정
+              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                initialValues[image.id] = getDefaultBackground();
+              } 
+              // 그 외의 경우
+              else {
                 initialValues[image.id] = image.src || '';
               }
             });
             
-            // 로고 이미지 기본값 설정
-            const savedLogos = localStorage.getItem('brandLogos');
-            if (savedLogos) {
-              const logos = JSON.parse(savedLogos);
-              if (logos.length > 0) {
-                // 첫 번째 로고를 기본값으로 설정
-                initialValues['brandLogo'] = logos[0];
-              }
-            }
+            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+            initialValues['brandLogo'] = getDefaultLogo();
             
             setEditableValues(initialValues);
           } else {
@@ -217,35 +205,22 @@ useEffect(() => {
               initialValues[text.id] = text.text || '';
             });
             convertedTemplate.editableElements.images.forEach((image) => {
-              // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
-              if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
-                // 로컬 스토리지에서 차량 이미지 가져오기
-                const savedVehicles = localStorage.getItem('brandVehicles');
-                if (savedVehicles) {
-                  const vehicles = JSON.parse(savedVehicles);
-                  if (vehicles.length > 0) {
-                    // 첫 번째 차량을 기본값으로 설정
-                    initialValues[image.id] = vehicles[0];
-                  } else {
-                    initialValues[image.id] = image.src || '';
-                  }
-                } else {
-                  initialValues[image.id] = image.src || '';
-                }
-              } else {
+              // 차량 이미지인 경우 기본 차량 이미지 설정
+              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                initialValues[image.id] = getDefaultVehicle();
+              } 
+              // 배경 이미지인 경우 기본 배경 이미지 설정
+              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                initialValues[image.id] = getDefaultBackground();
+              } 
+              // 그 외의 경우
+              else {
                 initialValues[image.id] = image.src || '';
               }
             });
             
-            // 로고 이미지 기본값 설정
-            const savedLogos = localStorage.getItem('brandLogos');
-            if (savedLogos) {
-              const logos = JSON.parse(savedLogos);
-              if (logos.length > 0) {
-                // 첫 번째 로고를 기본값으로 설정
-                initialValues['brandLogo'] = logos[0];
-              }
-            }
+            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+            initialValues['brandLogo'] = getDefaultLogo();
             
             setEditableValues(initialValues);
           }
@@ -274,35 +249,22 @@ useEffect(() => {
         initialValues[text.id] = text.text || '';
       });
       template.editableElements.images.forEach((image) => {
-        // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
-        if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
-          // 로컬 스토리지에서 차량 이미지 가져오기
-          const savedVehicles = localStorage.getItem('brandVehicles');
-          if (savedVehicles) {
-            const vehicles = JSON.parse(savedVehicles);
-            if (vehicles.length > 0) {
-              // 첫 번째 차량을 기본값으로 설정
-              initialValues[image.id] = vehicles[0];
-            } else {
-              initialValues[image.id] = image.src || '';
-            }
-          } else {
-            initialValues[image.id] = image.src || '';
-          }
-        } else {
+        // 차량 이미지인 경우 기본 차량 이미지 설정
+        if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+          initialValues[image.id] = getDefaultVehicle();
+        } 
+        // 배경 이미지인 경우 기본 배경 이미지 설정
+        else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+          initialValues[image.id] = getDefaultBackground();
+        } 
+        // 그 외의 경우
+        else {
           initialValues[image.id] = image.src || '';
         }
       });
       
-      // 로고 이미지 기본값 설정
-      const savedLogos = localStorage.getItem('brandLogos');
-      if (savedLogos) {
-        const logos = JSON.parse(savedLogos);
-        if (logos.length > 0) {
-          // 첫 번째 로고를 기본값으로 설정
-          initialValues['brandLogo'] = logos[0];
-        }
-      }
+      // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+      initialValues['brandLogo'] = getDefaultLogo();
       
       setEditableValues(initialValues);
     }
@@ -333,13 +295,7 @@ useEffect(() => {
       delete currentValues['vehicle'];
     } else if (!currentValues['vehicle'] && variant.templateVariant !== 'center') {
       // center에서 다른 템플릿으로 변경 시 기본 차량 이미지 추가
-      const savedVehicles = localStorage.getItem('brandVehicles');
-      if (savedVehicles) {
-        const vehicles = JSON.parse(savedVehicles);
-        if (vehicles.length > 0) {
-          currentValues['vehicle'] = vehicles[0];
-        }
-      }
+      currentValues['vehicle'] = getDefaultVehicle();
     }
     
     setEditableValues(currentValues);
@@ -835,35 +791,22 @@ useEffect(() => {
             initialValues[text.id] = text.text || '';
           });
           convertedTemplate.editableElements.images.forEach((image) => {
-            // 프로모션 배너이고 차량 이미지인 경우 기본 차량 이미지 설정
-            if (categoryId === 'banner' && (image.id === 'vehicle' || image.label === 'Vehicle Model')) {
-              // 로컬 스토리지에서 차량 이미지 가져오기
-              const savedVehicles = localStorage.getItem('brandVehicles');
-              if (savedVehicles) {
-                const vehicles = JSON.parse(savedVehicles);
-                if (vehicles.length > 0) {
-                  // 첫 번째 차량을 기본값으로 설정
-                  initialValues[image.id] = vehicles[0];
-                } else {
-                  initialValues[image.id] = image.src || '';
-                }
-              } else {
-                initialValues[image.id] = image.src || '';
-              }
-            } else {
+            // 차량 이미지인 경우 기본 차량 이미지 설정
+            if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+              initialValues[image.id] = getDefaultVehicle();
+            } 
+            // 배경 이미지인 경우 기본 배경 이미지 설정
+            else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+              initialValues[image.id] = getDefaultBackground();
+            } 
+            // 그 외의 경우
+            else {
               initialValues[image.id] = image.src || '';
             }
           });
           
-          // 로고 이미지 기본값 설정
-          const savedLogos = localStorage.getItem('brandLogos');
-          if (savedLogos) {
-            const logos = JSON.parse(savedLogos);
-            if (logos.length > 0) {
-              // 첫 번째 로고를 기본값으로 설정
-              initialValues['brandLogo'] = logos[0];
-            }
-          }
+          // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+          initialValues['brandLogo'] = getDefaultLogo();
           
           setEditableValues(initialValues);
           setFormatSelectorOpen(false);
