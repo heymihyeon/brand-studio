@@ -135,18 +135,18 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
         </Typography>
         <TextField
           fullWidth
-          label="Name"
-          value={data.sellerName}
-          onChange={handleChange('sellerName')}
-          placeholder="e.g. John Doe"
-          size="small"
-        />
-        <TextField
-          fullWidth
           label="Address"
           value={data.sellerAddress}
           onChange={handleChange('sellerAddress')}
           placeholder="e.g. 123 Main St, City, State"
+          size="small"
+        />
+        <TextField
+          fullWidth
+          label="Name"
+          value={data.sellerName}
+          onChange={handleChange('sellerName')}
+          placeholder="e.g. John Doe"
           size="small"
         />
         <TextField
@@ -166,18 +166,18 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
         </Typography>
         <TextField
           fullWidth
-          label="Name"
-          value={data.buyerName}
-          onChange={handleChange('buyerName')}
-          placeholder="e.g. Jane Smith"
-          size="small"
-        />
-        <TextField
-          fullWidth
           label="Address"
           value={data.buyerAddress}
           onChange={handleChange('buyerAddress')}
           placeholder="e.g. 456 Oak Ave, City, State"
+          size="small"
+        />
+        <TextField
+          fullWidth
+          label="Name"
+          value={data.buyerName}
+          onChange={handleChange('buyerName')}
+          placeholder="e.g. Jane Smith"
           size="small"
         />
         <TextField
