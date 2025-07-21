@@ -18,13 +18,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Grid,
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
   Edit as EditIcon, 
   Save as SaveIcon,
-  ArrowBack as ArrowBackIcon 
+  ArrowBack as ArrowBackIcon,
+  DirectionsCar as CarIcon
 } from '@mui/icons-material';
 import Canvas, { CanvasRef } from '../components/Canvas';
 import AssetSelector from '../components/AssetSelector';
@@ -81,30 +81,37 @@ const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
               ? 'translateX(-50%)' 
               : 'none',
             color: 'black',
-            fontSize: '8px',
+            fontSize: '14px',
             fontWeight: 'bold',
             whiteSpace: 'pre-line',
             textAlign: titleObj.textAlign || 'left',
           }}
         >
-          Hyundai EV
+          Text
         </Box>
       )}
       
       {/* Vehicle Image */}
       {vehicleImage && vehicleObj && variant.templateVariant !== 'center' && (
         <Box
-          component="img"
-          src="/images/cars/ioniq6.png"
           sx={{
             position: 'absolute',
             left: `${(vehicleObj.left / variant.canvas.width) * 100}%`,
             top: `${(vehicleObj.top / variant.canvas.height) * 100}%`,
             width: `${(vehicleObj.width / variant.canvas.width) * 100}%`,
             height: `${(vehicleObj.height / variant.canvas.height) * 100}%`,
-            objectFit: 'contain',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
+        >
+          <CarIcon 
+            sx={{ 
+              fontSize: `${Math.min(vehicleObj.width, vehicleObj.height) / variant.canvas.width * 900}%`,
+              color: 'rgba(0, 0, 0, 0.3)'
+            }} 
+          />
+        </Box>
       )}
     </Box>
   );
@@ -157,15 +164,45 @@ useEffect(() => {
           // 홈에서 선택된 통합 포맷이 있는 경우
           const selectedUnifiedFormat = location.state.selectedFormat as UnifiedFormat;
           
+          console.log('Selected format from Home:', {
+            id: selectedUnifiedFormat.id,
+            name: selectedUnifiedFormat.name,
+            formatGroup: selectedUnifiedFormat.formatGroup,
+            templateVariant: selectedUnifiedFormat.templateVariant,
+            dimensions: selectedUnifiedFormat.dimensions
+          });
+          
           // 해당 포맷 그룹의 모든 템플릿 변형 로드
           if (selectedUnifiedFormat.formatGroup) {
+            console.log('Getting templates for format group:', selectedUnifiedFormat.formatGroup);
             const variants = getTemplatesByFormatGroup(selectedUnifiedFormat.formatGroup);
+            console.log('Found variants:', variants.length);
+            console.log('Variants details:', variants.map(v => ({ 
+              id: v.id, 
+              name: v.name, 
+              formatGroup: v.formatGroup,
+              templateVariant: v.templateVariant,
+              dimensions: v.dimensions
+            })));
+            
             setAvailableTemplateVariants(variants);
             // 기본적으로 default 템플릿 선택
             const defaultVariant = variants.find(v => v.templateVariant === 'default') || selectedUnifiedFormat;
+            console.log('Selected default variant:', {
+              id: defaultVariant.id,
+              formatGroup: defaultVariant.formatGroup,
+              templateVariant: defaultVariant.templateVariant
+            });
+            
             setSelectedTemplateVariant(defaultVariant.templateVariant || 'default');
             
             const convertedTemplate = convertToTemplate(defaultVariant);
+            console.log('Converted template:', {
+              id: convertedTemplate.id,
+              name: convertedTemplate.name,
+              format: convertedTemplate.format
+            });
+            
             setTemplate(convertedTemplate);
             setSelectedFormat(convertedTemplate.format);
             
@@ -232,43 +269,6 @@ useEffect(() => {
     }
   }, [categoryId, location.state]);
 
-  const handleFormatSelect = (format: FormatOption) => {
-    // 통합 포맷 시스템에서는 포맷 선택 시 바로 템플릿 적용
-    setSelectedFormat(format);
-    setFormatSelectorOpen(false);
-    
-    // 기존 방식과의 호환성을 위해 첫 번째 템플릿 사용
-    const formatTemplates = availableTemplates.filter(t => t.format.id === format.id);
-    if (formatTemplates.length > 0) {
-      const template = formatTemplates[0];
-      setTemplate(template);
-      
-      // 초기 편집 가능 값 설정
-      const initialValues: Record<string, any> = {};
-      template.editableElements.texts.forEach((text) => {
-        initialValues[text.id] = text.text || '';
-      });
-      template.editableElements.images.forEach((image) => {
-        // 차량 이미지인 경우 기본 차량 이미지 설정
-        if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-          initialValues[image.id] = getDefaultVehicle();
-        } 
-        // 배경 이미지인 경우 기본 배경 이미지 설정
-        else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
-          initialValues[image.id] = getDefaultBackground();
-        } 
-        // 그 외의 경우
-        else {
-          initialValues[image.id] = image.src || '';
-        }
-      });
-      
-      // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
-      initialValues['brandLogo'] = getDefaultLogo();
-      
-      setEditableValues(initialValues);
-    }
-  };
 
 
   const handleTextChange = (elementId: string, value: string) => {
@@ -385,8 +385,8 @@ useEffect(() => {
   const saveCurrentWork = React.useCallback(() => {
     if (!template || !canvasRef.current) return;
     
-    const timeoutId = setTimeout(() => {
-      const thumbnailData = canvasRef.current!.exportCanvas('png', 80);
+    const timeoutId = setTimeout(async () => {
+      const thumbnailData = await canvasRef.current!.exportCanvas('png', 80);
       const workName = `${template.name} - ${new Date().toLocaleDateString('ko-KR')}`;
       
       const recentWork: RecentWork = {
@@ -415,10 +415,15 @@ useEffect(() => {
     return () => clearTimeout(timeoutId);
   }, [template, editableValues]);
 
-  const handleExport = (format: string, quality: number, fileName: string) => {
+  const handleExport = async (format: string, quality: number, fileName: string) => {
     if (!canvasRef.current || !template) return;
     
-    const dataUrl = canvasRef.current.exportCanvas(format, quality);
+    const dataUrl = await canvasRef.current.exportCanvas(format, quality);
+    
+    if (!dataUrl) {
+      alert('Failed to export. Please try again.');
+      return;
+    }
     
     // 데이터 URL을 파일로 다운로드
     const link = document.createElement('a');
@@ -457,21 +462,47 @@ useEffect(() => {
     setExportDialogOpen(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    console.log('handleSave called');
+    console.log('template:', template);
+    console.log('canvasRef.current:', canvasRef.current);
+    
     if (!template || !canvasRef.current) {
       alert('Unable to save. Please make sure the template is loaded.');
       return;
     }
 
     try {
+      console.log('Starting save process...');
       const workFromState = location.state?.work as RecentWork | undefined;
-      const thumbnailData = canvasRef.current.exportCanvas('png', 0.8);
+      
+      console.log('Calling exportCanvas...');
+      // 썸네일용으로 작은 크기의 이미지 생성 (0.3 = 30% 품질)
+      const thumbnailData = await canvasRef.current.exportCanvas('jpg', 30);
+      console.log('thumbnailData received:', thumbnailData ? 'yes' : 'no', 'length:', thumbnailData?.length);
+      
+      // Ensure category is valid for RecentWork type
+      let validCategory: 'Document' | 'Promotion Banner' | 'Brochure' = 'Document';
+      console.log('Current category:', currentCategory);
+      console.log('Template category:', template.category);
+      
+      if (currentCategory === 'Document' || currentCategory === 'Promotion Banner' || currentCategory === 'Brochure') {
+        validCategory = currentCategory;
+      } else if (currentCategory === 'SNS') {
+        // Map SNS to Promotion Banner as it's the closest match
+        validCategory = 'Promotion Banner';
+      } else {
+        // Fallback to template category
+        validCategory = template.category;
+      }
+      
+      console.log('Valid category:', validCategory);
       
       const newWork: RecentWork = {
         id: workFromState?.id || Date.now().toString(),
         name: workFromState?.name || `${template.name} - ${new Date().toLocaleDateString('ko-KR')}`,
         thumbnail: thumbnailData || '',
-        category: currentCategory as 'Document' | 'Promotion Banner' | 'Brochure',
+        category: validCategory,
         templateId: template.id,
         lastModified: new Date(),
         canEdit: true,
@@ -481,16 +512,52 @@ useEffect(() => {
         data: editableValues,
       };
       
-      const savedWorks = JSON.parse(localStorage.getItem('recentWorks') || '[]');
-      const existingIndex = savedWorks.findIndex((w: RecentWork) => w.id === newWork.id);
+      console.log('newWork object created:', newWork);
       
-      if (existingIndex >= 0) {
-        savedWorks[existingIndex] = newWork;
-      } else {
-        savedWorks.unshift(newWork);
+      // localStorage 정리 - 오래된 작업 삭제 및 샘플 데이터 제거
+      try {
+        const savedWorks = JSON.parse(localStorage.getItem('recentWorks') || '[]');
+        console.log('Existing works count:', savedWorks.length);
+        
+        // 샘플 데이터 및 자동 저장 데이터 제거
+        let filteredWorks = savedWorks.filter((work: RecentWork) => 
+          !work.id.startsWith('sample-') && !work.id.startsWith('auto-')
+        );
+        
+        // 최대 10개만 유지 (새 작업 포함하여 11개가 되도록)
+        if (filteredWorks.length > 10) {
+          // 날짜순으로 정렬 후 최신 10개만 유지
+          filteredWorks = filteredWorks
+            .sort((a: RecentWork, b: RecentWork) => 
+              new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+            )
+            .slice(0, 10);
+        }
+        
+        const existingIndex = filteredWorks.findIndex((w: RecentWork) => w.id === newWork.id);
+        
+        if (existingIndex >= 0) {
+          filteredWorks[existingIndex] = newWork;
+        } else {
+          filteredWorks.unshift(newWork);
+        }
+        
+        console.log('Saving to localStorage...');
+        localStorage.setItem('recentWorks', JSON.stringify(filteredWorks));
+        console.log('Save completed successfully');
+      } catch (storageError) {
+        console.error('Storage error:', storageError);
+        
+        // 저장 공간이 부족한 경우 모든 작업 삭제 후 현재 작업만 저장
+        try {
+          console.log('Clearing all works and saving only current work...');
+          localStorage.setItem('recentWorks', JSON.stringify([newWork]));
+          console.log('Save completed after clearing storage');
+        } catch (finalError) {
+          console.error('Final storage error:', finalError);
+          throw new Error('Unable to save due to storage limitations. Please clear your browser data.');
+        }
       }
-      
-      localStorage.setItem('recentWorks', JSON.stringify(savedWorks));
       
       // 저장 완료 다이얼로그 표시
       console.log('Setting dialog open to true');
@@ -502,7 +569,8 @@ useEffect(() => {
       }, 0);
     } catch (error) {
       // 에러 발생 시 사용자에게 알림
-      console.error('Save error:', error);
+      console.error('Save error details:', error);
+      console.error('Error stack:', (error as Error).stack);
       alert('An error occurred while saving. Please try again.');
     }
   };
@@ -574,7 +642,7 @@ useEffect(() => {
             startIcon={<DownloadIcon />}
             onClick={handleExportClick}
           >
-            내보내기
+            Export
           </Button>
         </Stack>
       </Paper>
@@ -620,8 +688,11 @@ useEffect(() => {
                   }
                   value={editableValues[textElement.id] || ''}
                   onChange={(e) => handleTextChange(textElement.id, e.target.value)}
-                  multiline={textElement.type === 'body'}
-                  rows={textElement.type === 'body' ? 4 : 1}
+                  multiline={true}
+                  rows={
+                    textElement.type === 'heading' ? 2 :
+                    textElement.type === 'subheading' ? 2 : 4
+                  }
                 />
               ))}
               
@@ -682,10 +753,9 @@ useEffect(() => {
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 Layout
               </Typography>
-              <Grid container spacing={1}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
                 {availableTemplateVariants.map((variant) => (
-                  <Grid item size={6} key={variant.id}>
-                    <Box
+                  <Box key={variant.id}
                       onClick={() => handleTemplateVariantChange(variant)}
                       sx={{
                         cursor: 'pointer',
@@ -703,7 +773,9 @@ useEffect(() => {
                       {/* Template Preview */}
                       <Box
                         sx={{
-                          aspectRatio: variant.dimensions.width / variant.dimensions.height,
+                          aspectRatio: variant.formatGroup === 'banner-vertical' 
+                            ? (variant.dimensions.width / variant.dimensions.height) * 2  // 세로 폭을 2배 축소
+                            : variant.dimensions.width / variant.dimensions.height,
                           backgroundColor: '#f5f5f5',
                           display: 'flex',
                           alignItems: 'center',
@@ -719,7 +791,8 @@ useEffect(() => {
                           {variant.templateVariant === 'default' && 
                             (variant.formatGroup === 'banner-horizontal' ? 'Default Layout' :
                              variant.formatGroup === 'banner-vertical' ? 'Top Text' :
-                             'Left Text')}
+                             variant.formatGroup === 'banner-square' ? 'Left Text' :
+                             'Default')}
                           {variant.templateVariant === 'bottom-left' && 'Bottom Left'}
                           {variant.templateVariant === 'top-right' && 'Top Right'}
                           {variant.templateVariant === 'center' && 'Center Text'}
@@ -730,9 +803,8 @@ useEffect(() => {
                         </Typography>
                       </Box>
                     </Box>
-                  </Grid>
                 ))}
-              </Grid>
+              </Box>
             </>
           )}
 
@@ -781,34 +853,89 @@ useEffect(() => {
         open={formatSelectorOpen}
         onClose={() => setFormatSelectorOpen(false)}
         onSelect={(format) => {
-          const convertedTemplate = convertToTemplate(format);
-          setTemplate(convertedTemplate);
-          setSelectedFormat(convertedTemplate.format);
-          
-          // 초기 편집 가능 값 설정
-          const initialValues: Record<string, any> = {};
-          convertedTemplate.editableElements.texts.forEach((text) => {
-            initialValues[text.id] = text.text || '';
-          });
-          convertedTemplate.editableElements.images.forEach((image) => {
-            // 차량 이미지인 경우 기본 차량 이미지 설정
-            if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-              initialValues[image.id] = getDefaultVehicle();
-            } 
-            // 배경 이미지인 경우 기본 배경 이미지 설정
-            else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
-              initialValues[image.id] = getDefaultBackground();
-            } 
-            // 그 외의 경우
-            else {
-              initialValues[image.id] = image.src || '';
-            }
+          console.log('Format selected from Change Format:', {
+            id: format.id,
+            name: format.name,
+            formatGroup: format.formatGroup,
+            templateVariant: format.templateVariant
           });
           
-          // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
-          initialValues['brandLogo'] = getDefaultLogo();
+          // 해당 포맷 그룹의 모든 템플릿 변형 로드
+          if (format.formatGroup) {
+            const variants = getTemplatesByFormatGroup(format.formatGroup);
+            console.log('Loading variants for format group:', format.formatGroup);
+            console.log('Found variants:', variants.length);
+            
+            setAvailableTemplateVariants(variants);
+            
+            // 기본적으로 default 템플릿 선택
+            const defaultVariant = variants.find(v => v.templateVariant === 'default') || format;
+            setSelectedTemplateVariant(defaultVariant.templateVariant || 'default');
+            
+            const convertedTemplate = convertToTemplate(defaultVariant);
+            setTemplate(convertedTemplate);
+            setSelectedFormat(convertedTemplate.format);
+            
+            // 초기 편집 가능 값 설정
+            const initialValues: Record<string, any> = {};
+            convertedTemplate.editableElements.texts.forEach((text) => {
+              initialValues[text.id] = text.text || '';
+            });
+            convertedTemplate.editableElements.images.forEach((image) => {
+              // 차량 이미지인 경우 기본 차량 이미지 설정
+              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                initialValues[image.id] = getDefaultVehicle();
+              } 
+              // 배경 이미지인 경우 기본 배경 이미지 설정
+              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                initialValues[image.id] = getDefaultBackground();
+              } 
+              // 그 외의 경우
+              else {
+                initialValues[image.id] = image.src || '';
+              }
+            });
+            
+            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+            initialValues['brandLogo'] = getDefaultLogo();
+            
+            setEditableValues(initialValues);
+          } else {
+            // formatGroup이 없는 경우 기존 방식대로 처리
+            const convertedTemplate = convertToTemplate(format);
+            setTemplate(convertedTemplate);
+            setSelectedFormat(convertedTemplate.format);
+            
+            // 템플릿 변형 초기화
+            setAvailableTemplateVariants([]);
+            setSelectedTemplateVariant('default');
+            
+            // 초기 편집 가능 값 설정
+            const initialValues: Record<string, any> = {};
+            convertedTemplate.editableElements.texts.forEach((text) => {
+              initialValues[text.id] = text.text || '';
+            });
+            convertedTemplate.editableElements.images.forEach((image) => {
+              // 차량 이미지인 경우 기본 차량 이미지 설정
+              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                initialValues[image.id] = getDefaultVehicle();
+              } 
+              // 배경 이미지인 경우 기본 배경 이미지 설정
+              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                initialValues[image.id] = getDefaultBackground();
+              } 
+              // 그 외의 경우
+              else {
+                initialValues[image.id] = image.src || '';
+              }
+            });
+            
+            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
+            initialValues['brandLogo'] = getDefaultLogo();
+            
+            setEditableValues(initialValues);
+          }
           
-          setEditableValues(initialValues);
           setFormatSelectorOpen(false);
         }}
         formats={getUniqueFormatsByCategory(currentCategory)}

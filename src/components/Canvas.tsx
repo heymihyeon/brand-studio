@@ -1,6 +1,7 @@
-import React, { useImperativeHandle, forwardRef, useEffect, useState } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Template, BrandAsset } from '../types';
+import html2canvas from 'html2canvas';
 
 interface CanvasProps {
   template: Template;
@@ -10,17 +11,67 @@ interface CanvasProps {
 }
 
 export interface CanvasRef {
-  exportCanvas: (format: string, quality: number) => string;
+  exportCanvas: (format: string, quality: number) => Promise<string>;
 }
 
 const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, onTextEdit, onImageEdit }, ref) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
   useImperativeHandle(ref, () => ({
-    exportCanvas: (format: string, quality: number) => {
-      // For now, return empty string as we're not using canvas
-      return '';
+    exportCanvas: async (format: string, quality: number) => {
+      console.log('Canvas exportCanvas called with format:', format, 'quality:', quality);
+      if (!canvasRef.current) {
+        console.error('canvasRef.current is null');
+        return '';
+      }
+      
+      try {
+        // Store original scale
+        const originalScale = scale;
+        console.log('Original scale:', originalScale);
+        
+        // Temporarily set scale to 1 for export
+        canvasRef.current.style.transform = 'scale(1)';
+        
+        console.log('Creating canvas with html2canvas...');
+        console.log('Template canvas dimensions:', template.canvas.width, 'x', template.canvas.height);
+        
+        // 썸네일용인 경우 작은 크기로 생성
+        const isThumbnail = format === 'jpg' && quality <= 30;
+        const exportScale = isThumbnail ? 0.5 : 2; // 썸네일은 0.5배, 일반 내보내기는 2배
+        
+        // Create a canvas from the DOM element
+        const canvas = await html2canvas(canvasRef.current, {
+          scale: exportScale,
+          backgroundColor: null,
+          allowTaint: true,
+          useCORS: true,
+          width: template.canvas.width,
+          height: template.canvas.height,
+          logging: false,
+        });
+        console.log('html2canvas completed, canvas:', canvas, 'scale:', exportScale);
+        
+        // Restore original scale
+        canvasRef.current.style.transform = `scale(${originalScale})`;
+        
+        // Convert to requested format
+        if (format === 'png') {
+          return canvas.toDataURL('image/png');
+        } else if (format === 'jpg' || format === 'jpeg') {
+          return canvas.toDataURL('image/jpeg', quality / 100);
+        } else if (format === 'svg') {
+          // For SVG, we'll just return PNG for now as SVG export is complex
+          return canvas.toDataURL('image/png');
+        }
+        
+        return canvas.toDataURL('image/png');
+      } catch (error) {
+        console.error('Error exporting canvas:', error);
+        return '';
+      }
     }
   }));
 
@@ -93,6 +144,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
     >
       {/* Canvas wrapper with scale */}
       <Box
+        ref={canvasRef}
         sx={{
           position: 'relative',
           width: template.canvas.width,
@@ -190,6 +242,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
               
               adjustedLeft = Math.min(adjustedLeft, maxLeft);
               adjustedTop = Math.min(adjustedTop, maxTop);
+              
+              // Center horizontally for vertical banner format
+              if (template.format.id === 'banner-vertical') {
+                adjustedLeft = (template.canvas.width - size.width) / 2;
+              }
             }
             
             const position = {
@@ -245,108 +302,313 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             );
           })}
 
-        {/* Text elements layer */}
-        {template.editableElements.texts.map((textElement) => {
-          const value = editableValues[textElement.id] || textElement.text || '';
-          const displayText = getTextValue(textElement.id, textElement.type);
-          const isPlaceholder = !value;
+        {/* Text elements layer - Stack layout for title and subtitle */}
+        {(() => {
+          // Group texts by type
+          const titleElement = template.editableElements.texts.find(t => t.type === 'heading');
+          const subtitleElement = template.editableElements.texts.find(t => t.type === 'subheading');
+          const otherTexts = template.editableElements.texts.filter(t => t.type !== 'heading' && t.type !== 'subheading');
           
-          // Get position from canvas objects or use default
-          const canvasTextObj = template.canvas.objects?.find(
-            (obj: any) => obj.type === 'text' && obj.id === textElement.id
-          ) as any;
-          
-          // Apply position adjustment for promotion banner titles
-          const isPromotionBanner = template.category === 'Promotion Banner';
-          const isHeading = textElement.type === 'heading';
-          // Check if it's Vertical or Square Banner
-          const isVerticalBanner = template.format.id === 'banner-vertical';
-          const isSquareBanner = template.format.id === 'banner-square';
-          const isSpecialBanner = isVerticalBanner || isSquareBanner;
-          const topOffset = (isPromotionBanner && isHeading && !isSpecialBanner) ? -30 : 0; // Move title up by 30px (except for Vertical/Square banners)
-          
-          const position = {
-            left: canvasTextObj?.left || textElement.position.x,
-            top: (canvasTextObj?.top || textElement.position.y) + topOffset,
-          };
-          
-          // Apply larger font size for promotion banner titles and specific banners
-          const headingSize = (isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 72;
-          
-          const fontSize = canvasTextObj?.fontSize || 
-                          (textElement.type === 'heading' ? headingSize : 
-                           textElement.type === 'subheading' ? 32 : 18);
-          const fontWeight = canvasTextObj?.fontWeight || 
-                            (textElement.type === 'heading' ? 'bold' : 
-                             textElement.type === 'subheading' ? '500' : 'normal');
-          const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
-          const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
-          
-          // Calculate max width for text wrapping
-          // Check if text is center-aligned
-          const textAlign = canvasTextObj?.textAlign || 'left';
-          const originX = canvasTextObj?.originX || 'left';
-          
-          let maxWidth;
-          if (textAlign === 'center' && originX === 'center') {
-            // For center-aligned text, use 95% of canvas width for more space
-            maxWidth = template.canvas.width * 0.95;
-          } else {
-            // For left/right aligned text, calculate based on position
-            maxWidth = template.canvas.width - (position.left * 2);
-          }
-          
-          const boxStyles: any = {
-            position: 'absolute',
-            left: textAlign === 'center' && originX === 'center' ? '50%' : position.left,
-            top: position.top,
-            transform: textAlign === 'center' && originX === 'center' ? 'translateX(-50%)' : 'none',
-            cursor: 'text',
-            padding: '8px 16px',
-            borderRadius: '4px',
-            zIndex: 3,
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-              transform: textAlign === 'center' && originX === 'center' 
-                ? 'translateX(-50%) translateY(-1px)' 
-                : 'translateY(-1px)',
+          // If both title and subtitle exist, render them in a stack
+          if (titleElement && subtitleElement) {
+            const titleCanvasObj = template.canvas.objects?.find(
+              (obj: any) => obj.type === 'text' && obj.id === titleElement.id
+            ) as any;
+            
+            const isPromotionBanner = template.category === 'Promotion Banner';
+            const isVerticalBanner = template.format.id === 'banner-vertical';
+            const isSquareBanner = template.format.id === 'banner-square';
+            
+            // Use title position as the base position for the stack
+            // Adjust position based on layout type
+            const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
+            const isBottomLeftLayout = template.name?.includes('Bottom Left') || template.id?.includes('bottom-left');
+            
+            let topAdjustment = 0;
+            if (isDefaultLayout) {
+                topAdjustment = -30; // Move up by 30px for default layout
+            } else if (isBottomLeftLayout) {
+                topAdjustment = 24; // Move down by 24px for bottom left layout
             }
-          };
-
-          // Use width for center-aligned text, maxWidth for others
-          if (textAlign === 'center' && originX === 'center') {
-            boxStyles.width = maxWidth;
+            
+            const stackPosition = {
+              left: titleCanvasObj?.left || titleElement.position.x,
+              top: (titleCanvasObj?.top || titleElement.position.y) + topAdjustment,
+            };
+            
+            const textAlign = titleCanvasObj?.textAlign || 'left';
+            const originX = titleCanvasObj?.originX || 'left';
+            
+            let maxWidth;
+            if (textAlign === 'center' && originX === 'center') {
+              maxWidth = template.canvas.width * 0.95;
+            } else {
+              maxWidth = template.canvas.width - (stackPosition.left * 2);
+            }
+            
+            const stackBoxStyles: any = {
+              position: 'absolute',
+              left: textAlign === 'center' && originX === 'center' ? '50%' : stackPosition.left,
+              top: stackPosition.top,
+              transform: textAlign === 'center' && originX === 'center' ? 'translateX(-50%)' : 'none',
+              zIndex: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px', // Space between title and subtitle
+            };
+            
+            if (textAlign === 'center' && originX === 'center') {
+              stackBoxStyles.width = maxWidth;
+            } else {
+              stackBoxStyles.maxWidth = maxWidth;
+            }
+            
+            return (
+              <>
+                {/* Stack container for title and subtitle */}
+                <Box key="title-subtitle-stack" sx={stackBoxStyles}>
+                  {/* Title */}
+                  <Box
+                    onClick={() => onTextEdit && onTextEdit(titleElement.id, editableValues[titleElement.id] || '')}
+                    sx={{
+                      cursor: 'text',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      }
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: titleCanvasObj?.fontSize || 
+                                 ((isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 80),
+                        fontWeight: 'bold',
+                        fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
+                        color: editableValues[titleElement.id] ? (titleCanvasObj?.fill || '#ffffff') : 'rgba(255, 255, 255, 0.5)',
+                        lineHeight: titleCanvasObj?.lineHeight || 1.2,
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        letterSpacing: '0.5px',
+                        textAlign: textAlign || 'left',
+                      }}
+                    >
+                      {editableValues[titleElement.id] || 'Enter title here'}
+                    </Typography>
+                  </Box>
+                  
+                  {/* Subtitle */}
+                  <Box
+                    onClick={() => onTextEdit && onTextEdit(subtitleElement.id, editableValues[subtitleElement.id] || '')}
+                    sx={{
+                      cursor: 'text',
+                      padding: '8px 16px',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      }
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
+                        fontWeight: '500',
+                        fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
+                        color: editableValues[subtitleElement.id] ? (titleCanvasObj?.fill || '#ffffff') : 'rgba(255, 255, 255, 0.5)',
+                        lineHeight: 1.2,
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'break-word',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        textAlign: textAlign || 'left',
+                      }}
+                    >
+                      {editableValues[subtitleElement.id] || 'Enter subtitle here'}
+                    </Typography>
+                  </Box>
+                </Box>
+                
+                {/* Render other texts separately */}
+                {otherTexts.map((textElement) => {
+                  const value = editableValues[textElement.id] || textElement.text || '';
+                  const displayText = getTextValue(textElement.id, textElement.type);
+                  const isPlaceholder = !value;
+                  
+                  const canvasTextObj = template.canvas.objects?.find(
+                    (obj: any) => obj.type === 'text' && obj.id === textElement.id
+                  ) as any;
+                  
+                  const position = {
+                    left: canvasTextObj?.left || textElement.position.x,
+                    top: canvasTextObj?.top || textElement.position.y,
+                  };
+                  
+                  const fontSize = canvasTextObj?.fontSize || 18;
+                  const fontWeight = canvasTextObj?.fontWeight || 'normal';
+                  const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
+                  const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
+                  const textAlign = canvasTextObj?.textAlign || 'left';
+                  const originX = canvasTextObj?.originX || 'left';
+                  
+                  let maxWidth = template.canvas.width - (position.left * 2);
+                  
+                  const boxStyles: any = {
+                    position: 'absolute',
+                    left: textAlign === 'center' && originX === 'center' ? '50%' : position.left,
+                    top: position.top,
+                    transform: textAlign === 'center' && originX === 'center' ? 'translateX(-50%)' : 'none',
+                    cursor: 'text',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    zIndex: 3,
+                    transition: 'all 0.2s ease',
+                    maxWidth: maxWidth,
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      transform: textAlign === 'center' && originX === 'center' 
+                        ? 'translateX(-50%) translateY(-1px)' 
+                        : 'translateY(-1px)',
+                    }
+                  };
+                  
+                  return (
+                    <Box
+                      key={textElement.id}
+                      onClick={() => onTextEdit && onTextEdit(textElement.id, value)}
+                      sx={boxStyles}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: fontSize,
+                          fontWeight: fontWeight,
+                          fontFamily: fontFamily,
+                          color: color,
+                          lineHeight: canvasTextObj?.lineHeight || 1.2,
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word',
+                          overflowWrap: 'break-word',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                          textAlign: textAlign || 'left',
+                        }}
+                      >
+                        {displayText}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </>
+            );
           } else {
-            boxStyles.maxWidth = maxWidth;
-          }
+            // If no title-subtitle pair, render texts individually as before
+            return template.editableElements.texts.map((textElement) => {
+              const value = editableValues[textElement.id] || textElement.text || '';
+              const displayText = getTextValue(textElement.id, textElement.type);
+              const isPlaceholder = !value;
+              
+              const canvasTextObj = template.canvas.objects?.find(
+                (obj: any) => obj.type === 'text' && obj.id === textElement.id
+              ) as any;
+              
+              const isPromotionBanner = template.category === 'Promotion Banner';
+              const isHeading = textElement.type === 'heading';
+              const isVerticalBanner = template.format.id === 'banner-vertical';
+              const isSquareBanner = template.format.id === 'banner-square';
+              const isSpecialBanner = isVerticalBanner || isSquareBanner;
+              const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
+              const isBottomLeftLayout = template.name?.includes('Bottom Left') || template.id?.includes('bottom-left');
+              
+              // Apply different offsets based on layout type
+              let topOffset = 0;
+              if (isDefaultLayout && (isHeading || textElement.type === 'subheading')) {
+                topOffset = -30; // Move up for default layout
+              } else if (isBottomLeftLayout && (isHeading || textElement.type === 'subheading')) {
+                topOffset = 24; // Move down for bottom left layout
+              } else if (isPromotionBanner && isHeading && !isSpecialBanner) {
+                topOffset = -30;
+              }
+              
+              const position = {
+                left: canvasTextObj?.left || textElement.position.x,
+                top: (canvasTextObj?.top || textElement.position.y) + topOffset,
+              };
+              
+              const headingSize = (isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 80;
+              
+              const fontSize = canvasTextObj?.fontSize || 
+                              (textElement.type === 'heading' ? headingSize : 
+                               textElement.type === 'subheading' ? 32 : 18);
+              const fontWeight = canvasTextObj?.fontWeight || 
+                                (textElement.type === 'heading' ? 'bold' : 
+                                 textElement.type === 'subheading' ? '500' : 'normal');
+              const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
+              const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
+              
+              const textAlign = canvasTextObj?.textAlign || 'left';
+              const originX = canvasTextObj?.originX || 'left';
+              
+              let maxWidth;
+              if (textAlign === 'center' && originX === 'center') {
+                maxWidth = template.canvas.width * 0.95;
+              } else {
+                maxWidth = template.canvas.width - (position.left * 2);
+              }
+              
+              const boxStyles: any = {
+                position: 'absolute',
+                left: textAlign === 'center' && originX === 'center' ? '50%' : position.left,
+                top: position.top,
+                transform: textAlign === 'center' && originX === 'center' ? 'translateX(-50%)' : 'none',
+                cursor: 'text',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                zIndex: 3,
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                  transform: textAlign === 'center' && originX === 'center' 
+                    ? 'translateX(-50%) translateY(-1px)' 
+                    : 'translateY(-1px)',
+                }
+              };
 
-          return (
-            <Box
-              key={textElement.id}
-              onClick={() => onTextEdit && onTextEdit(textElement.id, value)}
-              sx={boxStyles}
-            >
-              <Typography
-                sx={{
-                  fontSize: fontSize,
-                  fontWeight: fontWeight,
-                  fontFamily: fontFamily,
-                  color: color,
-                  lineHeight: canvasTextObj?.lineHeight || 1.2,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  overflowWrap: 'break-word',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                  letterSpacing: textElement.type === 'heading' ? '0.5px' : 'normal',
-                  textAlign: textAlign || 'left',
-                }}
-              >
-                {displayText}
-              </Typography>
-            </Box>
-          );
-        })}
+              if (textAlign === 'center' && originX === 'center') {
+                boxStyles.width = maxWidth;
+              } else {
+                boxStyles.maxWidth = maxWidth;
+              }
+
+              return (
+                <Box
+                  key={textElement.id}
+                  onClick={() => onTextEdit && onTextEdit(textElement.id, value)}
+                  sx={boxStyles}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: fontSize,
+                      fontWeight: fontWeight,
+                      fontFamily: fontFamily,
+                      color: color,
+                      lineHeight: canvasTextObj?.lineHeight || 1.2,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                      letterSpacing: textElement.type === 'heading' ? '0.5px' : 'normal',
+                      textAlign: textAlign || 'left',
+                    }}
+                  >
+                    {displayText}
+                  </Typography>
+                </Box>
+              );
+            });
+          }
+        })()}
 
       </Box>
     </Box>

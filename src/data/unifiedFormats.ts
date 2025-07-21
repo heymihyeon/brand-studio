@@ -34,6 +34,7 @@ export interface UnifiedFormat {
   thumbnail: string;
 }
 
+// Last updated: 2025-07-21 09:36
 export const unifiedFormats: UnifiedFormat[] = [
   // 문서 포맷
   {
@@ -754,10 +755,10 @@ export const unifiedFormats: UnifiedFormat[] = [
           type: 'image',
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          left: 20,
+          left: 40,
           top: 550,
-          width: 360,
-          height: 180,
+          width: 320,
+          height: 160,
           scaleX: 1,
           scaleY: 1,
         },
@@ -792,8 +793,8 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          position: { x: 20, y: 550 },
-          size: { width: 360, height: 180 },
+          position: { x: 40, y: 550 },
+          size: { width: 320, height: 160 },
           editable: true,
           label: 'Vehicle Model',
         },

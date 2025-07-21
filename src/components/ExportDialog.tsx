@@ -12,17 +12,13 @@ import {
   Select,
   MenuItem,
   TextField,
-  Grid,
   Card,
   CardContent,
   IconButton,
-  Chip,
 } from '@mui/material';
 import {
   Close as CloseIcon,
   Download as DownloadIcon,
-  Image as ImageIcon,
-  PictureAsPdf as PdfIcon,
 } from '@mui/icons-material';
 import { Template } from '../types';
 
@@ -44,9 +40,9 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   const [fileName, setFileName] = useState<string>('');
 
   const formatOptions = [
-    { value: 'png', label: 'PNG', icon: <ImageIcon />, description: '고품질 이미지, 투명 배경 지원' },
-    { value: 'jpg', label: 'JPG', icon: <ImageIcon />, description: '압축된 이미지, 작은 파일 크기' },
-    { value: 'svg', label: 'SVG', icon: <ImageIcon />, description: '벡터 형식, 무한 확대 가능' },
+    { value: 'png', label: 'PNG', description: 'High quality image, supports transparent background' },
+    { value: 'jpg', label: 'JPG', description: 'Compressed image, smaller file size' },
+    { value: 'svg', label: 'SVG', description: 'Vector format, infinitely scalable' },
   ];
 
   const handleExport = () => {
@@ -62,7 +58,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">콘텐츠 내보내기</Typography>
+          <Typography variant="h6">Export Content</Typography>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
           </IconButton>
@@ -72,69 +68,67 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
-            파일 형식 선택
+            Select File Format
           </Typography>
-          <Grid container spacing={2}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
             {formatOptions.map((option) => (
-              <Grid item xs={12} key={option.value}>
-                <Card 
-                  variant={format === option.value ? 'outlined' : 'elevation'}
-                  sx={{ 
-                    cursor: 'pointer',
-                    border: format === option.value ? '2px solid' : '1px solid',
-                    borderColor: format === option.value ? 'primary.main' : 'divider',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                    }
-                  }}
-                  onClick={() => setFormat(option.value)}
-                >
-                  <CardContent sx={{ py: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      {option.icon}
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h6">{option.label}</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {option.description}
-                        </Typography>
-                      </Box>
-                      {format === option.value && (
-                        <Chip label="선택됨" color="primary" size="small" />
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+              <Card 
+                key={option.value}
+                variant={format === option.value ? 'outlined' : 'elevation'}
+                sx={{ 
+                  cursor: 'pointer',
+                  border: format === option.value ? '2px solid' : '1px solid',
+                  borderColor: format === option.value ? 'primary.main' : 'divider',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                  }
+                }}
+                onClick={() => setFormat(option.value)}
+              >
+                <CardContent sx={{ 
+                  p: 2,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  minHeight: 100
+                }}>
+                  <Typography variant="h6" sx={{ mb: 0.5 }}>{option.label}</Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '11px' }}>
+                    {option.description}
+                  </Typography>
+                </CardContent>
+              </Card>
             ))}
-          </Grid>
+          </Box>
 
           <Box sx={{ mt: 3 }}>
             <TextField
               fullWidth
-              label="파일명"
+              label="File Name"
               value={fileName}
               onChange={(e) => setFileName(e.target.value)}
               placeholder={template ? `${template.name}_${new Date().toISOString().split('T')[0]}` : 'export'}
-              helperText={`확장자는 자동으로 추가됩니다 (.${format})`}
+              helperText={`Extension will be added automatically (.${format})`}
             />
           </Box>
 
           {format === 'jpg' && (
             <Box sx={{ mt: 3 }}>
               <Typography variant="subtitle2" gutterBottom>
-                품질 설정
+                Quality Settings
               </Typography>
               <FormControl fullWidth>
-                <InputLabel>품질</InputLabel>
+                <InputLabel>Quality</InputLabel>
                 <Select
                   value={quality}
                   onChange={(e) => setQuality(Number(e.target.value))}
-                  label="품질"
+                  label="Quality"
                 >
-                  <MenuItem value={100}>최고 품질 (100%)</MenuItem>
-                  <MenuItem value={90}>높은 품질 (90%)</MenuItem>
-                  <MenuItem value={80}>중간 품질 (80%)</MenuItem>
-                  <MenuItem value={70}>낮은 품질 (70%)</MenuItem>
+                  <MenuItem value={100}>Highest Quality (100%)</MenuItem>
+                  <MenuItem value={90}>High Quality (90%)</MenuItem>
+                  <MenuItem value={80}>Medium Quality (80%)</MenuItem>
+                  <MenuItem value={70}>Low Quality (70%)</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -143,16 +137,16 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
           {template && (
             <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
               <Typography variant="subtitle2" gutterBottom>
-                내보내기 정보
+                Export Information
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                템플릿: {template.name}
+                Template: {template.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                크기: {template.canvas.width} × {template.canvas.height}px
+                Size: {template.canvas.width} × {template.canvas.height}px
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                형식: {template.format.name}
+                Format: {template.format.name}
               </Typography>
             </Box>
           )}
@@ -160,14 +154,14 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>취소</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button 
           onClick={handleExport}
           variant="contained"
           startIcon={<DownloadIcon />}
           disabled={!template}
         >
-          내보내기
+          Export
         </Button>
       </DialogActions>
     </Dialog>
