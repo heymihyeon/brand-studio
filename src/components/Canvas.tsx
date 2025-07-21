@@ -243,37 +243,71 @@ Contact: ${field(contractData.buyerContact)}
       }
     };
     
-    // Map element IDs to quotation data
+    // Map element IDs to quotation data - matching actual template IDs
     const textMappings: Record<string, string> = {
-      'title': 'Car Sales Quotation',
+      'title': 'Quotation',
       'intro': 'This Car Sales Quotation outlines the estimated cost and vehicle details provided by the seller (hereinafter referred to as "Party A") to the potential buyer (hereinafter referred to as "Party B").',
-      'vehicle-details': `1. Vehicle Type and Model: ${field(quotationData.modelName)}
+      'vehicle-details': `## Section 1 (Vehicle Details)
+1. Vehicle Type and Model: ${field(quotationData.modelName)}
 2. Year of Manufacture: ${field(quotationData.year)}
 3. Vehicle Identification Number (VIN): ${field(quotationData.vin)}
 4. Vehicle Registration Number (if applicable): ${field(quotationData.registrationNumber)}
 5. Mileage: ${field(quotationData.mileage)}
 6. Fuel Type / Transmission: ${field(quotationData.fuelTransmission)}`,
-      'quotation-summary': `1. Base Vehicle Price: KRW ${field(quotationData.basePrice)} (₩${field(quotationData.basePrice)})
+      'quotation-summary': `## Section 2 (Quotation Summary)
+1. Base Vehicle Price: KRW ${field(quotationData.basePrice)} (₩${field(quotationData.basePrice)})
 2. Value-Added Tax (VAT): KRW ${field(quotationData.vat)} (₩${field(quotationData.vat)})
 3. Optional Features / Add-ons: KRW ${field(quotationData.optionalFeatures)} (₩${field(quotationData.optionalFeatures)})
 4. Registration Fees and Taxes: KRW ${field(quotationData.registrationFees)} (₩${field(quotationData.registrationFees)})
 5. Delivery Charges (if any): KRW ${field(quotationData.deliveryCharges)} (₩${field(quotationData.deliveryCharges)})
 6. Total Estimated Price: KRW ${field(quotationData.totalPrice)} (₩${field(quotationData.totalPrice)})`,
-      'quotation-terms': `1. This quotation is valid until: ${field(quotationData.validUntil)}
+      'quotation-terms': `## Section 3 (Quotation Terms)
+1. This quotation is valid until: ${formatDate(quotationData.validUntil)}
 2. Final price may vary based on additional services or updated vehicle condition.
 3. Vehicle availability is subject to prior sale.
 4. This quotation does not constitute a binding agreement unless a formal contract is signed by both parties.`,
       'issue-date': `Date of Issue: ${formatDate(quotationData.issueDate)}`,
-      'dealer-info': `Company Name: ${field(quotationData.dealerCompanyName)}
+      'dealer-info': `Party A (Dealer)
+Company Name: ${field(quotationData.dealerCompanyName)}
 Address: ${field(quotationData.dealerAddress)}
 Contact Person: ${field(quotationData.dealerContactPerson)}
 Phone: ${field(quotationData.dealerPhone)}
 Email: ${field(quotationData.dealerEmail)}`,
-      'customer-info': `Name: ${field(quotationData.customerName)}
+      'customer-info': `Party B (Customer)
+Name: ${field(quotationData.customerName)}
 Address: ${field(quotationData.customerAddress)}
 Phone: ${field(quotationData.customerPhone)}
 Email: ${field(quotationData.customerEmail)}
-(Signature, if required)`
+(Signature, if required)`,
+      // 템플릿의 실제 ID들에 대한 매핑
+      'quote-number': `Quotation #Q-2025-${field(quotationData.issueDate ? quotationData.issueDate.slice(5,7) : '01')}`,
+      'quote-date': `Date: ${formatDate(quotationData.issueDate)}`,
+      'valid-until': `Valid Until: ${formatDate(quotationData.validUntil)}`,
+      'customer': `${field(quotationData.customerName)}
+${field(quotationData.customerAddress)}
+${field(quotationData.customerPhone)}
+${field(quotationData.customerEmail)}`,
+      'company': `${field(quotationData.dealerCompanyName)}
+${field(quotationData.dealerAddress)}
+${field(quotationData.dealerContactPerson)}
+${field(quotationData.dealerPhone)}
+${field(quotationData.dealerEmail)}`,
+      'items': `Vehicle: ${field(quotationData.modelName)} (${field(quotationData.year)})
+VIN: ${field(quotationData.vin)}
+Registration: ${field(quotationData.registrationNumber)}
+Mileage: ${field(quotationData.mileage)}
+Type: ${field(quotationData.fuelTransmission)}
+
+Optional Features: ${field(quotationData.optionalFeatures)}
+Registration Fees: ${field(quotationData.registrationFees)}
+Delivery Charges: ${field(quotationData.deliveryCharges)}`,
+      'subtotal': `$${field(quotationData.basePrice)}`,
+      'tax': `$${field(quotationData.vat)}`,
+      'total': `$${field(quotationData.totalPrice)}`,
+      'terms': `Terms & Conditions:
+• Payment is due within 30 days
+• Prices are subject to change without notice
+• This quote is valid until ${field(quotationData.validUntil)}`
     };
     
     return textMappings[elementId] || '';
@@ -646,9 +680,6 @@ Email: ${field(purchaseOrderData.customerEmail)}
               (obj: any) => obj.type === 'text' && obj.id === titleElement.id
             ) as any;
             
-            const isPromotionBanner = template.category === 'Promotion Banner';
-            const isVerticalBanner = template.format.id === 'banner-vertical';
-            const isSquareBanner = template.format.id === 'banner-square';
             
             // Use title position as the base position for the stack
             // Adjust position based on layout type
@@ -1228,6 +1259,8 @@ export default React.memo(Canvas, (prevProps, nextProps) => {
   return (
     prevProps.template === nextProps.template &&
     JSON.stringify(prevProps.editableValues) === JSON.stringify(nextProps.editableValues) &&
-    JSON.stringify(prevProps.contractData) === JSON.stringify(nextProps.contractData)
+    JSON.stringify(prevProps.contractData) === JSON.stringify(nextProps.contractData) &&
+    JSON.stringify(prevProps.quotationData) === JSON.stringify(nextProps.quotationData) &&
+    JSON.stringify(prevProps.purchaseOrderData) === JSON.stringify(nextProps.purchaseOrderData)
   );
 });
