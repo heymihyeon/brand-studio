@@ -394,7 +394,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   },
   {
     id: 'doc-quotation-a4',
-    name: 'Quotation',
+    name: 'Quotation\n(A4)',
     category: 'Document',
     dimensions: { width: 595, height: 842 },
     canvas: {
@@ -801,8 +801,8 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
   {
-    id: 'doc-purchase-order',
-    name: 'Purchase Order',
+    id: 'doc-purchase-order-a4',
+    name: 'Purchase Order\n(A4)',
     category: 'Document',
     dimensions: { width: 595, height: 842 },
     canvas: {
