@@ -299,7 +299,8 @@ useEffect(() => {
 
   // 템플릿 변형 변경 핸들러
   const handleTemplateVariantChange = (variant: UnifiedFormat) => {
-    setSelectedTemplateVariant(variant.templateVariant || 'default');
+    const variantType = variant.templateVariant || 'default';
+    setSelectedTemplateVariant(variantType);
     const convertedTemplate = convertToTemplate(variant);
     setTemplate(convertedTemplate);
     
@@ -307,11 +308,23 @@ useEffect(() => {
     const currentValues = { ...editableValues };
     
     // 차량 이미지가 없는 center 템플릿인 경우 vehicle 이미지 제거
-    if (variant.templateVariant === 'center') {
-      delete currentValues['vehicle'];
-    } else if (!currentValues['vehicle'] && variant.templateVariant !== 'center') {
-      // center에서 다른 템플릿으로 변경 시 기본 차량 이미지 추가
-      currentValues['vehicle'] = getDefaultVehicle();
+    if (variantType === 'center') {
+      // Center Text로 변경할 때만 차량 이미지를 제거하되, 어딘가에 임시 저장
+      if (currentValues['vehicle']) {
+        // 나중에 복원할 수 있도록 임시 저장
+        currentValues['_previousVehicle'] = currentValues['vehicle'];
+        delete currentValues['vehicle'];
+      }
+    } else if (!currentValues['vehicle'] && variantType !== 'center') {
+      // center에서 다른 템플릿으로 변경 시
+      if (currentValues['_previousVehicle']) {
+        // 이전에 저장된 차량 이미지가 있으면 복원
+        currentValues['vehicle'] = currentValues['_previousVehicle'];
+        delete currentValues['_previousVehicle'];
+      } else {
+        // 없으면 기본 차량 이미지 추가
+        currentValues['vehicle'] = getDefaultVehicle();
+      }
     }
     
     setEditableValues(currentValues);

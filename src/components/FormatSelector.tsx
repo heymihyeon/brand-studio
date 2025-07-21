@@ -10,7 +10,6 @@ import {
   Typography,
   Box,
   IconButton,
-  Chip,
   Stack
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
@@ -39,10 +38,10 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
       fullWidth
       disableEscapeKeyDown
       PaperProps={{
-        onClick: (e) => e.stopPropagation()
+        onClick: (e: React.MouseEvent) => e.stopPropagation()
       }}
       BackdropProps={{
-        onClick: (e) => e.stopPropagation()
+        onClick: (e: React.MouseEvent) => e.stopPropagation()
       }}
     >
       <DialogTitle>
@@ -56,7 +55,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
       <DialogContent>
         <Grid container spacing={3} sx={{ mt: 1 }}>
           {formats.map((format) => (
-            <Grid item size={{xs:12,sm:12,sm:6,md:formats.length <= 3 ? 4 : formats.length === 4 ? 3 : 4}}  key={format.id}>
+            <Grid item size={{xs:12,sm:6,md:formats.length <= 3 ? 4 : formats.length === 4 ? 3 : 4}} key={format.id}>
               <Card sx={{ height: '100%' }}>
                 <CardActionArea onClick={() => onSelect(format)} sx={{ height: '100%' }}>
                   <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -116,15 +115,15 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                         </Typography>
                       </Box>
                       </Stack>
-                      <Typography variant="h6" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
-                        {format.name}
+                      <Typography variant="h6" gutterBottom>
+                        {category === 'Document' && (format.name === 'Car sales contract (A4)' || format.name === 'Quote' || format.name === 'Purchase Order')
+                          ? <>
+                              {format.name.replace(' (A4)', '')}
+                              <br />
+                              (A4)
+                            </>
+                          : format.name}
                       </Typography>
-                      <Chip 
-                        label={format.category} 
-                        size="small" 
-                        variant="outlined"
-                        color="primary"
-                      />
                     </Box>
                   </CardContent>
                 </CardActionArea>

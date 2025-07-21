@@ -508,7 +508,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
-                        textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
+                        textShadow: template.category === 'Document' ? 'none' : (textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)'),
                         letterSpacing: '0.5px',
                         textAlign: textAlign || 'left',
                       }}
@@ -540,7 +540,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
-                        textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
+                        textShadow: template.category === 'Document' ? 'none' : (textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)'),
                         textAlign: textAlign || 'left',
                       }}
                     >
@@ -610,7 +610,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                           overflowWrap: 'break-word',
-                          textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
+                          textShadow: template.category === 'Document' ? 'none' : (textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)'),
                           textAlign: textAlign || 'left',
                         }}
                       >
@@ -716,7 +716,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                       whiteSpace: 'pre-wrap',
                       wordBreak: 'break-word',
                       overflowWrap: 'break-word',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                      textShadow: template.category === 'Document' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
                       letterSpacing: textElement.type === 'heading' ? '0.5px' : 'normal',
                       textAlign: textAlign || 'left',
                     }}
