@@ -151,6 +151,7 @@ const Editor: React.FC = () => {
   const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
   const [selectedTemplateVariant, setSelectedTemplateVariant] = useState<string>('default');
   const canvasRef = useRef<CanvasRef>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 useEffect(() => {
   console.log(template);
@@ -309,8 +310,8 @@ useEffect(() => {
       [elementId]: value,
     }));
     
-    // 실시간 업데이트를 위한 자동 저장 (디바운스 사용)
-    saveCurrentWork();
+    // 텍스트 변경 시 더 긴 디바운스 시간으로 자동 저장
+    debouncedSave(3000); // 3초 디바운스
   };
 
   // 템플릿 변형 변경 핸들러
@@ -417,8 +418,8 @@ useEffect(() => {
         [currentEditingElement]: asset,
       }));
       
-      // 이미지 변경 시도 자동 저장
-      saveCurrentWork();
+      // 이미지 변경 시 자동 저장 (즉시)
+      debouncedSave(1000); // 1초 디바운스
     }
     setAssetSelectorOpen(false);
     setCurrentEditingElement(null);
@@ -430,8 +431,8 @@ useEffect(() => {
       [elementId]: value,
     }));
     
-    // 캔버스에서 텍스트 편집 시도 자동 저장
-    saveCurrentWork();
+    // 캔버스에서 텍스트 편집 시 자동 저장
+    debouncedSave(3000); // 3초 디바운스
   };
 
   const handleCanvasImageEdit = (elementId: string) => {
@@ -467,12 +468,26 @@ useEffect(() => {
     setAssetSelectorOpen(true);
   };
   
-  // 디바운스를 위한 자동 저장 함수
-  const saveCurrentWork = React.useCallback(() => {
+  // 디바운스된 자동 저장 함수
+  const debouncedSave = useCallback((delay: number = 2000) => {
+    // 이전 timeout 취소
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // 새로운 timeout 설정
+    saveTimeoutRef.current = setTimeout(() => {
+      saveCurrentWork();
+    }, delay);
+  }, []);
+
+  // 실제 저장 작업을 수행하는 함수
+  const saveCurrentWork = useCallback(async () => {
     if (!template || !canvasRef.current) return;
     
-    const timeoutId = setTimeout(async () => {
-      const thumbnailData = await canvasRef.current!.exportCanvas('png', 80);
+    try {
+      // 썸네일 생성을 위해 낮은 품질로 export
+      const thumbnailData = await canvasRef.current.exportCanvas('jpg', 20);
       const workName = `${template.name} - ${new Date().toLocaleDateString('ko-KR')}`;
       
       const recentWork: RecentWork = {
@@ -495,11 +510,20 @@ useEffect(() => {
         !work.id.startsWith('sample-') && !work.id.startsWith('auto-')
       );
       filteredWorks.unshift(recentWork);
-      localStorage.setItem('recentWorks', JSON.stringify(filteredWorks.slice(0, 20))); // 최대 20개만 유지
-    }, 1000); // 1초 디바운스
-    
-    return () => clearTimeout(timeoutId);
+      localStorage.setItem('recentWorks', JSON.stringify(filteredWorks.slice(0, 10))); // 최대 10개만 유지
+    } catch (error) {
+      console.error('Auto-save failed:', error);
+    }
   }, [template, editableValues]);
+  
+  // 컴포넌트 언마운트 시 pending timeout 정리
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleExport = async (format: string, quality: number, fileName: string) => {
     if (!canvasRef.current || !template) return;

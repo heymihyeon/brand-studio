@@ -263,9 +263,22 @@ Contact: ${field(contractData.buyerContact)}
   // Effect to analyze background image brightness when it changes
   useEffect(() => {
     if (backgroundImage && template.category === 'Promotion Banner') {
+      // Create a stable key for the background image
+      const imageKey = backgroundImage.substring(0, 100); // Use first 100 chars as key
+      
+      // Check if we've already analyzed this image
+      const cachedColor = sessionStorage.getItem(`img-brightness-${imageKey}`);
+      if (cachedColor) {
+        setTextColor(cachedColor);
+        return;
+      }
+      
+      // Analyze new image
       analyzeImageBrightness(backgroundImage).then((isBright) => {
-        // If background is bright, use black text; if dark, use white text
-        setTextColor(isBright ? '#000000' : '#ffffff');
+        const color = isBright ? '#000000' : '#ffffff';
+        setTextColor(color);
+        // Cache the result
+        sessionStorage.setItem(`img-brightness-${imageKey}`, color);
       });
     }
   }, [backgroundImage, template.category, analyzeImageBrightness]);
@@ -912,4 +925,12 @@ Contact: ${field(contractData.buyerContact)}
 
 Canvas.displayName = 'Canvas';
 
-export default Canvas;
+// Memoize Canvas component to prevent unnecessary re-renders
+export default React.memo(Canvas, (prevProps, nextProps) => {
+  // Custom comparison function for better performance
+  return (
+    prevProps.template === nextProps.template &&
+    JSON.stringify(prevProps.editableValues) === JSON.stringify(nextProps.editableValues) &&
+    JSON.stringify(prevProps.contractData) === JSON.stringify(nextProps.contractData)
+  );
+});
