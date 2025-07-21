@@ -237,6 +237,15 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
             
             // Ensure the vehicle doesn't go beyond canvas bounds with margins
             if (isVehicleImage) {
+              console.log('Vehicle image processing:', {
+                templateFormatId: template.format.id,
+                templateName: template.name,
+                canvasWidth: template.canvas.width,
+                originalLeft: adjustedLeft,
+                vehicleWidth: size.width,
+                scaleFactor: scaleFactor
+              });
+              
               const maxLeft = template.canvas.width - size.width - rightMargin;
               const maxTop = template.canvas.height - size.height - bottomMargin;
               
@@ -244,8 +253,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
               adjustedTop = Math.min(adjustedTop, maxTop);
               
               // Center horizontally for vertical banner format
-              if (template.format.id === 'banner-vertical') {
+              // Check both format id and canvas dimensions
+              const isVerticalBanner = template.format.id === 'banner-vertical' || 
+                                     (template.canvas.width === 400 && template.canvas.height === 900);
+              
+              if (isVerticalBanner) {
                 adjustedLeft = (template.canvas.width - size.width) / 2;
+                console.log('Centering vehicle for vertical banner:', {
+                  newLeft: adjustedLeft,
+                  calculation: `(${template.canvas.width} - ${size.width}) / 2`
+                });
               }
             }
             

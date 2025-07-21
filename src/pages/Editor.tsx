@@ -876,28 +876,35 @@ useEffect(() => {
             setTemplate(convertedTemplate);
             setSelectedFormat(convertedTemplate.format);
             
-            // 초기 편집 가능 값 설정
+            // 기존 편집 값을 유지하면서 새 템플릿에 맞게 조정
             const initialValues: Record<string, any> = {};
+            
+            // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = text.text || '';
+              initialValues[text.id] = editableValues[text.id] || text.text || '';
             });
+            
+            // 이미지는 기존에 선택한 값 유지
             convertedTemplate.editableElements.images.forEach((image) => {
-              // 차량 이미지인 경우 기본 차량 이미지 설정
-              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                initialValues[image.id] = getDefaultVehicle();
-              } 
-              // 배경 이미지인 경우 기본 배경 이미지 설정
-              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
-                initialValues[image.id] = getDefaultBackground();
-              } 
-              // 그 외의 경우
-              else {
-                initialValues[image.id] = image.src || '';
+              // 기존에 선택한 이미지가 있으면 유지
+              if (editableValues[image.id]) {
+                initialValues[image.id] = editableValues[image.id];
+              } else {
+                // 없으면 기본 이미지 설정
+                if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                  initialValues[image.id] = getDefaultVehicle();
+                } 
+                else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                  initialValues[image.id] = getDefaultBackground();
+                } 
+                else {
+                  initialValues[image.id] = image.src || '';
+                }
               }
             });
             
-            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
-            initialValues['brandLogo'] = getDefaultLogo();
+            // 로고 이미지도 기존 값 유지
+            initialValues['brandLogo'] = editableValues['brandLogo'] || getDefaultLogo();
             
             setEditableValues(initialValues);
           } else {
@@ -910,28 +917,35 @@ useEffect(() => {
             setAvailableTemplateVariants([]);
             setSelectedTemplateVariant('default');
             
-            // 초기 편집 가능 값 설정
+            // 기존 편집 값을 유지하면서 새 템플릿에 맞게 조정
             const initialValues: Record<string, any> = {};
+            
+            // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = text.text || '';
+              initialValues[text.id] = editableValues[text.id] || text.text || '';
             });
+            
+            // 이미지는 기존에 선택한 값 유지
             convertedTemplate.editableElements.images.forEach((image) => {
-              // 차량 이미지인 경우 기본 차량 이미지 설정
-              if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                initialValues[image.id] = getDefaultVehicle();
-              } 
-              // 배경 이미지인 경우 기본 배경 이미지 설정
-              else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
-                initialValues[image.id] = getDefaultBackground();
-              } 
-              // 그 외의 경우
-              else {
-                initialValues[image.id] = image.src || '';
+              // 기존에 선택한 이미지가 있으면 유지
+              if (editableValues[image.id]) {
+                initialValues[image.id] = editableValues[image.id];
+              } else {
+                // 없으면 기본 이미지 설정
+                if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
+                  initialValues[image.id] = getDefaultVehicle();
+                } 
+                else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
+                  initialValues[image.id] = getDefaultBackground();
+                } 
+                else {
+                  initialValues[image.id] = image.src || '';
+                }
               }
             });
             
-            // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
-            initialValues['brandLogo'] = getDefaultLogo();
+            // 로고 이미지도 기존 값 유지
+            initialValues['brandLogo'] = editableValues['brandLogo'] || getDefaultLogo();
             
             setEditableValues(initialValues);
           }
