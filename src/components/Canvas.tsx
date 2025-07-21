@@ -262,19 +262,15 @@ Contact: ${field(contractData.buyerContact)}
 2. Final price may vary based on additional services or updated vehicle condition.
 3. Vehicle availability is subject to prior sale.
 4. This quotation does not constitute a binding agreement unless a formal contract is signed by both parties.`,
-      'issue-date': `Date of Issue: ${formatDate(quotationData.issueDate)}`,
-      'dealer-info': `Party A (Dealer)
-Company Name: ${field(quotationData.dealerCompanyName)}
-Address: ${field(quotationData.dealerAddress)}
-Contact Person: ${field(quotationData.dealerContactPerson)}
-Phone: ${field(quotationData.dealerPhone)}
-Email: ${field(quotationData.dealerEmail)}`,
-      'customer-info': `Party B (Customer)
+      'agreement-date': `Date of Agreement: ${formatDate(quotationData.issueDate)}`,
+      'party-a-info': `Address: ${field(quotationData.dealerAddress)}
+Name: ${field(quotationData.dealerContactPerson)}
+Contact: ${field(quotationData.dealerPhone)}
+(Signature or Seal)`,
+      'party-b-info': `Address: ${field(quotationData.customerAddress)}
 Name: ${field(quotationData.customerName)}
-Address: ${field(quotationData.customerAddress)}
-Phone: ${field(quotationData.customerPhone)}
-Email: ${field(quotationData.customerEmail)}
-(Signature, if required)`,
+Contact: ${field(quotationData.customerPhone)}
+(Signature or Seal)`,
       // 템플릿의 실제 ID들에 대한 매핑
       'quote-number': `Quotation #Q-2025-${field(quotationData.issueDate ? quotationData.issueDate.slice(5,7) : '01')}`,
       'quote-date': `Date: ${formatDate(quotationData.issueDate)}`,
@@ -824,7 +820,7 @@ ${field(purchaseOrderData.customerPhone)}`,
                   const isPlaceholder = !value;
                   
                   // Skip rendering if displayText is empty for Quotation/Purchase Order templates
-                  if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && !displayText) {
+                  if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (!displayText || displayText.trim() === '')) {
                     return null;
                   }
                   
@@ -887,7 +883,7 @@ ${field(purchaseOrderData.customerPhone)}`,
                           textAlign: textAlign || 'left',
                         }}
                       >
-                        {displayText}
+                        {displayText || ''}
                       </Typography>
                     </Box>
                   );
@@ -902,7 +898,7 @@ ${field(purchaseOrderData.customerPhone)}`,
               const isPlaceholder = !value;
               
               // Skip rendering if displayText is empty for Quotation/Purchase Order templates
-              if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && !displayText) {
+              if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (!displayText || displayText.trim() === '')) {
                 return null;
               }
               
@@ -943,7 +939,7 @@ ${field(purchaseOrderData.customerPhone)}`,
                 } else if (textElement.id === 'price') {
                   carContractOffset = 140; // Price: down 140px (170 - 30px up)
                 } else if (textElement.id === 'payment-delivery') {
-                  carContractOffset = 91; // Payment: down 91px (121 - 30px up)
+                  carContractOffset = 170; // Payment: sale price와 30px 간격 (140 + 30 = 170)
                 } else if (textElement.id === 'agreement-date' || textElement.id === 'party-a-info' || textElement.id === 'party-b-info') {
                   carContractOffset = -40; // Contract date and party info: up 40px (20+20)
                 } else {
