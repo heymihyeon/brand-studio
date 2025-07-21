@@ -721,11 +721,11 @@ Contact: ${field(contractData.buyerContact)}
                 if (isCarContractTitle) {
                   carContractOffset = -24; // Title: up 24px (40-16)
                 } else if (textElement.id === 'vehicle-info') {
-                  carContractOffset = -20; // Vehicle info: up 20px from base position
+                  carContractOffset = -50; // Vehicle info: up 50px from base position (20 + 30px up)
                 } else if (textElement.id === 'price') {
-                  carContractOffset = 50; // Price: down 50px (70-20)
+                  carContractOffset = 140; // Price: down 140px (170 - 30px up)
                 } else if (textElement.id === 'payment-delivery') {
-                  carContractOffset = 100; // Payment: down 100px (120-20)
+                  carContractOffset = 91; // Payment: down 91px (121 - 30px up)
                 } else if (textElement.id === 'agreement-date' || textElement.id === 'party-a-info' || textElement.id === 'party-b-info') {
                   carContractOffset = -40; // Contract date and party info: up 40px (20+20)
                 } else {
