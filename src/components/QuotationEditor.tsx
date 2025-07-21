@@ -78,7 +78,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
     }}>
       <Stack spacing={2}>
         {/* Vehicle Details */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Vehicle Details
         </Typography>
         <TextField
@@ -133,7 +133,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
         <Divider />
 
         {/* Quotation Summary */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Quotation Summary
         </Typography>
         <TextField
@@ -189,7 +189,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
         <Divider />
 
         {/* Quotation Terms */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Quotation Terms
         </Typography>
         <TextField
@@ -207,7 +207,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
         <Divider />
 
         {/* Dealer Information */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Dealer Information
         </Typography>
         <TextField
@@ -254,7 +254,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
         <Divider />
 
         {/* Customer Information */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Customer Information
         </Typography>
         <TextField
@@ -293,7 +293,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
         <Divider />
 
         {/* Date of Issue */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+        <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
           Date of Issue
         </Typography>
         <TextField
@@ -311,12 +311,12 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
 
         {/* Image Edit */}
         <Box>
-          <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+          <Typography variant="subtitle1" gutterBottom fontWeight="bold" sx={{ color: 'black' }}>
             Image Edit
           </Typography>
           
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: '4px' }}>
+            <Typography variant="body2" sx={{ mb: '4px', color: 'black' }}>
               Logo Image
             </Typography>
             <Button
@@ -329,7 +329,7 @@ const QuotationEditor: React.FC<QuotationEditorProps> = ({
           </Box>
           
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: '4px' }}>
+            <Typography variant="body2" sx={{ mb: '4px', color: 'black' }}>
               Dealer Signature
             </Typography>
             <Button
