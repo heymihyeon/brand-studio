@@ -246,23 +246,19 @@ Contact: ${field(contractData.buyerContact)}
     // Map element IDs to quotation data - matching actual template IDs
     const textMappings: Record<string, string> = {
       'title': 'Quotation',
-      'intro': 'This Car Sales Quotation outlines the estimated cost and vehicle details provided by the seller (hereinafter referred to as "Party A") to the potential buyer (hereinafter referred to as "Party B").',
-      'vehicle-details': `## Section 1 (Vehicle Details)
-1. Vehicle Type and Model: ${field(quotationData.modelName)}
+      'vehicle-details': `1. Vehicle Type and Model: ${field(quotationData.modelName)}
 2. Year of Manufacture: ${field(quotationData.year)}
 3. Vehicle Identification Number (VIN): ${field(quotationData.vin)}
 4. Vehicle Registration Number (if applicable): ${field(quotationData.registrationNumber)}
 5. Mileage: ${field(quotationData.mileage)}
 6. Fuel Type / Transmission: ${field(quotationData.fuelTransmission)}`,
-      'quotation-summary': `## Section 2 (Quotation Summary)
-1. Base Vehicle Price: KRW ${field(quotationData.basePrice)} (₩${field(quotationData.basePrice)})
+      'quotation-summary': `1. Base Vehicle Price: KRW ${field(quotationData.basePrice)} (₩${field(quotationData.basePrice)})
 2. Value-Added Tax (VAT): KRW ${field(quotationData.vat)} (₩${field(quotationData.vat)})
 3. Optional Features / Add-ons: KRW ${field(quotationData.optionalFeatures)} (₩${field(quotationData.optionalFeatures)})
 4. Registration Fees and Taxes: KRW ${field(quotationData.registrationFees)} (₩${field(quotationData.registrationFees)})
 5. Delivery Charges (if any): KRW ${field(quotationData.deliveryCharges)} (₩${field(quotationData.deliveryCharges)})
 6. Total Estimated Price: KRW ${field(quotationData.totalPrice)} (₩${field(quotationData.totalPrice)})`,
-      'quotation-terms': `## Section 3 (Quotation Terms)
-1. This quotation is valid until: ${formatDate(quotationData.validUntil)}
+      'quotation-terms': `1. This quotation is valid until: ${formatDate(quotationData.validUntil)}
 2. Final price may vary based on additional services or updated vehicle condition.
 3. Vehicle availability is subject to prior sale.
 4. This quotation does not constitute a binding agreement unless a formal contract is signed by both parties.`,
@@ -337,10 +333,9 @@ Delivery Charges: ${field(quotationData.deliveryCharges)}`,
       }
     };
     
-    // Map element IDs to purchase order data
+    // Map element IDs to purchase order data - matching actual template IDs
     const textMappings: Record<string, string> = {
-      'title': 'Car Purchase Order',
-      'intro': 'This Car Purchase Order confirms the intent of the buyer (hereinafter referred to as "Party B") to purchase the vehicle described below from the seller (hereinafter referred to as "Party A") under the following terms and conditions.',
+      'title': 'Purchase Order',
       'vehicle-details': `1. Vehicle Type and Model: ${field(purchaseOrderData.modelName)}
 2. Year of Manufacture: ${field(purchaseOrderData.year)}
 3. Vehicle Identification Number (VIN): ${field(purchaseOrderData.vin)}
@@ -356,24 +351,53 @@ Delivery Charges: ${field(quotationData.deliveryCharges)}`,
 6. Total Order Price: KRW ${field(purchaseOrderData.totalPrice)} (₩${field(purchaseOrderData.totalPrice)})`,
       'order-terms': `1. A deposit of KRW ${field(purchaseOrderData.deposit)} (₩${field(purchaseOrderData.deposit)}) shall be paid by Party B on the date of signing this purchase order.
 2. The remaining balance shall be paid on or before vehicle delivery.
-3. Vehicle delivery is scheduled for: ${field(purchaseOrderData.deliveryDate)}
+3. Vehicle delivery is scheduled for: ${formatDate(purchaseOrderData.deliveryDate)}
 4. The vehicle will be delivered at the following location: ${field(purchaseOrderData.deliveryLocation)}
-5. Title transfer and registration will be completed by: ${field(purchaseOrderData.titleTransferDate)}`,
-      'order-conditions': `1. This purchase order is valid until: ${field(purchaseOrderData.validUntil)}
+5. Title transfer and registration will be completed by: ${formatDate(purchaseOrderData.titleTransferDate)}`,
+      'order-conditions': `1. This purchase order is valid until: ${formatDate(purchaseOrderData.validUntil)}
 2. If the buyer fails to complete the purchase within the validity period, this order may be canceled without further notice.
 3. This order becomes binding upon payment of the deposit by Party B and confirmation by Party A.`,
       'order-date': `Date of Order: ${formatDate(purchaseOrderData.orderDate)}`,
-      'dealer-info': `Company Name: ${field(purchaseOrderData.dealerCompanyName)}
+      'dealer-info': `Party A (Dealer)
+Company Name: ${field(purchaseOrderData.dealerCompanyName)}
 Address: ${field(purchaseOrderData.dealerAddress)}
 Contact Person: ${field(purchaseOrderData.dealerContactPerson)}
 Phone: ${field(purchaseOrderData.dealerPhone)}
 Email: ${field(purchaseOrderData.dealerEmail)}
 (Signature / Seal)`,
-      'customer-info': `Name: ${field(purchaseOrderData.customerName)}
+      'customer-info': `Party B (Customer)
+Name: ${field(purchaseOrderData.customerName)}
 Address: ${field(purchaseOrderData.customerAddress)}
 Phone: ${field(purchaseOrderData.customerPhone)}
 Email: ${field(purchaseOrderData.customerEmail)}
-(Signature / Seal)`
+(Signature / Seal)`,
+      // 템플릿의 실제 ID들에 대한 매핑
+      'po-number': `PO #PO-2025-${field(purchaseOrderData.orderDate ? purchaseOrderData.orderDate.slice(5,7) : '01')}`,
+      'po-date': `Date: ${formatDate(purchaseOrderData.orderDate)}`,
+      'delivery-date': `Delivery: ${formatDate(purchaseOrderData.deliveryDate)}`,
+      'vendor': `${field(purchaseOrderData.dealerCompanyName)}
+${field(purchaseOrderData.dealerContactPerson)}
+${field(purchaseOrderData.dealerAddress)}
+${field(purchaseOrderData.dealerPhone)}`,
+      'ship-to': `${field(purchaseOrderData.customerName)}
+${field(purchaseOrderData.deliveryLocation)}
+${field(purchaseOrderData.customerAddress)}
+${field(purchaseOrderData.customerPhone)}`,
+      'items': `001     Vehicle: ${field(purchaseOrderData.modelName)} (${field(purchaseOrderData.year)})     1     ${field(purchaseOrderData.basePrice)}     ${field(purchaseOrderData.basePrice)}
+        VIN: ${field(purchaseOrderData.vin)}
+        Registration: ${field(purchaseOrderData.registrationNumber)}
+
+002     Optional Features: ${field(purchaseOrderData.optionalFeatures)}     -     ${field(purchaseOrderData.optionalFeatures)}     ${field(purchaseOrderData.optionalFeatures)}
+
+003     Registration & Delivery: ${field(purchaseOrderData.registrationFees)}     -     ${field(purchaseOrderData.deliveryCharges)}     ${field(purchaseOrderData.registrationFees)}`,
+      'subtotal': `$${field(purchaseOrderData.basePrice)}`,
+      'shipping': `$${field(purchaseOrderData.deliveryCharges)}`,
+      'total': `$${field(purchaseOrderData.totalPrice)}`,
+      'terms': `Terms & Conditions:
+• Payment terms: ${field(purchaseOrderData.deposit)} deposit, balance on delivery
+• Delivery terms: ${field(purchaseOrderData.deliveryLocation)}
+• Please reference PO number on all correspondence
+• All items must meet specifications or will be returned`
     };
     
     return textMappings[elementId] || '';
@@ -799,6 +823,11 @@ Email: ${field(purchaseOrderData.customerEmail)}
                   const displayText = getTextValue(textElement.id, textElement.type);
                   const isPlaceholder = !value;
                   
+                  // Skip rendering if displayText is empty for Quotation/Purchase Order templates
+                  if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && !displayText) {
+                    return null;
+                  }
+                  
                   const canvasTextObj = template.canvas.objects?.find(
                     (obj: any) => obj.type === 'text' && obj.id === textElement.id
                   ) as any;
@@ -871,6 +900,11 @@ Email: ${field(purchaseOrderData.customerEmail)}
               const value = editableValues[textElement.id] || textElement.text || '';
               const displayText = getTextValue(textElement.id, textElement.type);
               const isPlaceholder = !value;
+              
+              // Skip rendering if displayText is empty for Quotation/Purchase Order templates
+              if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && !displayText) {
+                return null;
+              }
               
               const canvasTextObj = template.canvas.objects?.find(
                 (obj: any) => obj.type === 'text' && obj.id === textElement.id
@@ -995,6 +1029,7 @@ Email: ${field(purchaseOrderData.customerEmail)}
             });
           }
         })()}
+
 
         {/* Section Headers for Documents */}
         {(template.format.id === 'doc-contract-a4' || template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (() => {
