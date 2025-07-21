@@ -393,8 +393,8 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
   {
-    id: 'doc-quote',
-    name: 'Quote',
+    id: 'doc-quotation-a4',
+    name: 'Quotation',
     category: 'Document',
     dimensions: { width: 595, height: 842 },
     canvas: {
@@ -427,13 +427,13 @@ export const unifiedFormats: UnifiedFormat[] = [
           selectable: false,
           evented: false,
         },
-        // Quote 번호
+        // Quotation 번호
         {
           id: 'quote-number',
           type: 'text',
           left: 50,
           top: 95,
-          text: 'Quote #Q-2025-001',
+          text: 'Quotation #Q-2025-001',
           fontSize: 14,
           fontFamily: 'Arial',
           fill: '#000000',
@@ -727,7 +727,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'quote-number',
           type: 'subheading',
-          text: 'Quote #Q-2025-001',
+          text: 'Quotation #Q-2025-001',
           position: { x: 50, y: 95 },
           editable: true,
         },
