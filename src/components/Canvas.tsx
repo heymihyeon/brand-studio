@@ -858,26 +858,26 @@ Contact: ${field(contractData.buyerContact)}
           });
         })()}
 
-        {/* Buyer Signature Image for Car Sales Contract */}
-        {template.format.id === 'doc-contract-a4' && editableValues['buyerSignature'] && (() => {
-          const partyBTextElement = template.editableElements.texts.find(t => t.id === 'party-b-info');
-          if (!partyBTextElement) return null;
+        {/* Seller Signature Image for Car Sales Contract */}
+        {template.format.id === 'doc-contract-a4' && editableValues['sellerSignature'] && (() => {
+          const partyATextElement = template.editableElements.texts.find(t => t.id === 'party-a-info');
+          if (!partyATextElement) return null;
           
           const canvasTextObj = template.canvas.objects?.find(
-            (obj: any) => obj.type === 'text' && obj.id === 'party-b-info'
+            (obj: any) => obj.type === 'text' && obj.id === 'party-a-info'
           ) as any;
           
           const position = {
-            left: (canvasTextObj?.left || partyBTextElement.position.x) + 200,
-            top: (canvasTextObj?.top || partyBTextElement.position.y) - 40 + 60, // Apply same offset as party-b-info text
+            left: (canvasTextObj?.left || partyATextElement.position.x) + 120 - 48 - 48 - 40 + 16, // Moved left by 120px total
+            top: (canvasTextObj?.top || partyATextElement.position.y) - 40 + 55 + 10, // Moved down by 10px
           };
           
-          const signature = editableValues['buyerSignature'] as BrandAsset;
+          const signature = editableValues['sellerSignature'] as BrandAsset;
           
           return (
             <Box
-              key="buyer-signature"
-              onClick={() => onImageEdit && onImageEdit('buyerSignature')}
+              key="seller-signature"
+              onClick={() => onImageEdit && onImageEdit('sellerSignature')}
               sx={{
                 position: 'absolute',
                 left: position.left,

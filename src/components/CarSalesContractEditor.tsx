@@ -234,9 +234,9 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => onImageEdit && onImageEdit('buyerSignature')}
+              onClick={() => onImageEdit && onImageEdit('sellerSignature')}
             >
-              {editableValues?.['buyerSignature']?.name || 'Upload Signature'}
+              {editableValues?.['sellerSignature']?.name || 'Upload Signature'}
             </Button>
           </Box>
         </Box>

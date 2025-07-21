@@ -352,7 +352,7 @@ useEffect(() => {
     setCurrentEditingElement(elementId);
     
     // Handle signature upload separately
-    if (elementId === 'buyerSignature') {
+    if (elementId === 'sellerSignature') {
       console.log('Editor: Opening file picker for Signature');
       // Create a temporary file input
       const fileInput = document.createElement('input');
@@ -376,7 +376,7 @@ useEffect(() => {
             };
             setEditableValues((prev) => ({
               ...prev,
-              buyerSignature: signatureAsset,
+              sellerSignature: signatureAsset,
             }));
           };
           reader.readAsDataURL(file);
@@ -435,6 +435,12 @@ useEffect(() => {
   };
 
   const handleCanvasImageEdit = (elementId: string) => {
+    // Handle signature click from canvas
+    if (elementId === 'sellerSignature') {
+      handleImageSelect(elementId);
+      return;
+    }
+    
     setCurrentEditingElement(elementId);
     
     // Set filter category based on image element label or ID
