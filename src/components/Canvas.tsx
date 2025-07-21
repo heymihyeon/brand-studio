@@ -2,6 +2,7 @@ import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef } f
 import { Box, Typography } from '@mui/material';
 import { Template, BrandAsset } from '../types';
 import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface CanvasProps {
   template: Template;
@@ -62,9 +63,26 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
           return canvas.toDataURL('image/png');
         } else if (format === 'jpg' || format === 'jpeg') {
           return canvas.toDataURL('image/jpeg', quality / 100);
-        } else if (format === 'svg') {
-          // For SVG, we'll just return PNG for now as SVG export is complex
-          return canvas.toDataURL('image/png');
+        } else if (format === 'pdf') {
+          // Create PDF from canvas
+          const imgData = canvas.toDataURL('image/png');
+          
+          // Calculate PDF dimensions in mm
+          const pdfWidth = template.canvas.width * 0.264583; // pixels to mm (96 DPI)
+          const pdfHeight = template.canvas.height * 0.264583;
+          
+          // Create PDF with custom dimensions
+          const pdf = new jsPDF({
+            orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+            unit: 'mm',
+            format: [pdfWidth, pdfHeight]
+          });
+          
+          // Add image to PDF
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          
+          // Convert to data URL
+          return pdf.output('dataurlstring');
         }
         
         return canvas.toDataURL('image/png');
@@ -175,15 +193,33 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
         )}
 
         {/* Logo image layer - render logo from brandLogo if available */}
-        {editableValues['brandLogo'] && (
+        {(() => {
+          const logo = editableValues['brandLogo'];
+          if (!logo) {
+            console.log('No logo found in editableValues');
+            return null;
+          }
+          console.log('Logo rendering info:', {
+            formatId: template.format.id,
+            logoUrl: (logo as BrandAsset).url,
+            position: template.format.id === 'banner-square' 
+              ? `left: ${template.canvas.width - 140}, top: 20`
+              : 'right: 20, top: 20',
+            size: '120x60',
+            canvasWidth: template.canvas.width
+          });
+          return (
           <Box
             onClick={() => onImageEdit && onImageEdit('brandLogo')}
             sx={{
               position: 'absolute',
-              right: 20,
-              top: 20,
-              width: template.format.id === 'banner-square' ? 150 : 120,
-              height: template.format.id === 'banner-square' ? 75 : 60,
+              // Square Banner의 경우 left 사용, 다른 경우 right 사용
+              ...(template.format.id === 'banner-square' 
+                ? { left: template.canvas.width - 140, top: 20 }  // 1080 - 140 = 940
+                : { right: 20, top: 20 }
+              ),
+              width: 120,
+              height: 60,
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
@@ -203,7 +239,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
               />
             ) : null}
           </Box>
-        )}
+          );
+        })()}
 
         {/* Vehicle/Product images layer */}
         {template.editableElements.images

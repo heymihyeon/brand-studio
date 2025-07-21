@@ -42,7 +42,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   const formatOptions = [
     { value: 'png', label: 'PNG', description: 'High quality image, supports transparent background' },
     { value: 'jpg', label: 'JPG', description: 'Compressed image, smaller file size' },
-    { value: 'svg', label: 'SVG', description: 'Vector format, infinitely scalable' },
+    { value: 'pdf', label: 'PDF', description: 'Document format, suitable for printing' },
   ];
 
   const handleExport = () => {
