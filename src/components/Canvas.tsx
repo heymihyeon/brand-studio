@@ -812,6 +812,52 @@ Contact: ${field(contractData.buyerContact)}
           }
         })()}
 
+        {/* Section Headers for Car Sales Contract */}
+        {template.format.id === 'doc-contract-a4' && (() => {
+          const headers = [
+            { id: 'seller-header', text: 'Seller', targetId: 'party-a-info' },
+            { id: 'buyer-header', text: 'Buyer', targetId: 'party-b-info' }
+          ];
+          
+          return headers.map(header => {
+            const targetElement = template.editableElements.texts.find(t => t.id === header.targetId);
+            if (!targetElement) return null;
+            
+            const canvasTextObj = template.canvas.objects?.find(
+              (obj: any) => obj.type === 'text' && obj.id === header.targetId
+            ) as any;
+            
+            const position = {
+              left: (canvasTextObj?.left || targetElement.position.x) + 16, // Moved right by 16px
+              top: (canvasTextObj?.top || targetElement.position.y) - 40 - 35 + 24, // Moved down by 24px
+            };
+            
+            return (
+              <Box
+                key={header.id}
+                sx={{
+                  position: 'absolute',
+                  left: position.left,
+                  top: position.top,
+                  zIndex: 3,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    fontFamily: 'Arial, sans-serif',
+                    color: '#000000',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {header.text}
+                </Typography>
+              </Box>
+            );
+          });
+        })()}
+
         {/* Buyer Signature Image for Car Sales Contract */}
         {template.format.id === 'doc-contract-a4' && editableValues['buyerSignature'] && (() => {
           const partyBTextElement = template.editableElements.texts.find(t => t.id === 'party-b-info');
