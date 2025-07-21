@@ -31,6 +31,8 @@ import AssetSelector from '../components/AssetSelector';
 import FormatSelector from '../components/FormatSelector';
 import ExportDialog from '../components/ExportDialog';
 import CarSalesContractEditor, { ContractData } from '../components/CarSalesContractEditor';
+import QuotationEditor, { QuotationData } from '../components/QuotationEditor';
+import PurchaseOrderEditor, { PurchaseOrderData } from '../components/PurchaseOrderEditor';
 import { Template, FormatOption, BrandAsset, Category, RecentWork } from '../types';
 import { templates, getTemplatesByCategory } from '../data/templates';
 import { getFormatsByCategory } from '../data/formats';
@@ -138,6 +140,63 @@ const Editor: React.FC = () => {
     buyerAddress: '',
     buyerContact: '',
     agreementDate: new Date().toISOString().split('T')[0],
+  });
+  
+  const [quotationData, setQuotationData] = useState<QuotationData>({
+    modelName: '',
+    year: '',
+    vin: '',
+    registrationNumber: '',
+    mileage: '',
+    fuelTransmission: '',
+    basePrice: '',
+    vat: '',
+    optionalFeatures: '',
+    registrationFees: '',
+    deliveryCharges: '',
+    totalPrice: '',
+    validUntil: new Date().toISOString().split('T')[0],
+    dealerCompanyName: '',
+    dealerAddress: '',
+    dealerContactPerson: '',
+    dealerPhone: '',
+    dealerEmail: '',
+    customerName: '',
+    customerAddress: '',
+    customerPhone: '',
+    customerEmail: '',
+    issueDate: new Date().toISOString().split('T')[0],
+  });
+  
+  const [purchaseOrderData, setPurchaseOrderData] = useState<PurchaseOrderData>({
+    modelName: '',
+    year: '',
+    vin: '',
+    registrationNumber: '',
+    mileage: '',
+    fuelTransmission: '',
+    exteriorInteriorColor: '',
+    basePrice: '',
+    vat: '',
+    optionalFeatures: '',
+    registrationFees: '',
+    deliveryCharges: '',
+    totalPrice: '',
+    deposit: '',
+    deliveryDate: new Date().toISOString().split('T')[0],
+    deliveryLocation: '',
+    titleTransferDate: new Date().toISOString().split('T')[0],
+    validUntil: new Date().toISOString().split('T')[0],
+    dealerCompanyName: '',
+    dealerAddress: '',
+    dealerContactPerson: '',
+    dealerPhone: '',
+    dealerEmail: '',
+    customerName: '',
+    customerAddress: '',
+    customerPhone: '',
+    customerEmail: '',
+    orderDate: new Date().toISOString().split('T')[0],
   });
   const [assetSelectorOpen, setAssetSelectorOpen] = useState(false);
   const [currentEditingElement, setCurrentEditingElement] = useState<string | null>(null);
@@ -782,11 +841,25 @@ useEffect(() => {
         </Stack>
 
         <Stack spacing={3}>
-          {/* Car Sales Contract 템플릿인 경우 전용 에디터 사용 */}
+          {/* Document 포맷별 전용 에디터 사용 */}
           {template && template.format.id === 'doc-contract-a4' ? (
             <CarSalesContractEditor
               data={contractData}
               onChange={setContractData}
+              onImageEdit={handleImageSelect}
+              editableValues={editableValues}
+            />
+          ) : template && template.format.id === 'doc-quotation-a4' ? (
+            <QuotationEditor
+              data={quotationData}
+              onChange={setQuotationData}
+              onImageEdit={handleImageSelect}
+              editableValues={editableValues}
+            />
+          ) : template && template.format.id === 'doc-purchase-order-a4' ? (
+            <PurchaseOrderEditor
+              data={purchaseOrderData}
+              onChange={setPurchaseOrderData}
               onImageEdit={handleImageSelect}
               editableValues={editableValues}
             />
@@ -959,6 +1032,8 @@ useEffect(() => {
                 template={template}
                 editableValues={editableValues}
                 contractData={template.format.id === 'doc-contract-a4' ? contractData : undefined}
+                quotationData={template.format.id === 'doc-quotation-a4' ? quotationData : undefined}
+                purchaseOrderData={template.format.id === 'doc-purchase-order-a4' ? purchaseOrderData : undefined}
                 onTextEdit={handleCanvasTextEdit}
                 onImageEdit={handleCanvasImageEdit}
               />

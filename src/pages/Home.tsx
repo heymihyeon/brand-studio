@@ -39,7 +39,7 @@ const categories: Category[] = [
     id: 'document',
     name: 'Document',
     icon: 'description',
-    description: 'Create contract, Quote, Purchase Order, and more.',
+    description: 'Create contract, Quotation, Purchase Order, and more.',
     defaultTemplate: 'doc-template-1',
   },
   {

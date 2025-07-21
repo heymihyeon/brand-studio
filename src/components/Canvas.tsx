@@ -4,11 +4,15 @@ import { Template, BrandAsset } from '../types';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ContractData } from './CarSalesContractEditor';
+import { QuotationData } from './QuotationEditor';
+import { PurchaseOrderData } from './PurchaseOrderEditor';
 
 interface CanvasProps {
   template: Template;
   editableValues: Record<string, any>;
   contractData?: ContractData;
+  quotationData?: QuotationData;
+  purchaseOrderData?: PurchaseOrderData;
   onTextEdit?: (elementId: string, currentValue: string) => void;
   onImageEdit?: (elementId: string) => void;
 }
@@ -17,7 +21,7 @@ export interface CanvasRef {
   exportCanvas: (format: string, quality: number) => Promise<string>;
 }
 
-const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, contractData, onTextEdit, onImageEdit }, ref) => {
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, contractData, quotationData, purchaseOrderData, onTextEdit, onImageEdit }, ref) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -143,6 +147,16 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
       return getContractText(elementId);
     }
     
+    // Special handling for quotation
+    if (template.format.id === 'doc-quotation-a4' && quotationData) {
+      return getQuotationText(elementId);
+    }
+    
+    // Special handling for purchase order
+    if (template.format.id === 'doc-purchase-order-a4' && purchaseOrderData) {
+      return getPurchaseOrderText(elementId);
+    }
+    
     const value = editableValues[elementId];
     if (value) return value;
     
@@ -200,6 +214,132 @@ Contact: ${field(contractData.sellerContact)}
 Name: ${field(contractData.buyerName)}
 Contact: ${field(contractData.buyerContact)}
 (Signature or Seal)`
+    };
+    
+    return textMappings[elementId] || '';
+  };
+  
+  // Get quotation text based on element ID
+  const getQuotationText = (elementId: string): string => {
+    if (!quotationData) return '';
+    
+    // Helper function to render field value or underline
+    const field = (value: string | undefined): string => {
+      return value && value.trim() !== '' ? value : '_____';
+    };
+    
+    // Helper function to format date
+    const formatDate = (dateStr: string | undefined): string => {
+      if (!dateStr || dateStr.trim() === '') return '_____ Year _____ Month _____ Day';
+      
+      try {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year} Year ${month} Month ${day} Day`;
+      } catch (e) {
+        return '_____ Year _____ Month _____ Day';
+      }
+    };
+    
+    // Map element IDs to quotation data
+    const textMappings: Record<string, string> = {
+      'title': 'Car Sales Quotation',
+      'intro': 'This Car Sales Quotation outlines the estimated cost and vehicle details provided by the seller (hereinafter referred to as "Party A") to the potential buyer (hereinafter referred to as "Party B").',
+      'vehicle-details': `1. Vehicle Type and Model: ${field(quotationData.modelName)}
+2. Year of Manufacture: ${field(quotationData.year)}
+3. Vehicle Identification Number (VIN): ${field(quotationData.vin)}
+4. Vehicle Registration Number (if applicable): ${field(quotationData.registrationNumber)}
+5. Mileage: ${field(quotationData.mileage)}
+6. Fuel Type / Transmission: ${field(quotationData.fuelTransmission)}`,
+      'quotation-summary': `1. Base Vehicle Price: KRW ${field(quotationData.basePrice)} (₩${field(quotationData.basePrice)})
+2. Value-Added Tax (VAT): KRW ${field(quotationData.vat)} (₩${field(quotationData.vat)})
+3. Optional Features / Add-ons: KRW ${field(quotationData.optionalFeatures)} (₩${field(quotationData.optionalFeatures)})
+4. Registration Fees and Taxes: KRW ${field(quotationData.registrationFees)} (₩${field(quotationData.registrationFees)})
+5. Delivery Charges (if any): KRW ${field(quotationData.deliveryCharges)} (₩${field(quotationData.deliveryCharges)})
+6. Total Estimated Price: KRW ${field(quotationData.totalPrice)} (₩${field(quotationData.totalPrice)})`,
+      'quotation-terms': `1. This quotation is valid until: ${field(quotationData.validUntil)}
+2. Final price may vary based on additional services or updated vehicle condition.
+3. Vehicle availability is subject to prior sale.
+4. This quotation does not constitute a binding agreement unless a formal contract is signed by both parties.`,
+      'issue-date': `Date of Issue: ${formatDate(quotationData.issueDate)}`,
+      'dealer-info': `Company Name: ${field(quotationData.dealerCompanyName)}
+Address: ${field(quotationData.dealerAddress)}
+Contact Person: ${field(quotationData.dealerContactPerson)}
+Phone: ${field(quotationData.dealerPhone)}
+Email: ${field(quotationData.dealerEmail)}`,
+      'customer-info': `Name: ${field(quotationData.customerName)}
+Address: ${field(quotationData.customerAddress)}
+Phone: ${field(quotationData.customerPhone)}
+Email: ${field(quotationData.customerEmail)}
+(Signature, if required)`
+    };
+    
+    return textMappings[elementId] || '';
+  };
+  
+  // Get purchase order text based on element ID
+  const getPurchaseOrderText = (elementId: string): string => {
+    if (!purchaseOrderData) return '';
+    
+    // Helper function to render field value or underline
+    const field = (value: string | undefined): string => {
+      return value && value.trim() !== '' ? value : '_____';
+    };
+    
+    // Helper function to format date
+    const formatDate = (dateStr: string | undefined): string => {
+      if (!dateStr || dateStr.trim() === '') return '_____ Year _____ Month _____ Day';
+      
+      try {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year} Year ${month} Month ${day} Day`;
+      } catch (e) {
+        return '_____ Year _____ Month _____ Day';
+      }
+    };
+    
+    // Map element IDs to purchase order data
+    const textMappings: Record<string, string> = {
+      'title': 'Car Purchase Order',
+      'intro': 'This Car Purchase Order confirms the intent of the buyer (hereinafter referred to as "Party B") to purchase the vehicle described below from the seller (hereinafter referred to as "Party A") under the following terms and conditions.',
+      'vehicle-details': `1. Vehicle Type and Model: ${field(purchaseOrderData.modelName)}
+2. Year of Manufacture: ${field(purchaseOrderData.year)}
+3. Vehicle Identification Number (VIN): ${field(purchaseOrderData.vin)}
+4. Vehicle Registration Number (if applicable): ${field(purchaseOrderData.registrationNumber)}
+5. Mileage: ${field(purchaseOrderData.mileage)}
+6. Fuel Type / Transmission: ${field(purchaseOrderData.fuelTransmission)}
+7. Exterior / Interior Color: ${field(purchaseOrderData.exteriorInteriorColor)}`,
+      'order-summary': `1. Base Vehicle Price: KRW ${field(purchaseOrderData.basePrice)} (₩${field(purchaseOrderData.basePrice)})
+2. Value-Added Tax (VAT): KRW ${field(purchaseOrderData.vat)} (₩${field(purchaseOrderData.vat)})
+3. Optional Features / Add-ons: KRW ${field(purchaseOrderData.optionalFeatures)} (₩${field(purchaseOrderData.optionalFeatures)})
+4. Registration Fees and Taxes: KRW ${field(purchaseOrderData.registrationFees)} (₩${field(purchaseOrderData.registrationFees)})
+5. Delivery Charges (if any): KRW ${field(purchaseOrderData.deliveryCharges)} (₩${field(purchaseOrderData.deliveryCharges)})
+6. Total Order Price: KRW ${field(purchaseOrderData.totalPrice)} (₩${field(purchaseOrderData.totalPrice)})`,
+      'order-terms': `1. A deposit of KRW ${field(purchaseOrderData.deposit)} (₩${field(purchaseOrderData.deposit)}) shall be paid by Party B on the date of signing this purchase order.
+2. The remaining balance shall be paid on or before vehicle delivery.
+3. Vehicle delivery is scheduled for: ${field(purchaseOrderData.deliveryDate)}
+4. The vehicle will be delivered at the following location: ${field(purchaseOrderData.deliveryLocation)}
+5. Title transfer and registration will be completed by: ${field(purchaseOrderData.titleTransferDate)}`,
+      'order-conditions': `1. This purchase order is valid until: ${field(purchaseOrderData.validUntil)}
+2. If the buyer fails to complete the purchase within the validity period, this order may be canceled without further notice.
+3. This order becomes binding upon payment of the deposit by Party B and confirmation by Party A.`,
+      'order-date': `Date of Order: ${formatDate(purchaseOrderData.orderDate)}`,
+      'dealer-info': `Company Name: ${field(purchaseOrderData.dealerCompanyName)}
+Address: ${field(purchaseOrderData.dealerAddress)}
+Contact Person: ${field(purchaseOrderData.dealerContactPerson)}
+Phone: ${field(purchaseOrderData.dealerPhone)}
+Email: ${field(purchaseOrderData.dealerEmail)}
+(Signature / Seal)`,
+      'customer-info': `Name: ${field(purchaseOrderData.customerName)}
+Address: ${field(purchaseOrderData.customerAddress)}
+Phone: ${field(purchaseOrderData.customerPhone)}
+Email: ${field(purchaseOrderData.customerEmail)}
+(Signature / Seal)`
     };
     
     return textMappings[elementId] || '';
@@ -825,12 +965,26 @@ Contact: ${field(contractData.buyerContact)}
           }
         })()}
 
-        {/* Section Headers for Car Sales Contract */}
-        {template.format.id === 'doc-contract-a4' && (() => {
-          const headers = [
-            { id: 'seller-header', text: 'Seller', targetId: 'party-a-info' },
-            { id: 'buyer-header', text: 'Buyer', targetId: 'party-b-info' }
-          ];
+        {/* Section Headers for Documents */}
+        {(template.format.id === 'doc-contract-a4' || template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (() => {
+          let headers: Array<{id: string, text: string, targetId: string}> = [];
+          
+          if (template.format.id === 'doc-contract-a4') {
+            headers = [
+              { id: 'seller-header', text: 'Seller', targetId: 'party-a-info' },
+              { id: 'buyer-header', text: 'Buyer', targetId: 'party-b-info' }
+            ];
+          } else if (template.format.id === 'doc-quotation-a4') {
+            headers = [
+              { id: 'dealer-header', text: 'Party A (Dealer)', targetId: 'dealer-info' },
+              { id: 'customer-header', text: 'Party B (Customer)', targetId: 'customer-info' }
+            ];
+          } else if (template.format.id === 'doc-purchase-order-a4') {
+            headers = [
+              { id: 'dealer-header', text: 'Party A (Dealer)', targetId: 'dealer-info' },
+              { id: 'customer-header', text: 'Party B (Customer)', targetId: 'customer-info' }
+            ];
+          }
           
           return headers.map(header => {
             const targetElement = template.editableElements.texts.find(t => t.id === header.targetId);
@@ -871,51 +1025,194 @@ Contact: ${field(contractData.buyerContact)}
           });
         })()}
 
-        {/* Seller Signature Image for Car Sales Contract */}
-        {template.format.id === 'doc-contract-a4' && editableValues['sellerSignature'] && (() => {
-          const partyATextElement = template.editableElements.texts.find(t => t.id === 'party-a-info');
-          if (!partyATextElement) return null;
+        {/* Signature Images for Documents */}
+        {(() => {
+          const signatures = [];
           
-          const canvasTextObj = template.canvas.objects?.find(
-            (obj: any) => obj.type === 'text' && obj.id === 'party-a-info'
-          ) as any;
+          // Car Sales Contract - Seller Signature
+          if (template.format.id === 'doc-contract-a4' && editableValues['sellerSignature']) {
+            const partyATextElement = template.editableElements.texts.find(t => t.id === 'party-a-info');
+            if (partyATextElement) {
+              const canvasTextObj = template.canvas.objects?.find(
+                (obj: any) => obj.type === 'text' && obj.id === 'party-a-info'
+              ) as any;
+              
+              const position = {
+                left: (canvasTextObj?.left || partyATextElement.position.x) + 120 - 48 - 48 - 40 + 16,
+                top: (canvasTextObj?.top || partyATextElement.position.y) - 40 + 55 + 10,
+              };
+              
+              signatures.push(
+                <Box
+                  key="seller-signature"
+                  onClick={() => onImageEdit && onImageEdit('sellerSignature')}
+                  sx={{
+                    position: 'absolute',
+                    left: position.left,
+                    top: position.top,
+                    width: 150,
+                    height: 60,
+                    cursor: 'pointer',
+                    zIndex: 4,
+                    '&:hover': {
+                      outline: '2px dashed #1976d2',
+                      outlineOffset: '2px',
+                    }
+                  }}
+                >
+                  <img 
+                    src={(editableValues['sellerSignature'] as BrandAsset).url} 
+                    alt="Signature"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </Box>
+              );
+            }
+          }
           
-          const position = {
-            left: (canvasTextObj?.left || partyATextElement.position.x) + 120 - 48 - 48 - 40 + 16, // Moved left by 120px total
-            top: (canvasTextObj?.top || partyATextElement.position.y) - 40 + 55 + 10, // Moved down by 10px
-          };
+          // Quotation - Dealer Signature
+          if (template.format.id === 'doc-quotation-a4' && editableValues['dealerSignature']) {
+            const dealerTextElement = template.editableElements.texts.find(t => t.id === 'dealer-info');
+            if (dealerTextElement) {
+              const canvasTextObj = template.canvas.objects?.find(
+                (obj: any) => obj.type === 'text' && obj.id === 'dealer-info'
+              ) as any;
+              
+              const position = {
+                left: (canvasTextObj?.left || dealerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
+                top: (canvasTextObj?.top || dealerTextElement.position.y) - 40 + 55 + 10,
+              };
+              
+              signatures.push(
+                <Box
+                  key="dealer-signature"
+                  onClick={() => onImageEdit && onImageEdit('dealerSignature')}
+                  sx={{
+                    position: 'absolute',
+                    left: position.left,
+                    top: position.top,
+                    width: 150,
+                    height: 60,
+                    cursor: 'pointer',
+                    zIndex: 4,
+                    '&:hover': {
+                      outline: '2px dashed #1976d2',
+                      outlineOffset: '2px',
+                    }
+                  }}
+                >
+                  <img 
+                    src={(editableValues['dealerSignature'] as BrandAsset).url} 
+                    alt="Dealer Signature"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                    }}
+                  />
+                </Box>
+              );
+            }
+          }
           
-          const signature = editableValues['sellerSignature'] as BrandAsset;
+          // Purchase Order - Dealer and Customer Signatures
+          if (template.format.id === 'doc-purchase-order-a4') {
+            // Dealer Signature
+            if (editableValues['dealerSignature']) {
+              const dealerTextElement = template.editableElements.texts.find(t => t.id === 'dealer-info');
+              if (dealerTextElement) {
+                const canvasTextObj = template.canvas.objects?.find(
+                  (obj: any) => obj.type === 'text' && obj.id === 'dealer-info'
+                ) as any;
+                
+                const position = {
+                  left: (canvasTextObj?.left || dealerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
+                  top: (canvasTextObj?.top || dealerTextElement.position.y) - 40 + 55 + 10,
+                };
+                
+                signatures.push(
+                  <Box
+                    key="dealer-signature"
+                    onClick={() => onImageEdit && onImageEdit('dealerSignature')}
+                    sx={{
+                      position: 'absolute',
+                      left: position.left,
+                      top: position.top,
+                      width: 150,
+                      height: 60,
+                      cursor: 'pointer',
+                      zIndex: 4,
+                      '&:hover': {
+                        outline: '2px dashed #1976d2',
+                        outlineOffset: '2px',
+                      }
+                    }}
+                  >
+                    <img 
+                      src={(editableValues['dealerSignature'] as BrandAsset).url} 
+                      alt="Dealer Signature"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </Box>
+                );
+              }
+            }
+            
+            // Customer Signature
+            if (editableValues['customerSignature']) {
+              const customerTextElement = template.editableElements.texts.find(t => t.id === 'customer-info');
+              if (customerTextElement) {
+                const canvasTextObj = template.canvas.objects?.find(
+                  (obj: any) => obj.type === 'text' && obj.id === 'customer-info'
+                ) as any;
+                
+                const position = {
+                  left: (canvasTextObj?.left || customerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
+                  top: (canvasTextObj?.top || customerTextElement.position.y) - 40 + 55 + 10,
+                };
+                
+                signatures.push(
+                  <Box
+                    key="customer-signature"
+                    onClick={() => onImageEdit && onImageEdit('customerSignature')}
+                    sx={{
+                      position: 'absolute',
+                      left: position.left,
+                      top: position.top,
+                      width: 150,
+                      height: 60,
+                      cursor: 'pointer',
+                      zIndex: 4,
+                      '&:hover': {
+                        outline: '2px dashed #1976d2',
+                        outlineOffset: '2px',
+                      }
+                    }}
+                  >
+                    <img 
+                      src={(editableValues['customerSignature'] as BrandAsset).url} 
+                      alt="Customer Signature"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </Box>
+                );
+              }
+            }
+          }
           
-          return (
-            <Box
-              key="seller-signature"
-              onClick={() => onImageEdit && onImageEdit('sellerSignature')}
-              sx={{
-                position: 'absolute',
-                left: position.left,
-                top: position.top,
-                width: 150,
-                height: 60,
-                cursor: 'pointer',
-                zIndex: 4,
-                '&:hover': {
-                  outline: '2px dashed #1976d2',
-                  outlineOffset: '2px',
-                }
-              }}
-            >
-              <img 
-                src={signature.url} 
-                alt="Signature"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                }}
-              />
-            </Box>
-          );
+          return signatures;
         })()}
 
       </Box>
