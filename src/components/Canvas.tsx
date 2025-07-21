@@ -812,6 +812,53 @@ Contact: ${field(contractData.buyerContact)}
           }
         })()}
 
+        {/* Buyer Signature Image for Car Sales Contract */}
+        {template.format.id === 'doc-contract-a4' && editableValues['buyerSignature'] && (() => {
+          const partyBTextElement = template.editableElements.texts.find(t => t.id === 'party-b-info');
+          if (!partyBTextElement) return null;
+          
+          const canvasTextObj = template.canvas.objects?.find(
+            (obj: any) => obj.type === 'text' && obj.id === 'party-b-info'
+          ) as any;
+          
+          const position = {
+            left: (canvasTextObj?.left || partyBTextElement.position.x) + 200,
+            top: (canvasTextObj?.top || partyBTextElement.position.y) - 40 + 60, // Apply same offset as party-b-info text
+          };
+          
+          const signature = editableValues['buyerSignature'] as BrandAsset;
+          
+          return (
+            <Box
+              key="buyer-signature"
+              onClick={() => onImageEdit && onImageEdit('buyerSignature')}
+              sx={{
+                position: 'absolute',
+                left: position.left,
+                top: position.top,
+                width: 150,
+                height: 60,
+                cursor: 'pointer',
+                zIndex: 4,
+                '&:hover': {
+                  outline: '2px dashed #1976d2',
+                  outlineOffset: '2px',
+                }
+              }}
+            >
+              <img 
+                src={signature.url} 
+                alt="Signature"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+              />
+            </Box>
+          );
+        })()}
+
       </Box>
     </Box>
   );

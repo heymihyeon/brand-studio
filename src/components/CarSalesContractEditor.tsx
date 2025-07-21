@@ -226,6 +226,19 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
               {editableValues?.['brandLogo']?.name || 'Select Logo'}
             </Button>
           </Box>
+          
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" sx={{ mb: '4px' }}>
+              Signature
+            </Typography>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => onImageEdit && onImageEdit('buyerSignature')}
+            >
+              {editableValues?.['buyerSignature']?.name || 'Upload Signature'}
+            </Button>
+          </Box>
         </Box>
       </Stack>
     </Paper>

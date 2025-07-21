@@ -351,6 +351,41 @@ useEffect(() => {
   const handleImageSelect = (elementId: string) => {
     setCurrentEditingElement(elementId);
     
+    // Handle signature upload separately
+    if (elementId === 'buyerSignature') {
+      console.log('Editor: Opening file picker for Signature');
+      // Create a temporary file input
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const signatureAsset: BrandAsset = {
+              id: `signature-${Date.now()}`,
+              name: file.name,
+              type: 'image',
+              url: event.target?.result as string,
+              thumbnailUrl: event.target?.result as string,
+              category: 'Signature',
+              uploadedAt: new Date(),
+              fileSize: file.size,
+              dimensions: { width: 200, height: 100 },
+            };
+            setEditableValues((prev) => ({
+              ...prev,
+              buyerSignature: signatureAsset,
+            }));
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      fileInput.click();
+      return;
+    }
+    
     // Set filter category based on image element label or ID
     if (elementId === 'brandLogo') {
       console.log('Editor: Setting filter to Logos');

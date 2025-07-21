@@ -75,7 +75,6 @@ const BrandHub: React.FC = () => {
   const [backgroundImages, setBackgroundImages] = useState<BrandAsset[]>([]);
   const [backgroundDialogOpen, setBackgroundDialogOpen] = useState(false);
   const [backgroundForm, setBackgroundForm] = useState({ name: '', file: null as File | null });
-  
 
   const addPresetLogoImage =()=>{
 
