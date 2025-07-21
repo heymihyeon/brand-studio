@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState, useRef, useCallback } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Template, BrandAsset } from '../types';
 import html2canvas from 'html2canvas';
@@ -19,6 +19,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
   const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [textColor, setTextColor] = useState<string>('#ffffff'); // Default to white
 
   useImperativeHandle(ref, () => ({
     exportCanvas: async (format: string, quality: number) => {
@@ -145,6 +146,69 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
   };
 
   const backgroundImage = getBackgroundImage();
+
+  // Function to analyze image brightness
+  const analyzeImageBrightness = useCallback(async (imageUrl: string) => {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      return new Promise<boolean>((resolve) => {
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(true); // Default to bright if context fails
+            return;
+          }
+
+          // Sample the image at a smaller size for performance
+          const sampleSize = 50;
+          canvas.width = sampleSize;
+          canvas.height = sampleSize;
+          ctx.drawImage(img, 0, 0, sampleSize, sampleSize);
+
+          const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize);
+          const data = imageData.data;
+          
+          let totalBrightness = 0;
+          const pixelCount = data.length / 4;
+
+          for (let i = 0; i < data.length; i += 4) {
+            // Calculate brightness using relative luminance formula
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+            totalBrightness += brightness;
+          }
+
+          const averageBrightness = totalBrightness / pixelCount;
+          // If average brightness is above 128 (middle value), consider it bright
+          resolve(averageBrightness > 128);
+        };
+
+        img.onerror = () => {
+          resolve(true); // Default to bright if image fails to load
+        };
+
+        img.src = imageUrl;
+      });
+    } catch (error) {
+      console.error('Error analyzing image brightness:', error);
+      return true; // Default to bright on error
+    }
+  }, []);
+
+  // Effect to analyze background image brightness when it changes
+  useEffect(() => {
+    if (backgroundImage && template.category === 'Promotion Banner') {
+      analyzeImageBrightness(backgroundImage).then((isBright) => {
+        // If background is bright, use black text; if dark, use white text
+        setTextColor(isBright ? '#000000' : '#ffffff');
+      });
+    }
+  }, [backgroundImage, template.category, analyzeImageBrightness]);
 
   return (
     <Box
@@ -439,12 +503,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 42 : 48),
                         fontWeight: 'bold',
                         fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
-                        color: editableValues[titleElement.id] ? (titleCanvasObj?.fill || '#ffffff') : 'rgba(255, 255, 255, 0.5)',
+                        color: editableValues[titleElement.id] ? textColor : (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'),
                         lineHeight: titleCanvasObj?.lineHeight || 1.2,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
                         letterSpacing: '0.5px',
                         textAlign: textAlign || 'left',
                       }}
@@ -471,12 +535,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
                         fontWeight: '500',
                         fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
-                        color: editableValues[subtitleElement.id] ? (titleCanvasObj?.fill || '#ffffff') : 'rgba(255, 255, 255, 0.5)',
+                        color: editableValues[subtitleElement.id] ? textColor : (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'),
                         lineHeight: 1.2,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
-                        textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
                         textAlign: textAlign || 'left',
                       }}
                     >
@@ -503,7 +567,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                   const fontSize = canvasTextObj?.fontSize || 18;
                   const fontWeight = canvasTextObj?.fontWeight || 'normal';
                   const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
-                  const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
+                  const color = isPlaceholder 
+                    ? (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)') 
+                    : (template.category === 'Promotion Banner' ? textColor : (canvasTextObj?.fill || '#ffffff'));
                   const textAlign = canvasTextObj?.textAlign || 'left';
                   const originX = canvasTextObj?.originX || 'left';
                   
@@ -544,7 +610,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                           overflowWrap: 'break-word',
-                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                          textShadow: textColor === '#000000' ? '0 1px 2px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0,0,0,0.3)',
                           textAlign: textAlign || 'left',
                         }}
                       >
@@ -596,7 +662,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                                 (textElement.type === 'heading' ? 'bold' : 
                                  textElement.type === 'subheading' ? '500' : 'normal');
               const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
-              const color = isPlaceholder ? 'rgba(255, 255, 255, 0.5)' : (canvasTextObj?.fill || '#ffffff');
+              const color = isPlaceholder 
+                ? (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)') 
+                : (isPromotionBanner ? textColor : (canvasTextObj?.fill || '#ffffff'));
               
               const textAlign = canvasTextObj?.textAlign || 'left';
               const originX = canvasTextObj?.originX || 'left';
