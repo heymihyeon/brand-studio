@@ -30,6 +30,7 @@ import Canvas, { CanvasRef } from '../components/Canvas';
 import AssetSelector from '../components/AssetSelector';
 import FormatSelector from '../components/FormatSelector';
 import ExportDialog from '../components/ExportDialog';
+import CarSalesContractEditor, { ContractData } from '../components/CarSalesContractEditor';
 import { Template, FormatOption, BrandAsset, Category, RecentWork } from '../types';
 import { templates, getTemplatesByCategory } from '../data/templates';
 import { getFormatsByCategory } from '../data/formats';
@@ -123,6 +124,21 @@ const Editor: React.FC = () => {
   const navigate = useNavigate();
   const [template, setTemplate] = useState<Template | null>(null);
   const [editableValues, setEditableValues] = useState<Record<string, any>>({});
+  const [contractData, setContractData] = useState<ContractData>({
+    registrationNumber: '',
+    modelName: '',
+    year: '',
+    vin: '',
+    salesPrice: '',
+    paymentTerms: '',
+    sellerName: '',
+    sellerAddress: '',
+    sellerContact: '',
+    buyerName: '',
+    buyerAddress: '',
+    buyerContact: '',
+    agreementDate: new Date().toISOString().split('T')[0],
+  });
   const [assetSelectorOpen, setAssetSelectorOpen] = useState(false);
   const [currentEditingElement, setCurrentEditingElement] = useState<string | null>(null);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
@@ -701,35 +717,42 @@ useEffect(() => {
         </Stack>
 
         <Stack spacing={3}>
-          {/* 편집 가능한 텍스트 요소들 */}
-          {template && (
-            <>
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Text Edit
-              </Typography>
-              {template.editableElements.texts.map((textElement) => (
-                <TextField
-                  key={textElement.id}
-                  fullWidth
-                  label={
-                    textElement.type === 'heading' ? 'Title' :
-                    textElement.type === 'subheading' ? 'Subtitle' : 'Body'
-                  }
-                  value={editableValues[textElement.id] || ''}
-                  onChange={(e) => handleTextChange(textElement.id, e.target.value)}
-                  multiline={true}
-                  rows={
-                    textElement.type === 'heading' ? 2 :
-                    textElement.type === 'subheading' ? 2 : 4
-                  }
-                />
-              ))}
-              
+          {/* Car Sales Contract 템플릿인 경우 전용 에디터 사용 */}
+          {template && template.format.id === 'doc-contract-a4' ? (
+            <CarSalesContractEditor
+              data={contractData}
+              onChange={setContractData}
+            />
+          ) : (
+            /* 다른 템플릿의 경우 기존 편집 방식 사용 */
+            template && (
               <>
-                <Divider />
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                  Image Edit
+                  Text Edit
                 </Typography>
+                {template.editableElements.texts.map((textElement) => (
+                  <TextField
+                    key={textElement.id}
+                    fullWidth
+                    label={
+                      textElement.type === 'heading' ? 'Title' :
+                      textElement.type === 'subheading' ? 'Subtitle' : 'Body'
+                    }
+                    value={editableValues[textElement.id] || ''}
+                    onChange={(e) => handleTextChange(textElement.id, e.target.value)}
+                    multiline={true}
+                    rows={
+                      textElement.type === 'heading' ? 2 :
+                      textElement.type === 'subheading' ? 2 : 4
+                    }
+                  />
+                ))}
+                
+                <>
+                  <Divider />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    Image Edit
+                  </Typography>
                 {template.editableElements.images.map((imageElement) => (
                   <Box key={imageElement.id}>
                     <Typography variant="body2" gutterBottom>
@@ -769,8 +792,9 @@ useEffect(() => {
                       : 'Select Logo'}
                   </Button>
                 </Box>
+                </>
               </>
-            </>
+            )
           )}
 
           {/* 템플릿 선택 섹션 - 템플릿 변형이 있는 경우 표시 */}
@@ -867,6 +891,7 @@ useEffect(() => {
                 ref={canvasRef}
                 template={template}
                 editableValues={editableValues}
+                contractData={template.format.id === 'doc-contract-a4' ? contractData : undefined}
                 onTextEdit={handleCanvasTextEdit}
                 onImageEdit={handleCanvasImageEdit}
               />

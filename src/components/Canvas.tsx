@@ -3,10 +3,12 @@ import { Box, Typography } from '@mui/material';
 import { Template, BrandAsset } from '../types';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ContractData } from './CarSalesContractEditor';
 
 interface CanvasProps {
   template: Template;
   editableValues: Record<string, any>;
+  contractData?: ContractData;
   onTextEdit?: (elementId: string, currentValue: string) => void;
   onImageEdit?: (elementId: string) => void;
 }
@@ -15,7 +17,7 @@ export interface CanvasRef {
   exportCanvas: (format: string, quality: number) => Promise<string>;
 }
 
-const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, onTextEdit, onImageEdit }, ref) => {
+const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, contractData, onTextEdit, onImageEdit }, ref) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -136,6 +138,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
 
   // Get text value with placeholder
   const getTextValue = (elementId: string, type: string) => {
+    // Special handling for car sales contract
+    if (template.format.id === 'doc-contract-a4' && contractData) {
+      return getContractText(elementId);
+    }
+    
     const value = editableValues[elementId];
     if (value) return value;
     
@@ -143,6 +150,77 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
     return type === 'heading' ? 'Enter title here' : 
            type === 'subheading' ? 'Enter subtitle here' : 
            'Enter text here';
+  };
+
+  // Get contract text based on element ID
+  const getContractText = (elementId: string): string => {
+    if (!contractData) return '';
+    
+    // Helper function to render field value or underline
+    const field = (value: string | undefined): string => {
+      return value && value.trim() !== '' ? value : '_____';
+    };
+    
+    // Map element IDs to contract data
+    const textMappings: Record<string, string> = {
+      'title': 'Car sales contract',
+      'intro': `This contract is entered into by and between the parties identified below for the sale of the vehicle described herein.
+
+Article 1. Vehicle for Sale
+
+Party A agrees to sell the following vehicle to Party B:
+
+- Registration number: ${field(contractData.registrationNumber)}
+- Model name: ${field(contractData.modelName)}
+- Year: ${field(contractData.year)}
+- VIN: ${field(contractData.vin)}
+
+Article 2. Sales Price
+
+The total sales price for the vehicle is: ${field(contractData.salesPrice)}
+
+Payment terms: ${field(contractData.paymentTerms)}
+
+Article 3. Payment and Delivery
+
+Party B agrees to pay the sales price according to the payment terms specified above. Party A agrees to deliver the vehicle to Party B upon receipt of full payment.
+
+Article 4. Taxes and Public Charges
+
+All taxes and public charges related to the transfer of ownership shall be borne by Party B.
+
+Article 5. Warranty for Defects
+
+Party A warrants that the vehicle is free from any defects known to Party A at the time of sale. Party A makes no other warranties, express or implied.
+
+Article 6. Accident History
+
+Party A declares that the vehicle has/has not been involved in any major accidents.
+
+Article 7. Registration Transfer
+
+Party A agrees to cooperate with Party B in completing all necessary procedures for the transfer of registration.
+
+Article 8. Interpretation of Contract
+
+This contract shall be governed by and interpreted in accordance with the laws of the jurisdiction where the sale takes place.
+
+This contract is made in duplicate, with each party retaining one copy.
+
+Date of Agreement: ${field(contractData.agreementDate)}`,
+      'party-a': `Party A (Seller)
+
+Address: ${field(contractData.sellerAddress)}
+Name: ${field(contractData.sellerName)}
+Contact: ${field(contractData.sellerContact)}`,
+      'party-b': `Party B (Buyer)
+
+Address: ${field(contractData.buyerAddress)}
+Name: ${field(contractData.buyerName)}
+Contact: ${field(contractData.buyerContact)}`
+    };
+    
+    return textMappings[elementId] || '';
   };
 
   const backgroundImage = getBackgroundImage();
