@@ -39,6 +39,14 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   const [quality, setQuality] = useState<number>(100);
   const [fileName, setFileName] = useState<string>('');
 
+  // Set default filename when dialog opens
+  React.useEffect(() => {
+    if (open && template) {
+      const defaultName = `${template.name}_${new Date().toISOString().split('T')[0]}`;
+      setFileName(defaultName);
+    }
+  }, [open, template]);
+
   const formatOptions = [
     { value: 'png', label: 'PNG', description: 'High quality image, supports transparent background' },
     { value: 'jpg', label: 'JPG', description: 'Compressed image, smaller file size' },
