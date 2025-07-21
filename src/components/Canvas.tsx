@@ -161,63 +161,45 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
       return value && value.trim() !== '' ? value : '_____';
     };
     
-    // Map element IDs to contract data
+    // Helper function to format date
+    const formatDate = (dateStr: string | undefined): string => {
+      if (!dateStr || dateStr.trim() === '') return '_____ Year _____ Month _____ Day';
+      
+      try {
+        const date = new Date(dateStr);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return `${year} Year ${month} Month ${day} Day`;
+      } catch (e) {
+        return '_____ Year _____ Month _____ Day';
+      }
+    };
+    
+    // Map element IDs to contract data - matching actual template IDs
     const textMappings: Record<string, string> = {
       'title': 'Car sales contract',
-      'intro': `This contract is entered into by and between the parties identified below for the sale of the vehicle described herein.
+      'intro': 'This Car Sales Agreement is made and entered into by and between the seller (hereinafter referred to as "Party A") and the buyer (hereinafter referred to as "Party B") under the following terms and conditions.',
+      'vehicle-info': `1. Vehicle Registration Number: ${field(contractData.registrationNumber)}
+2. Vehicle Type and Model: ${field(contractData.modelName)}
+3. Year of Manufacture: ${field(contractData.year)}
+4. Vehicle Identification Number (VIN): ${field(contractData.vin)}
 
-Article 1. Vehicle for Sale
+※ Vehicle mileage, accident history, flood damage status, etc., shall be provided in a separate confirmation document or vehicle inspection report.`,
+      'price': `The sales price of the vehicle in Article 1, including value-added tax, is set at KRW ${field(contractData.salesPrice)} (₩${field(contractData.salesPrice)}).`,
+      'payment-delivery': `1. Upon execution of this agreement, Party B shall pay the full amount specified in Article 2 to Party A in cash or by wire transfer, as mutually agreed.
+2. The vehicle shall be delivered at the storage location (○○ Auto Repair Shop, ○○-dong, ○○ City, ○○ Province) at the responsibility of the buyer.
 
-Party A agrees to sell the following vehicle to Party B:
-
-- Registration number: ${field(contractData.registrationNumber)}
-- Model name: ${field(contractData.modelName)}
-- Year: ${field(contractData.year)}
-- VIN: ${field(contractData.vin)}
-
-Article 2. Sales Price
-
-The total sales price for the vehicle is: ${field(contractData.salesPrice)}
-
-Payment terms: ${field(contractData.paymentTerms)}
-
-Article 3. Payment and Delivery
-
-Party B agrees to pay the sales price according to the payment terms specified above. Party A agrees to deliver the vehicle to Party B upon receipt of full payment.
-
-Article 4. Taxes and Public Charges
-
-All taxes and public charges related to the transfer of ownership shall be borne by Party B.
-
-Article 5. Warranty for Defects
-
-Party A warrants that the vehicle is free from any defects known to Party A at the time of sale. Party A makes no other warranties, express or implied.
-
-Article 6. Accident History
-
-Party A declares that the vehicle has/has not been involved in any major accidents.
-
-Article 7. Registration Transfer
-
-Party A agrees to cooperate with Party B in completing all necessary procedures for the transfer of registration.
-
-Article 8. Interpretation of Contract
-
-This contract shall be governed by and interpreted in accordance with the laws of the jurisdiction where the sale takes place.
-
-This contract is made in duplicate, with each party retaining one copy.
-
-Date of Agreement: ${field(contractData.agreementDate)}`,
-      'party-a': `Party A (Seller)
-
-Address: ${field(contractData.sellerAddress)}
+Payment terms: ${field(contractData.paymentTerms)}`,
+      'agreement-date': `Date of Agreement: ${formatDate(contractData.agreementDate)}`,
+      'party-a-info': `Address: ${field(contractData.sellerAddress)}
 Name: ${field(contractData.sellerName)}
-Contact: ${field(contractData.sellerContact)}`,
-      'party-b': `Party B (Buyer)
-
-Address: ${field(contractData.buyerAddress)}
+Contact: ${field(contractData.sellerContact)}
+(Signature or Seal)`,
+      'party-b-info': `Address: ${field(contractData.buyerAddress)}
 Name: ${field(contractData.buyerName)}
-Contact: ${field(contractData.buyerContact)}`
+Contact: ${field(contractData.buyerContact)}
+(Signature or Seal)`
     };
     
     return textMappings[elementId] || '';
@@ -357,8 +339,8 @@ Contact: ${field(contractData.buyerContact)}`
               position: 'absolute',
               // Square Banner의 경우 left 사용, 다른 경우 right 사용
               ...(template.format.id === 'banner-square' 
-                ? { left: template.canvas.width - 140, top: 20 }  // 1080 - 140 = 940
-                : { right: 20, top: 20 }
+                ? { left: template.canvas.width - 150, top: 4 }  // 1080 - 150 = 930 (10px 좌측), top: 4 (16px 위로)
+                : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
               width: 120,
               height: 60,
@@ -728,9 +710,32 @@ Contact: ${field(contractData.buyerContact)}`
                 topOffset = -30;
               }
               
+              // Special handling for car sales contract
+              const isCarContract = template.format.id === 'doc-contract-a4';
+              const isCarContractTitle = isCarContract && textElement.id === 'title';
+              
+              // Stack positioning for vehicle/sales info sections
+              let carContractOffset = 0;
+              if (isCarContract) {
+                // Apply global -20px offset to all contract text elements
+                if (isCarContractTitle) {
+                  carContractOffset = -24; // Title: up 24px (40-16)
+                } else if (textElement.id === 'vehicle-info') {
+                  carContractOffset = -20; // Vehicle info: up 20px from base position
+                } else if (textElement.id === 'price') {
+                  carContractOffset = 50; // Price: down 50px (70-20)
+                } else if (textElement.id === 'payment-delivery') {
+                  carContractOffset = 100; // Payment: down 100px (120-20)
+                } else if (textElement.id === 'agreement-date' || textElement.id === 'party-a-info' || textElement.id === 'party-b-info') {
+                  carContractOffset = -40; // Contract date and party info: up 40px (20+20)
+                } else {
+                  carContractOffset = 60; // Other text: down 60px (80-20)
+                }
+              }
+              
               const position = {
                 left: canvasTextObj?.left || textElement.position.x,
-                top: (canvasTextObj?.top || textElement.position.y) + topOffset,
+                top: (canvasTextObj?.top || textElement.position.y) + topOffset + carContractOffset,
               };
               
               const fontSize = canvasTextObj?.fontSize || 
