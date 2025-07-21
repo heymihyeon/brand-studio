@@ -51,42 +51,48 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
   };
 
   return (
-    <Paper sx={{ p: 3, height: '100%', overflowY: 'auto' }}>
+    <Paper sx={{ 
+      p: 0, 
+      height: '100%', 
+      overflowY: 'auto',
+      boxShadow: 'none',
+      elevation: 0 
+    }}>
       <Stack spacing={2}>
         {/* Vehicle Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          차량 정보
+          Vehicle Information
         </Typography>
         <TextField
           fullWidth
-          label="등록번호"
+          label="Registration Number"
           value={data.registrationNumber}
           onChange={handleChange('registrationNumber')}
-          placeholder="예: 12가 3456"
+          placeholder="e.g. 12GA 3456"
           size="small"
         />
         <TextField
           fullWidth
-          label="모델명"
+          label="Model Name"
           value={data.modelName}
           onChange={handleChange('modelName')}
-          placeholder="예: Sonata DN8"
+          placeholder="e.g. Sonata DN8"
           size="small"
         />
         <TextField
           fullWidth
-          label="연식"
+          label="Year"
           value={data.year}
           onChange={handleChange('year')}
-          placeholder="예: 2024"
+          placeholder="e.g. 2024"
           size="small"
         />
         <TextField
           fullWidth
-          label="차대번호 (VIN)"
+          label="VIN"
           value={data.vin}
           onChange={handleChange('vin')}
-          placeholder="예: KMHL14JA6PA123456"
+          placeholder="e.g. KMHL14JA6PA123456"
           size="small"
         />
 
@@ -94,22 +100,22 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
 
         {/* Sales Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          판매 정보
+          Sales Information
         </Typography>
         <TextField
           fullWidth
-          label="판매가격"
+          label="Sale Price"
           value={data.salesPrice}
           onChange={handleChange('salesPrice')}
-          placeholder="예: 35,000,000원"
+          placeholder="e.g. $35,000"
           size="small"
         />
         <TextField
           fullWidth
-          label="지불조건"
+          label="Payment Terms"
           value={data.paymentTerms}
           onChange={handleChange('paymentTerms')}
-          placeholder="예: 계약금 10%, 잔금 90%"
+          placeholder="e.g. 10% down, 90% balance"
           size="small"
           multiline
           rows={2}
@@ -119,30 +125,30 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
 
         {/* Seller Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          판매자 정보 (갑)
+          Seller Information
         </Typography>
         <TextField
           fullWidth
-          label="성명"
+          label="Name"
           value={data.sellerName}
           onChange={handleChange('sellerName')}
-          placeholder="예: 홍길동"
+          placeholder="e.g. John Doe"
           size="small"
         />
         <TextField
           fullWidth
-          label="주소"
+          label="Address"
           value={data.sellerAddress}
           onChange={handleChange('sellerAddress')}
-          placeholder="예: 서울시 강남구 테헤란로 123"
+          placeholder="e.g. 123 Main St, City, State"
           size="small"
         />
         <TextField
           fullWidth
-          label="연락처"
+          label="Contact"
           value={data.sellerContact}
           onChange={handleChange('sellerContact')}
-          placeholder="예: 010-1234-5678"
+          placeholder="e.g. (555) 123-4567"
           size="small"
         />
 
@@ -150,30 +156,30 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
 
         {/* Buyer Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          구매자 정보 (을)
+          Buyer Information
         </Typography>
         <TextField
           fullWidth
-          label="성명"
+          label="Name"
           value={data.buyerName}
           onChange={handleChange('buyerName')}
-          placeholder="예: 김철수"
+          placeholder="e.g. Jane Smith"
           size="small"
         />
         <TextField
           fullWidth
-          label="주소"
+          label="Address"
           value={data.buyerAddress}
           onChange={handleChange('buyerAddress')}
-          placeholder="예: 서울시 서초구 반포대로 123"
+          placeholder="e.g. 456 Oak Ave, City, State"
           size="small"
         />
         <TextField
           fullWidth
-          label="연락처"
+          label="Contact"
           value={data.buyerContact}
           onChange={handleChange('buyerContact')}
-          placeholder="예: 010-9876-5432"
+          placeholder="e.g. (555) 987-6543"
           size="small"
         />
 
@@ -181,7 +187,7 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
 
         {/* Agreement Date */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          계약일
+          Agreement Date
         </Typography>
         <TextField
           fullWidth
