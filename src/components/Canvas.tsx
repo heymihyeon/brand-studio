@@ -399,8 +399,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                   >
                     <Typography
                       sx={{
-                        fontSize: titleCanvasObj?.fontSize || 
-                                 ((isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 80),
+                        fontSize: titleCanvasObj?.fontSize || 48,
                         fontWeight: 'bold',
                         fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
                         color: editableValues[titleElement.id] ? (titleCanvasObj?.fill || '#ffffff') : 'rgba(255, 255, 255, 0.5)',
@@ -553,10 +552,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, o
                 top: (canvasTextObj?.top || textElement.position.y) + topOffset,
               };
               
-              const headingSize = (isPromotionBanner || isVerticalBanner || isSquareBanner) ? 90 : 80;
-              
               const fontSize = canvasTextObj?.fontSize || 
-                              (textElement.type === 'heading' ? headingSize : 
+                              (textElement.type === 'heading' ? 48 : 
                                textElement.type === 'subheading' ? 32 : 18);
               const fontWeight = canvasTextObj?.fontWeight || 
                                 (textElement.type === 'heading' ? 'bold' : 
