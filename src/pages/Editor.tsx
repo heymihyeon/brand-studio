@@ -725,53 +725,51 @@ useEffect(() => {
                 />
               ))}
               
-              {template.editableElements.images.length > 0 && (
-                <>
-                  <Divider />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    Image Edit
-                  </Typography>
-                  {template.editableElements.images.map((imageElement) => (
-                    <Box key={imageElement.id}>
-                      <Typography variant="body2" gutterBottom>
-                        {imageElement.label || 
-                         (imageElement.id === 'logo' ? 'Logo' :
-                          imageElement.id === 'main' ? 'Main Image' :
-                          imageElement.id === 'background' ? 'Background Image' :
-                          imageElement.id === 'product' ? 'Product Image' :
-                          imageElement.id === 'cover' ? 'Cover Image' : 
-                          imageElement.id === 'bg-image' ? 'Background Image' :
-                          imageElement.id === 'vehicle' ? 'Vehicle Model' : 'Image')}
-                      </Typography>
-                      <Button
-                        variant="outlined"
-                        fullWidth
-                        onClick={() => handleImageSelect(imageElement.id)}
-                      >
-                        {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
-                          ? (editableValues[imageElement.id] as BrandAsset).name
-                          : `Select ${imageElement.label || 'Image'}`}
-                      </Button>
-                    </Box>
-                  ))}
-                  
-                  {/* Logo Image - Always show for all templates */}
-                  <Box>
+              <>
+                <Divider />
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  Image Edit
+                </Typography>
+                {template.editableElements.images.map((imageElement) => (
+                  <Box key={imageElement.id}>
                     <Typography variant="body2" gutterBottom>
-                      Logo Image
+                      {imageElement.label || 
+                       (imageElement.id === 'logo' ? 'Logo' :
+                        imageElement.id === 'main' ? 'Main Image' :
+                        imageElement.id === 'background' ? 'Background Image' :
+                        imageElement.id === 'product' ? 'Product Image' :
+                        imageElement.id === 'cover' ? 'Cover Image' : 
+                        imageElement.id === 'bg-image' ? 'Background Image' :
+                        imageElement.id === 'vehicle' ? 'Vehicle Model' : 'Image')}
                     </Typography>
                     <Button
                       variant="outlined"
                       fullWidth
-                      onClick={() => handleImageSelect('brandLogo')}
+                      onClick={() => handleImageSelect(imageElement.id)}
                     >
-                      {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
-                        ? (editableValues['brandLogo'] as BrandAsset).name
-                        : 'Select Logo'}
+                      {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
+                        ? (editableValues[imageElement.id] as BrandAsset).name
+                        : `Select ${imageElement.label || 'Image'}`}
                     </Button>
                   </Box>
-                </>
-              )}
+                ))}
+                
+                {/* Logo Image - Always show for all templates */}
+                <Box>
+                  <Typography variant="body2" gutterBottom>
+                    Logo Image
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => handleImageSelect('brandLogo')}
+                  >
+                    {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
+                      ? (editableValues['brandLogo'] as BrandAsset).name
+                      : 'Select Logo'}
+                  </Button>
+                </Box>
+              </>
             </>
           )}
 
