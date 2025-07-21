@@ -5,6 +5,8 @@ import {
   Paper,
   Stack,
   Divider,
+  Button,
+  Box,
 } from '@mui/material';
 
 export interface ContractData {
@@ -35,11 +37,15 @@ export interface ContractData {
 interface CarSalesContractEditorProps {
   data: ContractData;
   onChange: (data: ContractData) => void;
+  onImageEdit?: (elementId: string) => void;
+  editableValues?: Record<string, any>;
 }
 
 const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({ 
   data, 
-  onChange 
+  onChange,
+  onImageEdit,
+  editableValues 
 }) => {
   const handleChange = (field: keyof ContractData) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -199,6 +205,28 @@ const CarSalesContractEditor: React.FC<CarSalesContractEditorProps> = ({
             shrink: true,
           }}
         />
+
+        <Divider />
+
+        {/* Image Edit */}
+        <Box>
+          <Typography variant="subtitle1" gutterBottom fontWeight="bold">
+            Image Edit
+          </Typography>
+          
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2" sx={{ mb: '4px' }}>
+              Logo Image
+            </Typography>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => onImageEdit && onImageEdit('brandLogo')}
+            >
+              {editableValues?.['brandLogo']?.name || 'Select Logo'}
+            </Button>
+          </Box>
+        </Box>
       </Stack>
     </Paper>
   );

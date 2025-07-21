@@ -722,6 +722,8 @@ useEffect(() => {
             <CarSalesContractEditor
               data={contractData}
               onChange={setContractData}
+              onImageEdit={handleImageSelect}
+              editableValues={editableValues}
             />
           ) : (
             /* 다른 템플릿의 경우 기존 편집 방식 사용 */
