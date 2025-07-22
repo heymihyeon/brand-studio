@@ -10,7 +10,7 @@ NC='\033[0m'
 PID_FILE=".vite-server.pid"
 LOG_FILE="vite-server.log"
 HOST="127.0.0.1"
-PORT="5173"
+PORT="5174"
 
 echo -e "${GREEN}📊 Brand Studio 서버 상태${NC}"
 echo "========================"

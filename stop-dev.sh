@@ -35,7 +35,7 @@ else
 fi
 
 # 포트 확인
-if lsof -i :5173 > /dev/null 2>&1; then
-    echo -e "${YELLOW}⚠️  포트 5173이 여전히 사용 중입니다.${NC}"
-    lsof -i :5173
+if lsof -i :5174 > /dev/null 2>&1; then
+    echo -e "${YELLOW}⚠️  포트 5174가 여전히 사용 중입니다.${NC}"
+    lsof -i :5174
 fi

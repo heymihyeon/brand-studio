@@ -11,7 +11,7 @@ NC='\033[0m'
 
 # 서버 설정
 HOST="127.0.0.1"
-PORT="5173"
+PORT="5174"
 LOG_FILE="vite-server.log"
 PID_FILE=".vite-server.pid"
 
