@@ -1119,7 +1119,7 @@ ${field(purchaseOrderData.customerPhone)}`,
               
               const position = {
                 left: (canvasTextObj?.left || sellerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
-                top: (canvasTextObj?.top || sellerTextElement.position.y) - 40 + 55 + 10,
+                top: (canvasTextObj?.top || sellerTextElement.position.y) - 40 + 55 + 10 + 40,
               };
               
               signatures.push(
