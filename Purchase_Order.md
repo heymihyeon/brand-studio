@@ -1,59 +1,70 @@
-# Car Purchase Order
+# Purchase Order
 
-This Car Purchase Order confirms the intent of the buyer (hereinafter referred to as "Party B") to purchase the vehicle described below from the seller (hereinafter referred to as "Party A") under the following terms and conditions.
-
----
-
-## Section 1 (Vehicle Details)
-1. Vehicle Type and Model:  
-2. Year of Manufacture:  
-3. Vehicle Identification Number (VIN):  
-4. Vehicle Registration Number (if applicable):  
-5. Mileage:  
-6. Fuel Type / Transmission:  
-7. Exterior / Interior Color:  
+This Purchase Order is issued by the purchaser (hereinafter referred to as "Buyer") to the supplier (hereinafter referred to as "Supplier") for the procurement of vehicles as specified below.
 
 ---
 
-## Section 2 (Order Summary)
-1. Base Vehicle Price: KRW        (₩        )  
-2. Value-Added Tax (VAT): KRW        (₩        )  
-3. Optional Features / Add-ons: KRW        (₩        )  
-4. Registration Fees and Taxes: KRW        (₩        )  
-5. Delivery Charges (if any): KRW        (₩        )  
-6. **Total Order Price: KRW        (₩        )**
+## Section 1 (Order Information)
+1. Purchase Order Number:  
+2. Order Date:  
+3. Requested Delivery Date:  
+4. Delivery Location:  
+5. Payment Terms:  
+6. Shipping Method:  
 
 ---
 
-## Section 3 (Order Terms and Payment)
-1. A deposit of KRW        (₩        ) shall be paid by Party B on the date of signing this purchase order.  
-2. The remaining balance shall be paid on or before vehicle delivery.  
-3. Vehicle delivery is scheduled for: YYYY-MM-DD  
-4. The vehicle will be delivered at the following location:  
-5. Title transfer and registration will be completed by: YYYY-MM-DD  
+## Section 2 (Vehicle Specifications)
+| Item No. | Model/Type | Color | Quantity | Unit Price (KRW) | Total Price (KRW) |
+|----------|------------|-------|----------|------------------|-------------------|
+| 1        |            |       |          |                  |                   |
+| 2        |            |       |          |                  |                   |
+| 3        |            |       |          |                  |                   |
+| 4        |            |       |          |                  |                   |
+| 5        |            |       |          |                  |                   |
+
+**Subtotal:** KRW _______________  
+**Tax (10%):** KRW _______________  
+**Shipping & Handling:** KRW _______________  
+**Total Amount:** KRW _______________
 
 ---
 
-## Section 4 (Order Conditions)
-1. This purchase order is valid until: YYYY-MM-DD  
-2. If the buyer fails to complete the purchase within the validity period, this order may be canceled without further notice.  
-3. This order becomes binding upon payment of the deposit by Party B and confirmation by Party A.
+## Section 3 (Terms and Conditions)
+1. All vehicles must meet the specifications listed above and comply with Korean safety standards.
+2. Supplier shall provide all necessary documentation including certificates of origin and compliance.
+3. Delivery must be completed by the requested date. Late delivery may result in penalties.
+4. Payment will be made according to the payment terms specified above after satisfactory delivery.
+5. Any defects must be reported within 7 days of delivery for replacement or refund.
+6. This purchase order is subject to the buyer's standard terms and conditions.
 
 ---
 
-**Date of Order:** 20    Year   Month   Day
+## Section 4 (Special Instructions)
+1. Pre-delivery inspection required for all vehicles
+2. Include all standard accessories and documentation
+3. Vehicles must be delivered with protective covering
+4. Additional requirements: _____________________
 
-**Party A (Dealer)**  
+---
+
+**Buyer Information**  
+Company Name:  
+Department:  
+Address:  
+Contact Person:  
+Phone:  
+Email:  
+Authorized Signature: _______________
+
+**Supplier Information**  
 Company Name:  
 Address:  
 Contact Person:  
 Phone:  
 Email:  
-(Signature / Seal)
+Order Confirmation: _______________
 
-**Party B (Customer)**  
-Name:  
-Address:  
-Phone:  
-Email:  
-(Signature / Seal)
+---
+
+**Note:** This purchase order becomes a binding contract upon supplier's written confirmation. Please confirm receipt and acceptance within 48 hours.

@@ -5,52 +5,56 @@ import {
   Paper,
   Stack,
   Divider,
-  Button,
   Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  IconButton,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+export interface VehicleItem {
+  id: string;
+  modelType: string;
+  color: string;
+  quantity: string;
+  unitPrice: string;
+  totalPrice: string;
+}
 
 export interface PurchaseOrderData {
-  // Vehicle Details
-  modelName: string;
-  year: string;
-  vin: string;
-  registrationNumber: string;
-  mileage: string;
-  fuelTransmission: string;
-  exteriorInteriorColor: string;
-  
-  // Order Summary
-  basePrice: string;
-  vat: string;
-  optionalFeatures: string;
-  registrationFees: string;
-  deliveryCharges: string;
-  totalPrice: string;
-  
-  // Order Terms and Payment
-  deposit: string;
+  // Order Information
+  poNumber: string;
+  orderDate: string;
   deliveryDate: string;
   deliveryLocation: string;
-  titleTransferDate: string;
+  paymentTerms: string;
+  shippingMethod: string;
   
-  // Order Conditions
-  validUntil: string;
+  // Vehicle Items
+  items: VehicleItem[];
   
-  // Party A (Dealer)
-  dealerCompanyName: string;
-  dealerAddress: string;
-  dealerContactPerson: string;
-  dealerPhone: string;
-  dealerEmail: string;
+  // Price Summary
+  subtotal: string;
+  tax: string;
+  shippingHandling: string;
+  totalAmount: string;
   
-  // Party B (Customer)
-  customerName: string;
-  customerAddress: string;
-  customerPhone: string;
-  customerEmail: string;
+  // Special Instructions
+  specialInstructions: string;
   
-  // Date of Order
-  orderDate: string;
+  // Buyer Information
+  buyerCompany: string;
+  buyerDepartment: string;
+  buyerAddress: string;
+  buyerContactPerson: string;
+  buyerPhone: string;
+  buyerEmail: string;
 }
 
 interface PurchaseOrderEditorProps {
@@ -75,6 +79,66 @@ const PurchaseOrderEditor: React.FC<PurchaseOrderEditorProps> = ({
     });
   };
 
+  const handleItemChange = (index: number, field: keyof VehicleItem) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newItems = [...data.items];
+    newItems[index] = {
+      ...newItems[index],
+      [field]: event.target.value,
+    };
+    
+    // Calculate total price when quantity or unit price changes
+    if (field === 'quantity' || field === 'unitPrice') {
+      const quantity = field === 'quantity' ? event.target.value : newItems[index].quantity;
+      const unitPrice = field === 'unitPrice' ? event.target.value : newItems[index].unitPrice;
+      const quantityNum = parseInt(quantity) || 0;
+      const unitPriceNum = parseInt(unitPrice.replace(/,/g, '')) || 0;
+      newItems[index].totalPrice = (quantityNum * unitPriceNum).toLocaleString();
+    }
+    
+    onChange({ ...data, items: newItems });
+    
+    // Recalculate totals
+    calculateTotals(newItems);
+  };
+
+  const addItem = () => {
+    const newItem: VehicleItem = {
+      id: Date.now().toString(),
+      modelType: '',
+      color: '',
+      quantity: '',
+      unitPrice: '',
+      totalPrice: '',
+    };
+    onChange({ ...data, items: [...data.items, newItem] });
+  };
+
+  const removeItem = (index: number) => {
+    const newItems = data.items.filter((_, i) => i !== index);
+    onChange({ ...data, items: newItems });
+    calculateTotals(newItems);
+  };
+
+  const calculateTotals = (items: VehicleItem[]) => {
+    const subtotal = items.reduce((sum, item) => {
+      const total = parseInt(item.totalPrice.replace(/,/g, '')) || 0;
+      return sum + total;
+    }, 0);
+    
+    const taxAmount = Math.round(subtotal * 0.1);
+    const shipping = parseInt(data.shippingHandling.replace(/,/g, '')) || 0;
+    const total = subtotal + taxAmount + shipping;
+    
+    onChange({
+      ...data,
+      subtotal: subtotal.toLocaleString(),
+      tax: taxAmount.toLocaleString(),
+      totalAmount: total.toLocaleString(),
+    });
+  };
+
   return (
     <Paper sx={{ 
       p: 0, 
@@ -84,146 +148,42 @@ const PurchaseOrderEditor: React.FC<PurchaseOrderEditorProps> = ({
       elevation: 0 
     }}>
       <Stack spacing={2}>
-        {/* Vehicle Details */}
+        {/* Order Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Vehicle Details
+          Order Information
         </Typography>
         <TextField
           fullWidth
-          label="Vehicle Type and Model"
-          value={data.modelName}
-          onChange={handleChange('modelName')}
-          placeholder="e.g. Sonata DN8"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Year of Manufacture"
-          value={data.year}
-          onChange={handleChange('year')}
-          placeholder="e.g. 2024"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="VIN"
-          value={data.vin}
-          onChange={handleChange('vin')}
-          placeholder="e.g. KMHL14JA6PA123456"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Registration Number (if applicable)"
-          value={data.registrationNumber}
-          onChange={handleChange('registrationNumber')}
-          placeholder="e.g. 12GA 3456"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Mileage"
-          value={data.mileage}
-          onChange={handleChange('mileage')}
-          placeholder="e.g. 25,000 km"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Fuel Type / Transmission"
-          value={data.fuelTransmission}
-          onChange={handleChange('fuelTransmission')}
-          placeholder="e.g. Gasoline / Automatic"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Exterior / Interior Color"
-          value={data.exteriorInteriorColor}
-          onChange={handleChange('exteriorInteriorColor')}
-          placeholder="e.g. Pearl White / Black Leather"
-          size="small"
-        />
-
-        <Divider />
-
-        {/* Order Summary */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Order Summary
-        </Typography>
-        <TextField
-          fullWidth
-          label="Base Vehicle Price"
-          value={data.basePrice}
-          onChange={handleChange('basePrice')}
-          placeholder="e.g. 35,000,000"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Value-Added Tax (VAT)"
-          value={data.vat}
-          onChange={handleChange('vat')}
-          placeholder="e.g. 3,500,000"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Optional Features / Add-ons"
-          value={data.optionalFeatures}
-          onChange={handleChange('optionalFeatures')}
-          placeholder="e.g. 2,000,000"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Registration Fees and Taxes"
-          value={data.registrationFees}
-          onChange={handleChange('registrationFees')}
-          placeholder="e.g. 500,000"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Delivery Charges"
-          value={data.deliveryCharges}
-          onChange={handleChange('deliveryCharges')}
-          placeholder="e.g. 100,000"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Total Order Price"
-          value={data.totalPrice}
-          onChange={handleChange('totalPrice')}
-          placeholder="e.g. 41,100,000"
-          size="small"
-          sx={{ '& .MuiInputBase-input': { fontWeight: 'bold' } }}
-        />
-
-        <Divider />
-
-        {/* Order Terms and Payment */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Order Terms and Payment
-        </Typography>
-        <TextField
-          fullWidth
-          label="Deposit Amount"
-          value={data.deposit}
-          onChange={handleChange('deposit')}
-          placeholder="e.g. 5,000,000"
+          label="Purchase Order Number"
+          value={data.poNumber}
+          onChange={handleChange('poNumber')}
+          placeholder="e.g. PO-2024-0001"
           size="small"
         />
         <TextField
           fullWidth
           type="date"
-          label="Vehicle Delivery Date"
+          label="Order Date"
+          value={data.orderDate}
+          onChange={handleChange('orderDate')}
+          size="small"
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
+        />
+        <TextField
+          fullWidth
+          type="date"
+          label="Requested Delivery Date"
           value={data.deliveryDate}
           onChange={handleChange('deliveryDate')}
           size="small"
-          InputLabelProps={{
-            shrink: true,
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
           }}
         />
         <TextField
@@ -231,142 +191,211 @@ const PurchaseOrderEditor: React.FC<PurchaseOrderEditorProps> = ({
           label="Delivery Location"
           value={data.deliveryLocation}
           onChange={handleChange('deliveryLocation')}
-          placeholder="e.g. ABC Motors Showroom, 123 Main St"
+          placeholder="e.g. Main Warehouse, 123 Industrial Ave"
           size="small"
-          multiline
-          rows={2}
         />
         <TextField
           fullWidth
-          type="date"
-          label="Title Transfer Completion Date"
-          value={data.titleTransferDate}
-          onChange={handleChange('titleTransferDate')}
+          label="Payment Terms"
+          value={data.paymentTerms}
+          onChange={handleChange('paymentTerms')}
+          placeholder="e.g. Net 30 days"
           size="small"
-          InputLabelProps={{
-            shrink: true,
-          }}
+        />
+        <TextField
+          fullWidth
+          label="Shipping Method"
+          value={data.shippingMethod}
+          onChange={handleChange('shippingMethod')}
+          placeholder="e.g. Carrier transport"
+          size="small"
         />
 
         <Divider />
 
-        {/* Order Conditions */}
+        {/* Vehicle Specifications */}
+        <Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="subtitle1" fontWeight="bold">
+              Vehicle Specifications
+            </Typography>
+            <Button
+              startIcon={<AddIcon />}
+              onClick={addItem}
+              size="small"
+              variant="outlined"
+            >
+              Add Item
+            </Button>
+          </Box>
+          
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Item No.</TableCell>
+                  <TableCell>Model/Type</TableCell>
+                  <TableCell>Color</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Unit Price (KRW)</TableCell>
+                  <TableCell>Total Price (KRW)</TableCell>
+                  <TableCell width={50}></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.items.map((item, index) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <TextField
+                        value={item.modelType}
+                        onChange={handleItemChange(index, 'modelType')}
+                        placeholder="e.g. Sonata DN8"
+                        size="small"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={item.color}
+                        onChange={handleItemChange(index, 'color')}
+                        placeholder="e.g. White"
+                        size="small"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={item.quantity}
+                        onChange={handleItemChange(index, 'quantity')}
+                        placeholder="0"
+                        size="small"
+                        type="number"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={item.unitPrice}
+                        onChange={handleItemChange(index, 'unitPrice')}
+                        placeholder="0"
+                        size="small"
+                        fullWidth
+                      />
+                    </TableCell>
+                    <TableCell>{item.totalPrice}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        size="small"
+                        onClick={() => removeItem(index)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+
+        {/* Price Summary */}
+        <Box sx={{ mt: 2 }}>
+          <Stack spacing={1} sx={{ ml: 'auto', width: 300 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography>Subtotal:</Typography>
+              <Typography fontWeight="bold">₩ {data.subtotal}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography>Tax (10%):</Typography>
+              <Typography>₩ {data.tax}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography>Shipping & Handling:</Typography>
+              <TextField
+                value={data.shippingHandling}
+                onChange={handleChange('shippingHandling')}
+                size="small"
+                sx={{ width: 150 }}
+              />
+            </Box>
+            <Divider />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography fontWeight="bold">Total Amount:</Typography>
+              <Typography fontWeight="bold" color="primary">₩ {data.totalAmount}</Typography>
+            </Box>
+          </Stack>
+        </Box>
+
+        <Divider />
+
+        {/* Special Instructions */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Order Conditions
+          Special Instructions
         </Typography>
         <TextField
           fullWidth
-          type="date"
-          label="Order Valid Until"
-          value={data.validUntil}
-          onChange={handleChange('validUntil')}
+          multiline
+          rows={3}
+          value={data.specialInstructions}
+          onChange={handleChange('specialInstructions')}
+          placeholder="Enter any special requirements or instructions..."
           size="small"
-          InputLabelProps={{
-            shrink: true,
-          }}
         />
 
         <Divider />
 
-        {/* Dealer Information */}
+        {/* Buyer Information */}
         <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Dealer Information
+          Buyer Information
         </Typography>
         <TextField
           fullWidth
           label="Company Name"
-          value={data.dealerCompanyName}
-          onChange={handleChange('dealerCompanyName')}
+          value={data.buyerCompany}
+          onChange={handleChange('buyerCompany')}
           placeholder="e.g. ABC Motors Ltd."
           size="small"
         />
         <TextField
           fullWidth
+          label="Department"
+          value={data.buyerDepartment}
+          onChange={handleChange('buyerDepartment')}
+          placeholder="e.g. Purchasing Department"
+          size="small"
+        />
+        <TextField
+          fullWidth
           label="Address"
-          value={data.dealerAddress}
-          onChange={handleChange('dealerAddress')}
-          placeholder="e.g. 123 Main St, City, State"
+          value={data.buyerAddress}
+          onChange={handleChange('buyerAddress')}
+          placeholder="e.g. 123 Business St, City, State"
           size="small"
         />
         <TextField
           fullWidth
           label="Contact Person"
-          value={data.dealerContactPerson}
-          onChange={handleChange('dealerContactPerson')}
-          placeholder="e.g. John Doe"
+          value={data.buyerContactPerson}
+          onChange={handleChange('buyerContactPerson')}
+          placeholder="e.g. John Smith"
           size="small"
         />
         <TextField
           fullWidth
           label="Phone"
-          value={data.dealerPhone}
-          onChange={handleChange('dealerPhone')}
-          placeholder="e.g. (555) 123-4567"
+          value={data.buyerPhone}
+          onChange={handleChange('buyerPhone')}
+          placeholder="e.g. (02) 1234-5678"
           size="small"
         />
         <TextField
           fullWidth
           label="Email"
-          value={data.dealerEmail}
-          onChange={handleChange('dealerEmail')}
-          placeholder="e.g. sales@abcmotors.com"
+          value={data.buyerEmail}
+          onChange={handleChange('buyerEmail')}
+          placeholder="e.g. purchasing@abcmotors.com"
           size="small"
-        />
-
-        <Divider />
-
-        {/* Customer Information */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Customer Information
-        </Typography>
-        <TextField
-          fullWidth
-          label="Name"
-          value={data.customerName}
-          onChange={handleChange('customerName')}
-          placeholder="e.g. Jane Smith"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Address"
-          value={data.customerAddress}
-          onChange={handleChange('customerAddress')}
-          placeholder="e.g. 456 Oak Ave, City, State"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Phone"
-          value={data.customerPhone}
-          onChange={handleChange('customerPhone')}
-          placeholder="e.g. (555) 987-6543"
-          size="small"
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          value={data.customerEmail}
-          onChange={handleChange('customerEmail')}
-          placeholder="e.g. jane.smith@email.com"
-          size="small"
-        />
-
-        <Divider />
-
-        {/* Date of Order */}
-        <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-          Date of Order
-        </Typography>
-        <TextField
-          fullWidth
-          type="date"
-          value={data.orderDate}
-          onChange={handleChange('orderDate')}
-          size="small"
-          InputLabelProps={{
-            shrink: true,
-          }}
         />
 
         <Divider />
@@ -379,40 +408,27 @@ const PurchaseOrderEditor: React.FC<PurchaseOrderEditorProps> = ({
           
           <Box sx={{ mt: 2 }}>
             <Typography variant="body2" sx={{ mb: '4px' }}>
-              Logo Image
+              Company Logo
             </Typography>
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => onImageEdit && onImageEdit('brandLogo')}
+              onClick={() => onImageEdit && onImageEdit('companyLogo')}
             >
-              {editableValues?.['brandLogo']?.name || 'Select Logo'}
+              {editableValues?.['companyLogo']?.name || 'Upload Logo'}
             </Button>
           </Box>
           
           <Box sx={{ mt: 2 }}>
             <Typography variant="body2" sx={{ mb: '4px' }}>
-              Dealer Signature
+              Authorized Signature
             </Typography>
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => onImageEdit && onImageEdit('dealerSignature')}
+              onClick={() => onImageEdit && onImageEdit('authorizedSignature')}
             >
-              {editableValues?.['dealerSignature']?.name || 'Upload Signature'}
-            </Button>
-          </Box>
-          
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: '4px' }}>
-              Customer Signature
-            </Typography>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => onImageEdit && onImageEdit('customerSignature')}
-            >
-              {editableValues?.['customerSignature']?.name || 'Upload Signature'}
+              {editableValues?.['authorizedSignature']?.name || 'Upload Signature'}
             </Button>
           </Box>
         </Box>

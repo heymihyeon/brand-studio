@@ -5,7 +5,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ContractData } from './CarSalesContractEditor';
 import { QuotationData } from './QuotationEditor';
-import { PurchaseOrderData } from './PurchaseOrderEditor';
+import { PurchaseOrderData, VehicleItem } from './PurchaseOrderEditor';
 
 interface CanvasProps {
   template: Template;
@@ -329,71 +329,82 @@ Delivery Charges: ${field(quotationData.deliveryCharges)}`,
       }
     };
     
+    
+    // Calculate totals from items
+    const calculateTotals = () => {
+      let subtotal = 0;
+      if (purchaseOrderData?.items && purchaseOrderData.items.length > 0) {
+        purchaseOrderData.items.forEach(item => {
+          const quantity = parseInt(item.quantity) || 0;
+          const unitPrice = parseFloat(item.unitPrice) || 0;
+          subtotal += quantity * unitPrice;
+        });
+      }
+      const tax = subtotal * 0.1; // 10% tax
+      const shipping = parseFloat(purchaseOrderData?.shippingHandling || '0') || 0;
+      const total = subtotal + tax + shipping;
+      
+      return { subtotal, tax, shipping, total };
+    };
+    
+    const { subtotal, tax, shipping, total } = calculateTotals();
+    
+    // Generate vehicle specifications table for the order-info section
+    const generateVehicleTable = (): string => {
+      if (!purchaseOrderData?.items || purchaseOrderData.items.length === 0) {
+        return '';
+      }
+      
+      // Create a simple text-based table
+      let table = '';
+      purchaseOrderData.items.forEach((item, index) => {
+        const lineNumber = (index + 1).toString().padStart(3, '0');
+        const quantity = parseInt(item.quantity) || 0;
+        const unitPrice = parseFloat(item.unitPrice) || 0;
+        const itemTotal = quantity * unitPrice;
+        
+        if (index > 0) table += '\n';
+        table += `${lineNumber}     ${item.modelType.padEnd(15)}     ${item.color.padEnd(10)}     ${quantity.toString().padEnd(8)}     KRW ${unitPrice.toLocaleString().padEnd(12)}     KRW ${itemTotal.toLocaleString()}`;
+      });
+      
+      return table;
+    };
+    
     // Map element IDs to purchase order data - matching actual template IDs
     const textMappings: Record<string, string> = {
       'title': 'Purchase Order',
-      'vehicle-details': `1. Vehicle Type and Model: ${field(purchaseOrderData.modelName)}
-2. Year of Manufacture: ${field(purchaseOrderData.year)}
-3. Vehicle Identification Number (VIN): ${field(purchaseOrderData.vin)}
-4. Vehicle Registration Number (if applicable): ${field(purchaseOrderData.registrationNumber)}
-5. Mileage: ${field(purchaseOrderData.mileage)}
-6. Fuel Type / Transmission: ${field(purchaseOrderData.fuelTransmission)}
-7. Exterior / Interior Color: ${field(purchaseOrderData.exteriorInteriorColor)}`,
-      'order-summary': `1. Base Vehicle Price: KRW ${field(purchaseOrderData.basePrice)} (₩${field(purchaseOrderData.basePrice)})
-2. Value-Added Tax (VAT): KRW ${field(purchaseOrderData.vat)} (₩${field(purchaseOrderData.vat)})
-3. Optional Features / Add-ons: KRW ${field(purchaseOrderData.optionalFeatures)} (₩${field(purchaseOrderData.optionalFeatures)})
-4. Registration Fees and Taxes: KRW ${field(purchaseOrderData.registrationFees)} (₩${field(purchaseOrderData.registrationFees)})
-5. Delivery Charges (if any): KRW ${field(purchaseOrderData.deliveryCharges)} (₩${field(purchaseOrderData.deliveryCharges)})
-6. Total Order Price: KRW ${field(purchaseOrderData.totalPrice)} (₩${field(purchaseOrderData.totalPrice)})`,
-      'order-terms': `1. A deposit of KRW ${field(purchaseOrderData.deposit)} (₩${field(purchaseOrderData.deposit)}) shall be paid by Party B on the date of signing this purchase order.
-2. The remaining balance shall be paid on or before vehicle delivery.
-3. Vehicle delivery is scheduled for: ${formatDate(purchaseOrderData.deliveryDate)}
-4. The vehicle will be delivered at the following location: ${field(purchaseOrderData.deliveryLocation)}
-5. Title transfer and registration will be completed by: ${formatDate(purchaseOrderData.titleTransferDate)}`,
-      'order-conditions': `1. This purchase order is valid until: ${formatDate(purchaseOrderData.validUntil)}
-2. If the buyer fails to complete the purchase within the validity period, this order may be canceled without further notice.
-3. This order becomes binding upon payment of the deposit by Party B and confirmation by Party A.`,
-      'order-date': `Date of Order: ${formatDate(purchaseOrderData.orderDate)}`,
-      'dealer-info': `Party A (Dealer)
-Company Name: ${field(purchaseOrderData.dealerCompanyName)}
-Address: ${field(purchaseOrderData.dealerAddress)}
-Contact Person: ${field(purchaseOrderData.dealerContactPerson)}
-Phone: ${field(purchaseOrderData.dealerPhone)}
-Email: ${field(purchaseOrderData.dealerEmail)}
-(Signature / Seal)`,
-      'customer-info': `Party B (Customer)
-Name: ${field(purchaseOrderData.customerName)}
-Address: ${field(purchaseOrderData.customerAddress)}
-Phone: ${field(purchaseOrderData.customerPhone)}
-Email: ${field(purchaseOrderData.customerEmail)}
-(Signature / Seal)`,
-      // 템플릿의 실제 ID들에 대한 매핑
-      'po-number': `PO #PO-2025-${field(purchaseOrderData.orderDate ? purchaseOrderData.orderDate.slice(5,7) : '01')}`,
-      'po-date': `Date: ${formatDate(purchaseOrderData.orderDate)}`,
-      'delivery-date': `Delivery: ${formatDate(purchaseOrderData.deliveryDate)}`,
-      'vendor': `${field(purchaseOrderData.dealerCompanyName)}
-${field(purchaseOrderData.dealerContactPerson)}
-${field(purchaseOrderData.dealerAddress)}
-${field(purchaseOrderData.dealerPhone)}`,
-      'ship-to': `${field(purchaseOrderData.customerName)}
-${field(purchaseOrderData.deliveryLocation)}
-${field(purchaseOrderData.customerAddress)}
-${field(purchaseOrderData.customerPhone)}`,
-      'items': `001     Vehicle: ${field(purchaseOrderData.modelName)} (${field(purchaseOrderData.year)})     1     ${field(purchaseOrderData.basePrice)}     ${field(purchaseOrderData.basePrice)}
-        VIN: ${field(purchaseOrderData.vin)}
-        Registration: ${field(purchaseOrderData.registrationNumber)}
+      'order-info': `1. Purchase Order Number: ${field(purchaseOrderData.poNumber)}
+2. Order Date: ${formatDate(purchaseOrderData.orderDate)}
+3. Requested Delivery Date: ${formatDate(purchaseOrderData.deliveryDate)}
+4. Delivery Location: ${field(purchaseOrderData.deliveryLocation)}
+5. Payment Terms: ${field(purchaseOrderData.paymentTerms)}
+6. Shipping Method: ${field(purchaseOrderData.shippingMethod)}
 
-002     Optional Features: ${field(purchaseOrderData.optionalFeatures)}     -     ${field(purchaseOrderData.optionalFeatures)}     ${field(purchaseOrderData.optionalFeatures)}
-
-003     Registration & Delivery: ${field(purchaseOrderData.registrationFees)}     -     ${field(purchaseOrderData.deliveryCharges)}     ${field(purchaseOrderData.registrationFees)}`,
-      'subtotal': `$${field(purchaseOrderData.basePrice)}`,
-      'shipping': `$${field(purchaseOrderData.deliveryCharges)}`,
-      'total': `$${field(purchaseOrderData.totalPrice)}`,
-      'terms': `Terms & Conditions:
-• Payment terms: ${field(purchaseOrderData.deposit)} deposit, balance on delivery
-• Delivery terms: ${field(purchaseOrderData.deliveryLocation)}
-• Please reference PO number on all correspondence
-• All items must meet specifications or will be returned`
+Vehicle Specifications:
+Item No.     Model/Type          Color          Quantity     Unit Price          Total Price
+${generateVehicleTable()}`,
+      'price-summary': `Subtotal: KRW ${subtotal.toLocaleString()}
+Tax (10%): KRW ${tax.toLocaleString()}
+Shipping & Handling: KRW ${shipping.toLocaleString()}
+Total Amount: KRW ${total.toLocaleString()}`,
+      'terms': `1. All vehicles must meet the specifications listed above and comply with Korean safety standards.
+2. Supplier shall provide all necessary documentation including certificates of origin and compliance.
+3. Delivery must be completed by the requested date. Late delivery may result in penalties.
+4. Payment will be made according to the payment terms specified above after satisfactory delivery.
+5. Any defects must be reported within 7 days of delivery for replacement or refund.
+6. This purchase order is subject to the buyer's standard terms and conditions.`,
+      'special-instructions': purchaseOrderData?.specialInstructions || `1. Pre-delivery inspection required for all vehicles
+2. Include all standard accessories and documentation
+3. Vehicles must be delivered with protective covering
+4. Additional requirements: _____________________`,
+      'buyer-info': `Company Name: ${field(purchaseOrderData?.buyerCompany)}
+Department: ${field(purchaseOrderData?.buyerDepartment)}
+Address: ${field(purchaseOrderData?.buyerAddress)}
+Contact Person: ${field(purchaseOrderData?.buyerContactPerson)}
+Phone: ${field(purchaseOrderData?.buyerPhone)}
+Email: ${field(purchaseOrderData?.buyerEmail)}
+Authorized Signature: _____________________`,
+      'note': 'Note: This purchase order becomes a binding contract upon supplier\'s written confirmation. Please confirm receipt and acceptance within 48 hours.'
     };
     
     return textMappings[elementId] || '';

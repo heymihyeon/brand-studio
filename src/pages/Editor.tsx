@@ -6,10 +6,6 @@ import {
   TextField,
   Button,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Stack,
   Divider,
   Alert,
@@ -21,7 +17,6 @@ import {
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
-  Edit as EditIcon, 
   Save as SaveIcon,
   ArrowBack as ArrowBackIcon,
   DirectionsCar as CarIcon
@@ -33,13 +28,12 @@ import ExportDialog from '../components/ExportDialog';
 import CarSalesContractEditor, { ContractData } from '../components/CarSalesContractEditor';
 import QuotationEditor, { QuotationData } from '../components/QuotationEditor';
 import PurchaseOrderEditor, { PurchaseOrderData } from '../components/PurchaseOrderEditor';
-import { Template, FormatOption, BrandAsset, Category, RecentWork } from '../types';
-import { templates, getTemplatesByCategory } from '../data/templates';
+import { Template, FormatOption, BrandAsset, RecentWork } from '../types';
+import { getTemplatesByCategory } from '../data/templates';
 import { getFormatsByCategory } from '../data/formats';
 import { 
   UnifiedFormat, 
-  convertToTemplate, 
-  getFormatsByCategory as getUnifiedFormatsByCategory,
+  convertToTemplate,
   getTemplatesByFormatGroup,
   getUniqueFormatsByCategory 
 } from '../data/unifiedFormats';
@@ -55,10 +49,8 @@ const categoryMap: Record<string, string> = {
 const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
   // Get actual layout from variant
   const vehicleImage = variant.editableElements.images.find(img => img.id === 'vehicle');
-  const titleText = variant.editableElements.texts.find(txt => txt.id === 'title');
   
   // Find overlay object for positioning
-  const overlayObj = variant.canvas.objects?.find((obj: any) => obj.id === 'overlay') as any;
   const vehicleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'vehicle') as any;
   const titleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'title') as any;
   
@@ -169,42 +161,38 @@ const Editor: React.FC = () => {
   });
   
   const [purchaseOrderData, setPurchaseOrderData] = useState<PurchaseOrderData>({
-    modelName: '',
-    year: '',
-    vin: '',
-    registrationNumber: '',
-    mileage: '',
-    fuelTransmission: '',
-    exteriorInteriorColor: '',
-    basePrice: '',
-    vat: '',
-    optionalFeatures: '',
-    registrationFees: '',
-    deliveryCharges: '',
-    totalPrice: '',
-    deposit: '',
+    // Order Information
+    poNumber: '',
+    orderDate: new Date().toISOString().split('T')[0],
     deliveryDate: new Date().toISOString().split('T')[0],
     deliveryLocation: '',
-    titleTransferDate: new Date().toISOString().split('T')[0],
-    validUntil: new Date().toISOString().split('T')[0],
-    dealerCompanyName: '',
-    dealerAddress: '',
-    dealerContactPerson: '',
-    dealerPhone: '',
-    dealerEmail: '',
-    customerName: '',
-    customerAddress: '',
-    customerPhone: '',
-    customerEmail: '',
-    orderDate: new Date().toISOString().split('T')[0],
+    paymentTerms: '',
+    shippingMethod: '',
+    
+    // Vehicle Items
+    items: [],
+    
+    // Price Summary
+    subtotal: '',
+    tax: '',
+    shippingHandling: '',
+    totalAmount: '',
+    
+    // Special Instructions
+    specialInstructions: '',
+    
+    // Buyer Information
+    buyerCompany: '',
+    buyerDepartment: '',
+    buyerAddress: '',
+    buyerContactPerson: '',
+    buyerPhone: '',
+    buyerEmail: '',
   });
   const [assetSelectorOpen, setAssetSelectorOpen] = useState(false);
   const [currentEditingElement, setCurrentEditingElement] = useState<string | null>(null);
   const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
-  const [availableTemplates, setAvailableTemplates] = useState<Template[]>([]);
-  const [availableFormats, setAvailableFormats] = useState<FormatOption[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string>('');
-  const [selectedFormat, setSelectedFormat] = useState<FormatOption | null>(null);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [saveSuccessDialogOpen, setSaveSuccessDialogOpen] = useState(false);
   const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
@@ -224,8 +212,6 @@ useEffect(() => {
         setCurrentCategory(category);
         const categoryFormats = getFormatsByCategory(category);
         const categoryTemplates = getTemplatesByCategory(category);
-        setAvailableFormats(categoryFormats);
-        setAvailableTemplates(categoryTemplates);
         
         // location.state에서 work 데이터 확인 (최근 작업에서 편집하는 경우)
         if (location.state?.work) {
@@ -233,7 +219,6 @@ useEffect(() => {
           const workTemplate = categoryTemplates.find(t => t.id === work.templateId);
           if (workTemplate) {
             setTemplate(workTemplate);
-            setSelectedFormat(workTemplate.format);
             setEditableValues(work.data || {});
           }
         } else if (location.state?.selectedFormat) {
@@ -280,7 +265,6 @@ useEffect(() => {
             });
             
             setTemplate(convertedTemplate);
-            setSelectedFormat(convertedTemplate.format);
             
             // 초기 편집 가능 값 설정
             const initialValues: Record<string, any> = {};
@@ -318,7 +302,7 @@ useEffect(() => {
             // formatGroup이 없는 경우 기존 방식대로 처리
             const convertedTemplate = convertToTemplate(selectedUnifiedFormat);
             setTemplate(convertedTemplate);
-            setSelectedFormat(convertedTemplate.format);
+            // setSelectedFormat is not needed anymore
             
             // 초기 편집 가능 값 설정
             const initialValues: Record<string, any> = {};
@@ -375,7 +359,7 @@ useEffect(() => {
 
   // 템플릿 변형 변경 핸들러
   const handleTemplateVariantChange = (variant: UnifiedFormat) => {
-    const variantType = variant.templateVariant || 'default';
+    const variantType: string = variant.templateVariant || 'default';
     setSelectedTemplateVariant(variantType);
     const convertedTemplate = convertToTemplate(variant);
     setTemplate(convertedTemplate);
@@ -1068,7 +1052,7 @@ useEffect(() => {
             
             const convertedTemplate = convertToTemplate(defaultVariant);
             setTemplate(convertedTemplate);
-            setSelectedFormat(convertedTemplate.format);
+            // setSelectedFormat is not needed anymore
             
             // 기존 편집 값을 유지하면서 새 템플릿에 맞게 조정
             const initialValues: Record<string, any> = {};
@@ -1105,7 +1089,7 @@ useEffect(() => {
             // formatGroup이 없는 경우 기존 방식대로 처리
             const convertedTemplate = convertToTemplate(format);
             setTemplate(convertedTemplate);
-            setSelectedFormat(convertedTemplate.format);
+            // setSelectedFormat is not needed anymore
             
             // 템플릿 변형 초기화
             setAvailableTemplateVariants([]);
