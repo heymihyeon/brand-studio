@@ -1027,65 +1027,38 @@ ${field(purchaseOrderData.customerPhone)}`,
         })()}
 
 
-        {/* Section Headers for Documents */}
-        {(template.format.id === 'doc-contract-a4' || template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (() => {
-          let headers: Array<{id: string, text: string, targetId: string}> = [];
-          
-          if (template.format.id === 'doc-contract-a4') {
-            headers = [
-              { id: 'seller-header', text: 'Seller', targetId: 'party-a-info' },
-              { id: 'buyer-header', text: 'Buyer', targetId: 'party-b-info' }
-            ];
-          } else if (template.format.id === 'doc-quotation-a4') {
-            headers = [
-              { id: 'dealer-header', text: 'Party A (Dealer)', targetId: 'dealer-info' },
-              { id: 'customer-header', text: 'Party B (Customer)', targetId: 'customer-info' }
-            ];
-          } else if (template.format.id === 'doc-purchase-order-a4') {
-            headers = [
-              { id: 'dealer-header', text: 'Party A (Dealer)', targetId: 'dealer-info' },
-              { id: 'customer-header', text: 'Party B (Customer)', targetId: 'customer-info' }
-            ];
-          }
-          
-          return headers.map(header => {
-            const targetElement = template.editableElements.texts.find(t => t.id === header.targetId);
-            if (!targetElement) return null;
-            
-            const canvasTextObj = template.canvas.objects?.find(
-              (obj: any) => obj.type === 'text' && obj.id === header.targetId
-            ) as any;
-            
-            const position = {
-              left: (canvasTextObj?.left || targetElement.position.x) + 16, // Moved right by 16px
-              top: (canvasTextObj?.top || targetElement.position.y) - 40 - 35 + 24, // Moved down by 24px
-            };
-            
-            return (
-              <Box
-                key={header.id}
+        {/* Static Text Objects from Canvas */}
+        {template.canvas.objects?.filter((obj: any) => 
+          obj.type === 'text' && 
+          !obj.id && // Only render static texts (without id)
+          obj.text && 
+          obj.text.trim() !== ''
+        ).map((textObj: any, index: number) => {
+          return (
+            <Box
+              key={`static-text-${index}`}
+              sx={{
+                position: 'absolute',
+                left: textObj.left,
+                top: textObj.top,
+                zIndex: 3,
+              }}
+            >
+              <Typography
                 sx={{
-                  position: 'absolute',
-                  left: position.left,
-                  top: position.top,
-                  zIndex: 3,
+                  fontSize: textObj.fontSize || 14,
+                  fontWeight: textObj.fontWeight || 'normal',
+                  fontFamily: textObj.fontFamily || 'Arial, sans-serif',
+                  color: textObj.fill || '#000000',
+                  lineHeight: textObj.lineHeight || 1.2,
+                  textAlign: textObj.textAlign || 'left',
                 }}
               >
-                <Typography
-                  sx={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    fontFamily: 'Arial, sans-serif',
-                    color: '#000000',
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {header.text}
-                </Typography>
-              </Box>
-            );
-          });
-        })()}
+                {textObj.text}
+              </Typography>
+            </Box>
+          );
+        })}
 
         {/* Signature Images for Documents */}
         {(() => {
@@ -1136,23 +1109,23 @@ ${field(purchaseOrderData.customerPhone)}`,
             }
           }
           
-          // Quotation - Dealer Signature
-          if (template.format.id === 'doc-quotation-a4' && editableValues['dealerSignature']) {
-            const dealerTextElement = template.editableElements.texts.find(t => t.id === 'dealer-info');
-            if (dealerTextElement) {
+          // Quotation - Seller Signature
+          if (template.format.id === 'doc-quotation-a4' && editableValues['sellerSignature']) {
+            const sellerTextElement = template.editableElements.texts.find(t => t.id === 'party-a-info');
+            if (sellerTextElement) {
               const canvasTextObj = template.canvas.objects?.find(
-                (obj: any) => obj.type === 'text' && obj.id === 'dealer-info'
+                (obj: any) => obj.type === 'text' && obj.id === 'party-a-info'
               ) as any;
               
               const position = {
-                left: (canvasTextObj?.left || dealerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
-                top: (canvasTextObj?.top || dealerTextElement.position.y) - 40 + 55 + 10,
+                left: (canvasTextObj?.left || sellerTextElement.position.x) + 120 - 48 - 48 - 40 + 16,
+                top: (canvasTextObj?.top || sellerTextElement.position.y) - 40 + 55 + 10,
               };
               
               signatures.push(
                 <Box
-                  key="dealer-signature"
-                  onClick={() => onImageEdit && onImageEdit('dealerSignature')}
+                  key="seller-signature"
+                  onClick={() => onImageEdit && onImageEdit('sellerSignature')}
                   sx={{
                     position: 'absolute',
                     left: position.left,
@@ -1168,8 +1141,8 @@ ${field(purchaseOrderData.customerPhone)}`,
                   }}
                 >
                   <img 
-                    src={(editableValues['dealerSignature'] as BrandAsset).url} 
-                    alt="Dealer Signature"
+                    src={(editableValues['sellerSignature'] as BrandAsset).url} 
+                    alt="Seller Signature"
                     style={{
                       width: '100%',
                       height: '100%',
