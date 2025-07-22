@@ -216,10 +216,62 @@ useEffect(() => {
         // location.state에서 work 데이터 확인 (최근 작업에서 편집하는 경우)
         if (location.state?.work) {
           const work = location.state.work as RecentWork;
+          console.log('Loading work from Recent Works:', {
+            workId: work.id,
+            templateId: work.templateId,
+            category: work.category,
+            data: work.data
+          });
+          
+          // 먼저 기존 템플릿 시스템에서 찾기
           const workTemplate = categoryTemplates.find(t => t.id === work.templateId);
+          
           if (workTemplate) {
+            // 기존 템플릿 시스템에서 찾은 경우
             setTemplate(workTemplate);
             setEditableValues(work.data || {});
+            console.log('Work loaded successfully with existing template system');
+          } else {
+            // 기존 시스템에서 못 찾은 경우에만 통합 포맷 시스템에서 찾기
+            const allFormats = getUniqueFormatsByCategory(category);
+            let foundFormat: UnifiedFormat | null = null;
+            
+            // templateId로 직접 찾기
+            for (const format of allFormats) {
+              if (format.formatGroup) {
+                const variants = getTemplatesByFormatGroup(format.formatGroup);
+                const matchingVariant = variants.find(v => v.id === work.templateId);
+                if (matchingVariant) {
+                  foundFormat = matchingVariant;
+                  break;
+                }
+              } else if (format.id === work.templateId) {
+                foundFormat = format;
+                break;
+              }
+            }
+            
+            if (foundFormat) {
+              console.log('Found matching format in unified system:', foundFormat.id);
+              
+              // 포맷 그룹이 있는 경우 변형들 로드
+              if (foundFormat.formatGroup) {
+                const variants = getTemplatesByFormatGroup(foundFormat.formatGroup);
+                setAvailableTemplateVariants(variants);
+                setSelectedTemplateVariant(foundFormat.templateVariant || 'default');
+              }
+              
+              const convertedTemplate = convertToTemplate(foundFormat);
+              setTemplate(convertedTemplate);
+              
+              // 저장된 데이터 복원
+              setEditableValues(work.data || {});
+              console.log('Work loaded successfully with unified format system');
+            } else {
+              console.error('Could not find template for work:', work.templateId);
+              // 템플릿을 찾을 수 없는 경우 포맷 선택 다이얼로그 표시
+              setFormatSelectorOpen(true);
+            }
           }
         } else if (location.state?.selectedFormat) {
           // 홈에서 선택된 통합 포맷이 있는 경우
