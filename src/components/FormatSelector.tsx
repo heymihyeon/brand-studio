@@ -118,7 +118,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                       <Typography variant="h6" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
                         {category === 'Document' && (format.name === 'Car sales contract (A4)' || format.name === 'Quote' || format.name === 'Purchase Order')
                           ? `${format.name.replace(' (A4)', '')}\n(A4)`
-                          : category === 'Promotion Banner' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
+                          : category === 'Google Ads' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
                           ? `${format.name}\n(${format.dimensions.width}×${format.dimensions.height}px)`
                           : format.name}
                       </Typography>

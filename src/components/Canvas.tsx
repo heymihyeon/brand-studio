@@ -548,14 +548,14 @@ Authorized Signature: _____________________`,
             sx={{
               position: 'absolute',
               // Default 레이아웃인 경우 하단 좌측으로 배치, 그 외는 기존 위치 유지
-              ...(isDefaultLayout && template.category === 'Promotion Banner'
+              ...(isDefaultLayout && template.category === 'Google Ads'
                 ? { left: 46, bottom: 30 }  // 하단 좌측 (30 + 16 = 46)
                 : template.format.id === 'banner-square' 
                   ? { left: template.canvas.width - 150, top: 4 }  // 1200 - 150 = 1050 (10px 좌측), top: 4 (16px 위로)
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
-              width: isDefaultLayout && template.category === 'Promotion Banner' ? 168 : 120, // 1.4배 크기 (120 * 1.4 = 168)
-              height: isDefaultLayout && template.category === 'Promotion Banner' ? 84 : 60, // 1.4배 크기 (60 * 1.4 = 84)
+              width: isDefaultLayout && template.category === 'Google Ads' ? 168 : 120, // 1.4배 크기 (120 * 1.4 = 168)
+              height: isDefaultLayout && template.category === 'Google Ads' ? 84 : 60, // 1.4배 크기 (60 * 1.4 = 84)
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
@@ -729,7 +729,7 @@ Authorized Signature: _____________________`,
             
             let topAdjustment = 0;
             let leftAdjustment = 0;
-            if (isDefaultLayout && template.category === 'Promotion Banner') {
+            if (isDefaultLayout && template.category === 'Google Ads') {
                 topAdjustment = -46; // Move up by 46px for default layout (30 + 16)
                 leftAdjustment = -16; // Move left by 16px for default layout
             } else if (isDefaultLayout) {
@@ -759,7 +759,7 @@ Authorized Signature: _____________________`,
               zIndex: 3,
               display: 'flex',
               flexDirection: 'column',
-              gap: isDefaultLayout && template.category === 'Promotion Banner' ? '-22px' : '8px', // Reduced gap for promotion banner default layout
+              gap: isDefaultLayout && template.category === 'Google Ads' ? '-22px' : '8px', // Reduced gap for promotion banner default layout
             };
             
             if (textAlign === 'center' && originX === 'center') {
@@ -789,7 +789,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 42 : 48),
                         fontWeight: 'bold',
-                        fontFamily: template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
+                        fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[titleElement.id] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
                         lineHeight: titleCanvasObj?.lineHeight || 1.2,
                         whiteSpace: 'pre-wrap',
@@ -821,7 +821,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
                         fontWeight: '500',
-                        fontFamily: template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
+                        fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[subtitleElement.id] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
                         lineHeight: 1.2,
                         whiteSpace: 'pre-wrap',
@@ -858,10 +858,10 @@ Authorized Signature: _____________________`,
                   
                   const fontSize = canvasTextObj?.fontSize || 18;
                   const fontWeight = canvasTextObj?.fontWeight || 'normal';
-                  const fontFamily = template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
+                  const fontFamily = template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
                   const color = isPlaceholder 
                     ? 'rgba(255, 255, 255, 0.5)' 
-                    : (template.category === 'Promotion Banner' ? '#ffffff' : (canvasTextObj?.fill || '#ffffff'));
+                    : (template.category === 'Google Ads' ? '#ffffff' : (canvasTextObj?.fill || '#ffffff'));
                   const textAlign = canvasTextObj?.textAlign || 'left';
                   const originX = canvasTextObj?.originX || 'left';
                   
@@ -929,7 +929,7 @@ Authorized Signature: _____________________`,
                 (obj: any) => obj.type === 'text' && obj.id === textElement.id
               ) as any;
               
-              const isPromotionBanner = template.category === 'Promotion Banner';
+              const isPromotionBanner = template.category === 'Google Ads';
               const isHeading = textElement.type === 'heading';
               const isVerticalBanner = template.format.id === 'banner-vertical';
               const isSquareBanner = template.format.id === 'banner-square';

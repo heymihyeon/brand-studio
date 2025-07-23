@@ -44,7 +44,7 @@ const categories: Category[] = [
   },
   {
     id: 'banner',
-    name: 'Promotion Banner',
+    name: 'Google Ads',
     icon: 'campaign',
     description: 'Create web banners, advertising banners, and more.',
     defaultTemplate: 'banner-template-1',
@@ -180,7 +180,7 @@ const Home: React.FC = () => {
     
     const categoryMap: Record<string, string> = {
       'document': 'Document',
-      'banner': 'Promotion Banner',
+      'banner': 'Google Ads',
       'brochure': 'Brochure',
     };
     const categoryName = categoryMap[category.id] || category.name;
@@ -212,7 +212,8 @@ const Home: React.FC = () => {
   const handleEdit = (work: RecentWork) => {
     const categoryMap: Record<string, string> = {
       'Document': 'document',
-      'Promotion Banner': 'banner',
+      'Google Ads': 'banner',
+      'Promotion Banner': 'banner', // 이전 데이터 호환성을 위해 유지
       'Brochure': 'brochure',
     };
     const categoryId = categoryMap[work.category] || 'document';

@@ -41,7 +41,7 @@ import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
-  'banner': 'Promotion Banner',
+  'banner': 'Google Ads',
   'sns': 'SNS',
 };
 
@@ -361,8 +361,8 @@ useEffect(() => {
               if (hasExistingValues && editableValues[text.id]) {
                 initialValues[text.id] = editableValues[text.id];
               } else {
-                // Promotion Banner의 경우 특별한 기본값 사용
-                if (currentCategory === 'Promotion Banner') {
+                // Google Ads의 경우 특별한 기본값 사용
+                if (currentCategory === 'Google Ads') {
                   if (text.id === 'title' && text.type === 'heading') {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -418,8 +418,8 @@ useEffect(() => {
               if (hasExistingValues && editableValues[text.id]) {
                 initialValues[text.id] = editableValues[text.id];
               } else {
-                // Promotion Banner의 경우 특별한 기본값 사용
-                if (currentCategory === 'Promotion Banner') {
+                // Google Ads의 경우 특별한 기본값 사용
+                if (currentCategory === 'Google Ads') {
                   if (text.id === 'title' && text.type === 'heading') {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -757,15 +757,15 @@ useEffect(() => {
       console.log('thumbnailData received:', thumbnailData ? 'yes' : 'no', 'length:', thumbnailData?.length);
       
       // Ensure category is valid for RecentWork type
-      let validCategory: 'Document' | 'Promotion Banner' | 'Brochure' = 'Document';
+      let validCategory: 'Document' | 'Google Ads' | 'Brochure' = 'Document';
       console.log('Current category:', currentCategory);
       console.log('Template category:', template.category);
       
-      if (currentCategory === 'Document' || currentCategory === 'Promotion Banner' || currentCategory === 'Brochure') {
+      if (currentCategory === 'Document' || currentCategory === 'Google Ads' || currentCategory === 'Brochure') {
         validCategory = currentCategory;
       } else if (currentCategory === 'SNS') {
-        // Map SNS to Promotion Banner as it's the closest match
-        validCategory = 'Promotion Banner';
+        // Map SNS to Google Ads as it's the closest match
+        validCategory = 'Google Ads';
       } else {
         // Fallback to template category
         validCategory = template.category;
@@ -1175,7 +1175,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (currentCategory === 'Promotion Banner') {
+              if (currentCategory === 'Google Ads') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -1230,7 +1230,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (currentCategory === 'Promotion Banner') {
+              if (currentCategory === 'Google Ads') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
