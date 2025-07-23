@@ -1013,8 +1013,20 @@ useEffect(() => {
                     onChange={(e) => handleTextChange(textElement.id, e.target.value)}
                     multiline={true}
                     rows={
+                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 :
                       textElement.type === 'heading' ? 2 :
                       textElement.type === 'subheading' ? 2 : 4
+                    }
+                    maxRows={
+                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
+                    }
+                    sx={
+                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
+                        '& .MuiInputBase-root': {
+                          maxHeight: '56px',
+                          overflow: 'auto'
+                        }
+                      } : {}
                     }
                   />
                 ))}

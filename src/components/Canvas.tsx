@@ -641,7 +641,7 @@ Authorized Signature: _____________________`,
             // Vehicle 이미지인 경우 선택된 색상에 따라 이미지 URL 변경
             let vehicleFilter = '';
             if (isVehicleImage) {
-              const selectedColor = editableValues[`${imageElement.id}_color`] || 'cyber-gray-matte';
+              const selectedColor = editableValues[`${imageElement.id}_color`] || 'matte-silver';
               imageSrc = getVehicleImageUrl(selectedColor);
               vehicleFilter = getVehicleColorFilter(selectedColor);
             }
