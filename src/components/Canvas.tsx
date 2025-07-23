@@ -43,58 +43,86 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         const isThumbnail = format === 'jpg' && quality <= 30;
         const exportScale = isThumbnail ? 0.5 : 2; // 썸네일은 0.5배, 일반 내보내기는 2배
         
-        // Clone the canvas element to avoid visual changes
-        const clonedCanvas = canvasRef.current.cloneNode(true) as HTMLDivElement;
+        // Store original transform
+        const originalTransform = canvasRef.current.style.transform;
         
-        // Apply scale 1 to the cloned element
-        clonedCanvas.style.transform = 'scale(1)';
-        clonedCanvas.style.position = 'absolute';
-        clonedCanvas.style.left = '-9999px';
-        document.body.appendChild(clonedCanvas);
-        
-        // Create a canvas from the cloned element
-        const canvas = await html2canvas(clonedCanvas, {
-          scale: exportScale,
-          backgroundColor: null,
-          allowTaint: true,
-          useCORS: true,
-          width: template.canvas.width,
-          height: template.canvas.height,
-          logging: false,
+        // For Square and Vertical formats, we need to adjust image sizes for export
+        const isSquareOrVertical = template.id?.includes('square') || template.id?.includes('vertical');
+        console.log('Export adjustment check:', { 
+          templateId: template.id, 
+          isSquareOrVertical,
+          currentScale: scale 
         });
-        console.log('html2canvas completed, canvas:', canvas, 'scale:', exportScale);
         
-        // Remove cloned element
-        document.body.removeChild(clonedCanvas);
+        // Function to restore original state
+        const restoreOriginalState = () => {
+          canvasRef.current!.style.transform = originalTransform;
+          canvasRef.current!.style.transformOrigin = (template.format.id === 'banner-square' || template.format.id === 'banner-vertical') ? 'top center' : 'center';
+        };
         
-        // Convert to requested format
-        if (format === 'png') {
-          return canvas.toDataURL('image/png');
-        } else if (format === 'jpg' || format === 'jpeg') {
-          return canvas.toDataURL('image/jpeg', quality / 100);
-        } else if (format === 'pdf') {
-          // Create PDF from canvas
-          const imgData = canvas.toDataURL('image/png');
+        try {
+          // Don't modify the canvas transform or element sizes
+          // Just use html2canvas with the appropriate scale compensation
+          console.log('Using current canvas state for export with scale compensation');
           
-          // Calculate PDF dimensions in mm
-          const pdfWidth = template.canvas.width * 0.264583; // pixels to mm (96 DPI)
-          const pdfHeight = template.canvas.height * 0.264583;
+          // Wait for DOM to update
+          await new Promise(resolve => requestAnimationFrame(resolve));
           
-          // Create PDF with custom dimensions
-          const pdf = new jsPDF({
-            orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
-            unit: 'mm',
-            format: [pdfWidth, pdfHeight]
+          console.log('Creating canvas with html2canvas with compensated scale');
+          
+          // Calculate the correct export scale considering current display scale
+          const compensatedExportScale = exportScale / scale;
+          
+          // Create a canvas from the original element with compensated scale
+          const canvas = await html2canvas(canvasRef.current, {
+            scale: compensatedExportScale,
+            backgroundColor: null,
+            allowTaint: true,
+            useCORS: true,
+            width: template.canvas.width * scale, // Adjust width for current scale
+            height: template.canvas.height * scale, // Adjust height for current scale
+            logging: false,
+            imageTimeout: 15000,
           });
+          console.log('html2canvas completed, canvas:', canvas, 'compensated scale:', compensatedExportScale);
           
-          // Add image to PDF
-          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          // Restore original state
+          restoreOriginalState();
           
-          // Convert to data URL
-          return pdf.output('dataurlstring');
+          // Convert to requested format
+          if (format === 'png') {
+            return canvas.toDataURL('image/png');
+          } else if (format === 'jpg' || format === 'jpeg') {
+            return canvas.toDataURL('image/jpeg', quality / 100);
+          } else if (format === 'pdf') {
+            // Create PDF from canvas
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Calculate PDF dimensions in mm
+            const pdfWidth = template.canvas.width * 0.264583; // pixels to mm (96 DPI)
+            const pdfHeight = template.canvas.height * 0.264583;
+            
+            // Create PDF with custom dimensions
+            const pdf = new jsPDF({
+              orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+              unit: 'mm',
+              format: [pdfWidth, pdfHeight]
+            });
+            
+            // Add image to PDF
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            
+            // Convert to data URL
+            return pdf.output('dataurlstring');
+          }
+          
+          return canvas.toDataURL('image/png');
+        } catch (exportError) {
+          console.error('Error during html2canvas export:', exportError);
+          // Restore original state in case of error
+          restoreOriginalState();
+          throw exportError;
         }
-        
-        return canvas.toDataURL('image/png');
       } catch (error) {
         console.error('Error exporting canvas:', error);
         return '';
@@ -487,6 +515,7 @@ Authorized Signature: _____________________`,
       {/* Canvas wrapper with scale */}
       <Box
         ref={canvasRef}
+        data-canvas-clone="true"
         sx={{
           position: 'relative',
           width: template.canvas.width,
@@ -548,6 +577,7 @@ Authorized Signature: _____________________`,
           });
           return (
           <Box
+            data-element="brandLogo"
             onClick={() => onImageEdit && onImageEdit('brandLogo')}
             sx={{
               position: 'absolute',
@@ -672,6 +702,7 @@ Authorized Signature: _____________________`,
             return (
               <Box
                 key={imageElement.id}
+                data-element={isVehicleImage ? 'vehicle' : imageElement.id}
                 onClick={() => onImageEdit && onImageEdit(imageElement.id)}
                 sx={{
                   position: 'absolute',
