@@ -1011,7 +1011,7 @@ useEffect(() => {
             template && (
               <>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                  Text Edit
+                  {template?.category === 'Google Ads' ? 'Title' : 'Text Edit'}
                 </Typography>
                 {template.editableElements.texts.map((textElement) => (
                   <TextField
@@ -1046,7 +1046,7 @@ useEffect(() => {
                 <>
                   <Divider />
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    Image Edit
+                    {template?.category === 'Google Ads' ? 'Image' : 'Image Edit'}
                   </Typography>
                 {template.editableElements.images.map((imageElement) => (
                   <Box key={imageElement.id}>
