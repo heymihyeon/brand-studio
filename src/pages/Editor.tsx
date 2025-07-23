@@ -1098,7 +1098,7 @@ useEffect(() => {
                                 }}
                               />
                               <Box sx={{ p: 1, textAlign: 'center' }}>
-                                <Typography variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
+                                <Typography component="p" variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
                                   {color.displayName}
                                 </Typography>
                               </Box>

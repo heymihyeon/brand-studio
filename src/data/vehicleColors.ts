@@ -12,7 +12,7 @@ export const vehicleColors: VehicleColor[] = [
   {
     id: 'matte-silver',
     name: 'matte-silver',
-    displayName: 'Matte Silver',
+    displayName: 'Wolf Gray',
     colorCode: '#6B7280',
     imageUrl: '/images/cars/EV9.png',
     filter: '',
@@ -21,7 +21,7 @@ export const vehicleColors: VehicleColor[] = [
   {
     id: 'snow-white',
     name: 'snow-white',
-    displayName: 'Snow White',
+    displayName: 'Snow White Pearl',
     colorCode: '#F0F0F0',
     imageUrl: '/images/cars/EV9.png',
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
@@ -29,7 +29,7 @@ export const vehicleColors: VehicleColor[] = [
   {
     id: 'aurora-black',
     name: 'aurora-black',
-    displayName: 'Aurora Black',
+    displayName: 'Aurora Black Pearl',
     colorCode: '#0E1213',
     imageUrl: '/images/cars/EV9.png',
     filter: 'brightness(1.0) contrast(1.2) saturate(0.8)',
@@ -45,7 +45,7 @@ export const vehicleColors: VehicleColor[] = [
   {
     id: 'yacht-blue',
     name: 'yacht-blue',
-    displayName: 'Yacht Blue',
+    displayName: 'Yacht Matte Blue',
     colorCode: '#263346',
     imageUrl: '/images/cars/EV9.png',
     filter: 'brightness(1.0) contrast(1.05) saturate(6)',
