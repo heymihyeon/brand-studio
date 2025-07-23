@@ -108,12 +108,18 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
         
-        // For Square Banner, apply additional reduction to ensure it fits
+        // For Square and Vertical Banners, apply additional reduction to ensure it fits
         // Check multiple conditions to ensure we catch Square Banner
         const isSquareBanner = template.format?.id === 'banner-square' || 
                               template.id?.includes('banner-square') ||
                               template.name?.includes('Square') ||
                               (template.canvas.width === 1200 && template.canvas.height === 1200);
+        
+        // Check for Vertical Banner
+        const isVerticalBanner = template.format?.id === 'banner-vertical' || 
+                                template.id?.includes('banner-vertical') ||
+                                template.name?.includes('Vertical') ||
+                                (template.canvas.width === 960 && template.canvas.height === 1200);
         
         // Debug logging - more detailed
         console.log('Canvas Scale Debug:', {
@@ -123,6 +129,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
           templateId: template.id,
           templateName: template.name,
           isSquareBanner,
+          isVerticalBanner,
           canvasWidth: template.canvas.width,
           canvasHeight: template.canvas.height,
           containerWidth,
@@ -136,6 +143,12 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
           // Canvas is 1200x1200, so scale = 900/1200 = 0.75
           newScale = 900 / 1200;
           console.log('Square Banner: Fixed scale', newScale);
+        } else if (isVerticalBanner) {
+          // For vertical banners, apply the same logic as square banners
+          // Canvas is 960x1200, we want to fit it in a reasonable size
+          // Using the same scale factor (0.75) for consistency
+          newScale = 0.75;
+          console.log('Vertical Banner: Fixed scale', newScale);
         } else {
           // Calculate scale based on canvas size (padding is handled by wrapper)
           const scaleX = containerWidth / template.canvas.width;
@@ -477,7 +490,7 @@ Authorized Signature: _____________________`,
           width: template.canvas.width,
           height: template.canvas.height,
           transform: `scale(${scale})`,
-          transformOrigin: template.format.id === 'banner-square' ? 'top center' : 'center',
+          transformOrigin: (template.format.id === 'banner-square' || template.format.id === 'banner-vertical') ? 'top center' : 'center',
           backgroundColor: template.canvas.backgroundColor || '#ffffff',
           overflow: 'hidden',
           // Remove border for Square Banner

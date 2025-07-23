@@ -1117,8 +1117,11 @@ useEffect(() => {
               sx={{
                 position: 'relative',
                 // Square Banner의 경우 고정 크기 설정 (900x900)
-                width: template?.format?.id === 'banner-square' ? 900 : 'fit-content',
-                height: template?.format?.id === 'banner-square' ? 900 : 'fit-content',
+                // Vertical Banner의 경우 고정 크기 설정 (720x900)
+                width: template?.format?.id === 'banner-square' ? 900 : 
+                       template?.format?.id === 'banner-vertical' ? 720 : 'fit-content',
+                height: template?.format?.id === 'banner-square' ? 900 : 
+                        template?.format?.id === 'banner-vertical' ? 900 : 'fit-content',
                 backgroundColor: 'white',
                 overflow: 'hidden', // Add overflow hidden
               }}
