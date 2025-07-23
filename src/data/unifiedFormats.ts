@@ -931,7 +931,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'title',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           left: 50,
           top: 100,
           fontSize: 48,
@@ -943,7 +943,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'subtitle',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           left: 50,
           top: 220,
           fontSize: 24,
@@ -969,14 +969,14 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'title',
           type: 'heading',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           position: { x: 50, y: 100 },
           editable: true,
         },
         {
           id: 'subtitle',
           type: 'subheading',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           position: { x: 50, y: 220 },
           editable: true,
         },
@@ -1114,7 +1114,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'title',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           left: 30,
           top: 100,
           fontSize: 42,
@@ -1126,7 +1126,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'subtitle',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           left: 30,
           top: 250,
           fontSize: 18,
@@ -1152,14 +1152,14 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'title',
           type: 'heading',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           position: { x: 30, y: 100 },
           editable: true,
         },
         {
           id: 'subtitle',
           type: 'subheading',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           position: { x: 30, y: 250 },
           editable: true,
         },
@@ -1297,7 +1297,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'title',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           left: 50,
           top: 180,
           fontSize: 48,
@@ -1309,7 +1309,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           type: 'text',
           id: 'subtitle',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           left: 50,
           top: 290,
           fontSize: 22,
@@ -1335,14 +1335,14 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'title',
           type: 'heading',
-          text: 'Hyundai EV,\nCarrying Your Journey.',
+          text: 'Your Journey Starts Here',
           position: { x: 50, y: 180 },
           editable: true,
         },
         {
           id: 'subtitle',
           type: 'subheading',
-          text: 'Hyundai Mobility Passport In Okinawa',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
           position: { x: 50, y: 290 },
           editable: true,
         },

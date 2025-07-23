@@ -357,7 +357,23 @@ useEffect(() => {
             const hasExistingValues = Object.keys(editableValues).length > 0;
             
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = hasExistingValues && editableValues[text.id] ? editableValues[text.id] : (text.text || '');
+              // 기존 값이 있으면 사용, 없으면 기본값 사용
+              if (hasExistingValues && editableValues[text.id]) {
+                initialValues[text.id] = editableValues[text.id];
+              } else {
+                // Promotion Banner의 경우 특별한 기본값 사용
+                if (currentCategory === 'Promotion Banner') {
+                  if (text.id === 'title' && text.type === 'heading') {
+                    initialValues[text.id] = 'Your Journey Starts Here';
+                  } else if (text.id === 'subtitle' && text.type === 'subheading') {
+                    initialValues[text.id] = 'Upgrade Your Ride, Elevate Your Drive!';
+                  } else {
+                    initialValues[text.id] = text.text || '';
+                  }
+                } else {
+                  initialValues[text.id] = text.text || '';
+                }
+              }
             });
             
             convertedTemplate.editableElements.images.forEach((image) => {
@@ -398,7 +414,23 @@ useEffect(() => {
             const hasExistingValues = Object.keys(editableValues).length > 0;
             
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = hasExistingValues && editableValues[text.id] ? editableValues[text.id] : (text.text || '');
+              // 기존 값이 있으면 사용, 없으면 기본값 사용
+              if (hasExistingValues && editableValues[text.id]) {
+                initialValues[text.id] = editableValues[text.id];
+              } else {
+                // Promotion Banner의 경우 특별한 기본값 사용
+                if (currentCategory === 'Promotion Banner') {
+                  if (text.id === 'title' && text.type === 'heading') {
+                    initialValues[text.id] = 'Your Journey Starts Here';
+                  } else if (text.id === 'subtitle' && text.type === 'subheading') {
+                    initialValues[text.id] = 'Upgrade Your Ride, Elevate Your Drive!';
+                  } else {
+                    initialValues[text.id] = text.text || '';
+                  }
+                } else {
+                  initialValues[text.id] = text.text || '';
+                }
+              }
             });
             
             convertedTemplate.editableElements.images.forEach((image) => {
@@ -1139,7 +1171,18 @@ useEffect(() => {
             
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = editableValues[text.id] || text.text || '';
+              // Promotion Banner의 경우 특별한 기본값 사용
+              if (category === 'Promotion Banner') {
+                if (text.id === 'title' && text.type === 'heading') {
+                  initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
+                } else if (text.id === 'subtitle' && text.type === 'subheading') {
+                  initialValues[text.id] = editableValues[text.id] || 'Upgrade Your Ride, Elevate Your Drive!';
+                } else {
+                  initialValues[text.id] = editableValues[text.id] || text.text || '';
+                }
+              } else {
+                initialValues[text.id] = editableValues[text.id] || text.text || '';
+              }
             });
             
             // 이미지는 기존에 선택한 값 유지
@@ -1183,7 +1226,18 @@ useEffect(() => {
             
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
-              initialValues[text.id] = editableValues[text.id] || text.text || '';
+              // Promotion Banner의 경우 특별한 기본값 사용
+              if (category === 'Promotion Banner') {
+                if (text.id === 'title' && text.type === 'heading') {
+                  initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
+                } else if (text.id === 'subtitle' && text.type === 'subheading') {
+                  initialValues[text.id] = editableValues[text.id] || 'Upgrade Your Ride, Elevate Your Drive!';
+                } else {
+                  initialValues[text.id] = editableValues[text.id] || text.text || '';
+                }
+              } else {
+                initialValues[text.id] = editableValues[text.id] || text.text || '';
+              }
             });
             
             // 이미지는 기존에 선택한 값 유지

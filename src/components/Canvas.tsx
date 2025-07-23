@@ -474,6 +474,9 @@ Authorized Signature: _____________________`,
           if (isCenterLayout) {
             return null;
           }
+          
+          // Default 레이아웃인지 확인
+          const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
           console.log('Logo rendering info:', {
             formatId: template.format.id,
             logoUrl: (logo as BrandAsset).url,
@@ -488,13 +491,15 @@ Authorized Signature: _____________________`,
             onClick={() => onImageEdit && onImageEdit('brandLogo')}
             sx={{
               position: 'absolute',
-              // Square Banner의 경우 left 사용, 다른 경우 right 사용
-              ...(template.format.id === 'banner-square' 
-                ? { left: template.canvas.width - 150, top: 4 }  // 1080 - 150 = 930 (10px 좌측), top: 4 (16px 위로)
-                : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
+              // Default 레이아웃인 경우 하단 좌측으로 배치, 그 외는 기존 위치 유지
+              ...(isDefaultLayout && template.category === 'Promotion Banner'
+                ? { left: 46, bottom: 30 }  // 하단 좌측 (30 + 16 = 46)
+                : template.format.id === 'banner-square' 
+                  ? { left: template.canvas.width - 150, top: 4 }  // 1080 - 150 = 930 (10px 좌측), top: 4 (16px 위로)
+                  : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
-              width: 120,
-              height: 60,
+              width: isDefaultLayout && template.category === 'Promotion Banner' ? 168 : 120, // 1.4배 크기 (120 * 1.4 = 168)
+              height: isDefaultLayout && template.category === 'Promotion Banner' ? 84 : 60, // 1.4배 크기 (60 * 1.4 = 84)
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
@@ -667,12 +672,16 @@ Authorized Signature: _____________________`,
             const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
             
             let topAdjustment = 0;
-            if (isDefaultLayout) {
-                topAdjustment = -30; // Move up by 30px for default layout
+            let leftAdjustment = 0;
+            if (isDefaultLayout && template.category === 'Promotion Banner') {
+                topAdjustment = -46; // Move up by 46px for default layout (30 + 16)
+                leftAdjustment = -16; // Move left by 16px for default layout
+            } else if (isDefaultLayout) {
+                topAdjustment = -30; // Move up by 30px for default layout (non-promotion banners)
             }
             
             const stackPosition = {
-              left: titleCanvasObj?.left || titleElement.position.x,
+              left: (titleCanvasObj?.left || titleElement.position.x) + leftAdjustment,
               top: (titleCanvasObj?.top || titleElement.position.y) + topAdjustment,
             };
             
@@ -694,7 +703,7 @@ Authorized Signature: _____________________`,
               zIndex: 3,
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px', // Space between title and subtitle
+              gap: isDefaultLayout && template.category === 'Promotion Banner' ? '-22px' : '8px', // Reduced gap for promotion banner default layout
             };
             
             if (textAlign === 'center' && originX === 'center') {
