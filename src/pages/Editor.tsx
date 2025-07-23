@@ -613,6 +613,10 @@ useEffect(() => {
     if (elementId === 'brandLogo') {
       console.log('Editor (Canvas): Setting filter to Logos');
       setAssetFilterCategory('Logo');
+    } else if (elementId === 'centerLogo' && template?.category === 'Google Ads') {
+      // Google Ads의 Center Logo 레이아웃에서 로고 클릭 시 Logo 카테고리만 필터링
+      console.log('Editor (Canvas): Setting filter to Logo for Google Ads Center Logo');
+      setAssetFilterCategory('Logo');
     } else {
       const imageElement = template?.editableElements.images.find(img => img.id === elementId);
       console.log('Editor (Canvas): Image element found:', imageElement);
