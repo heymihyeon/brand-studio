@@ -966,13 +966,13 @@ Authorized Signature: _____________________`,
                     key="dealer-info-stack"
                     sx={{
                       position: 'absolute',
-                      right: 60, // 왼쪽으로 조금 이동
-                      bottom: 100, // 위로 많이 이동
+                      right: 44, // 우측으로 16px 이동 (60 - 16 = 44)
+                      bottom: 34, // 아래로 16px 이동 (50 - 16 = 34)
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-end', // 오른쪽 정렬
-                      gap: '4px',
+                      gap: '2px', // 간격 좁히기
                     }}
                   >
                     {/* Dealer Name */}
@@ -1173,13 +1173,13 @@ Authorized Signature: _____________________`,
                     key="dealer-info-stack"
                     sx={{
                       position: 'absolute',
-                      right: 60, // 왼쪽으로 조금 이동
-                      bottom: 100, // 위로 많이 이동
+                      right: 44, // 우측으로 16px 이동 (60 - 16 = 44)
+                      bottom: 34, // 아래로 16px 이동 (50 - 16 = 34)
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'flex-end', // 오른쪽 정렬
-                      gap: '4px',
+                      gap: '2px', // 간격 좁히기
                     }}
                   >
                     {/* Dealer Name */}
