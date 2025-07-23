@@ -380,6 +380,10 @@ useEffect(() => {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
                     initialValues[text.id] = 'Upgrade Your Ride, Elevate Your Drive!';
+                  } else if (text.id === 'dealerName') {
+                    initialValues[text.id] = 'Dealer name';
+                  } else if (text.id === 'dealerPhone') {
+                    initialValues[text.id] = '010-1234-5678';
                   } else {
                     initialValues[text.id] = text.text || '';
                   }
@@ -441,6 +445,10 @@ useEffect(() => {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
                     initialValues[text.id] = 'Upgrade Your Ride, Elevate Your Drive!';
+                  } else if (text.id === 'dealerName') {
+                    initialValues[text.id] = 'Dealer name';
+                  } else if (text.id === 'dealerPhone') {
+                    initialValues[text.id] = '010-1234-5678';
                   } else {
                     initialValues[text.id] = text.text || '';
                   }
@@ -1209,6 +1217,29 @@ useEffect(() => {
             </>
           )}
 
+          {/* Information 섹션 - Google Ads일 때만 표시 */}
+          {template?.category === 'Google Ads' && (
+            <>
+              <Divider />
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                Information
+              </Typography>
+              <TextField
+                fullWidth
+                label="Dealer Name"
+                value={editableValues['dealerName'] || 'Dealer name'}
+                onChange={(e) => handleTextChange('dealerName', e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                label="Phone Number"
+                value={editableValues['dealerPhone'] || '010-1234-5678'}
+                onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
+              />
+            </>
+          )}
+
         </Stack>
       </Paper>
 
@@ -1294,6 +1325,10 @@ useEffect(() => {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
                   initialValues[text.id] = editableValues[text.id] || 'Upgrade Your Ride, Elevate Your Drive!';
+                } else if (text.id === 'dealerName') {
+                  initialValues[text.id] = editableValues[text.id] || 'Dealer name';
+                } else if (text.id === 'dealerPhone') {
+                  initialValues[text.id] = editableValues[text.id] || '010-1234-5678';
                 } else {
                   initialValues[text.id] = editableValues[text.id] || text.text || '';
                 }
@@ -1353,6 +1388,10 @@ useEffect(() => {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
                   initialValues[text.id] = editableValues[text.id] || 'Upgrade Your Ride, Elevate Your Drive!';
+                } else if (text.id === 'dealerName') {
+                  initialValues[text.id] = editableValues[text.id] || 'Dealer name';
+                } else if (text.id === 'dealerPhone') {
+                  initialValues[text.id] = editableValues[text.id] || '010-1234-5678';
                 } else {
                   initialValues[text.id] = editableValues[text.id] || text.text || '';
                 }
