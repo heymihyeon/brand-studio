@@ -108,18 +108,60 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
         
-        const scaleX = containerWidth / template.canvas.width;
-        const scaleY = containerHeight / template.canvas.height;
-        const newScale = Math.min(scaleX, scaleY, 1);
+        // For Square Banner, apply additional reduction to ensure it fits
+        // Check multiple conditions to ensure we catch Square Banner
+        const isSquareBanner = template.format?.id === 'banner-square' || 
+                              template.id?.includes('banner-square') ||
+                              template.name?.includes('Square Banner') ||
+                              (template.canvas.width === 1080 && template.canvas.height === 1080);
         
-        setScale(newScale);
+        // Debug logging - more detailed
+        console.log('Canvas Scale Debug:', {
+          template: template,
+          formatId: template.format?.id,
+          formatName: template.format?.name,
+          templateId: template.id,
+          templateName: template.name,
+          isSquareBanner,
+          canvasWidth: template.canvas.width,
+          canvasHeight: template.canvas.height,
+          containerWidth,
+          containerHeight,
+          currentScale: scale
+        });
+        
+        let newScale;
+        if (isSquareBanner) {
+          // For square banners, we have a fixed 900x900 container
+          // Canvas is 1080x1080, so scale = 900/1080 = 0.833
+          newScale = 900 / 1080;
+          console.log('Square Banner: Fixed scale', newScale);
+        } else {
+          // Calculate scale based on canvas size (padding is handled by wrapper)
+          const scaleX = containerWidth / template.canvas.width;
+          const scaleY = containerHeight / template.canvas.height;
+          newScale = Math.min(scaleX, scaleY, 1);
+          console.log('Other formats: Calculated scale', newScale);
+        }
+        
+        // Force scale update
+        if (Math.abs(scale - newScale) > 0.001) {
+          setScale(newScale);
+        }
       }
     };
 
     updateScale();
     window.addEventListener('resize', updateScale);
-    return () => window.removeEventListener('resize', updateScale);
-  }, [template.canvas.width, template.canvas.height]);
+    
+    // Force update after a short delay to ensure container is properly rendered
+    const timer = setTimeout(updateScale, 100);
+    
+    return () => {
+      window.removeEventListener('resize', updateScale);
+      clearTimeout(timer);
+    };
+  }, [template.canvas.width, template.canvas.height, template.format?.id, template.id]);
 
   // Get background image
   const getBackgroundImage = () => {
@@ -424,9 +466,26 @@ Authorized Signature: _____________________`,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f5f5f5',
-        overflow: 'hidden',
+        overflow: 'hidden', // Square Banner는 Editor.tsx에서 overflow hidden 처리
       }}
     >
+      {/* Debug info for Square Banner */}
+      {template.format.id === 'banner-square' && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            padding: '8px',
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            fontSize: '12px',
+            zIndex: 1000,
+          }}
+        >
+          Scale: {scale.toFixed(3)} | Canvas: {template.canvas.width}x{template.canvas.height} | Display: {Math.round(template.canvas.width * scale)}x{Math.round(template.canvas.height * scale)}
+        </Box>
+      )}
       {/* Canvas wrapper with scale */}
       <Box
         ref={canvasRef}
@@ -435,10 +494,11 @@ Authorized Signature: _____________________`,
           width: template.canvas.width,
           height: template.canvas.height,
           transform: `scale(${scale})`,
-          transformOrigin: 'center',
+          transformOrigin: template.format.id === 'banner-square' ? 'top center' : 'center',
           backgroundColor: template.canvas.backgroundColor || '#ffffff',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
           overflow: 'hidden',
+          // Remove border for Square Banner
+          transition: 'transform 0.3s ease', // Add transition to see scale changes
         }}
       >
         {/* Background image layer */}

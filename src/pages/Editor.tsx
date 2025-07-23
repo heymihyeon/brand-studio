@@ -1105,7 +1105,7 @@ useEffect(() => {
           sx={{ 
             flex: 1, 
             bgcolor: 'grey.100', 
-            overflow: 'hidden',
+            overflow: 'auto', // Changed from 'hidden' to 'auto'
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1116,11 +1116,11 @@ useEffect(() => {
             <Box
               sx={{
                 position: 'relative',
-                width: 'fit-content',
-                height: 'fit-content',
+                // Square Banner의 경우 고정 크기 설정 (900x900)
+                width: template?.format?.id === 'banner-square' ? 900 : 'fit-content',
+                height: template?.format?.id === 'banner-square' ? 900 : 'fit-content',
                 backgroundColor: 'white',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                borderRadius: 1,
+                overflow: 'hidden', // Add overflow hidden
               }}
             >
               <Canvas
@@ -1172,7 +1172,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (category === 'Promotion Banner') {
+              if (currentCategory === 'Promotion Banner') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -1227,7 +1227,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (category === 'Promotion Banner') {
+              if (currentCategory === 'Promotion Banner') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
