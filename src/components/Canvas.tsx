@@ -112,8 +112,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         // Check multiple conditions to ensure we catch Square Banner
         const isSquareBanner = template.format?.id === 'banner-square' || 
                               template.id?.includes('banner-square') ||
-                              template.name?.includes('Square Banner') ||
-                              (template.canvas.width === 1080 && template.canvas.height === 1080);
+                              template.name?.includes('Square') ||
+                              (template.canvas.width === 1200 && template.canvas.height === 1200);
         
         // Debug logging - more detailed
         console.log('Canvas Scale Debug:', {
@@ -133,8 +133,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         let newScale;
         if (isSquareBanner) {
           // For square banners, we have a fixed 900x900 container
-          // Canvas is 1080x1080, so scale = 900/1080 = 0.833
-          newScale = 900 / 1080;
+          // Canvas is 1200x1200, so scale = 900/1200 = 0.75
+          newScale = 900 / 1200;
           console.log('Square Banner: Fixed scale', newScale);
         } else {
           // Calculate scale based on canvas size (padding is handled by wrapper)
@@ -469,23 +469,6 @@ Authorized Signature: _____________________`,
         overflow: 'hidden', // Square Banner는 Editor.tsx에서 overflow hidden 처리
       }}
     >
-      {/* Debug info for Square Banner */}
-      {template.format.id === 'banner-square' && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            padding: '8px',
-            backgroundColor: 'rgba(0,0,0,0.7)',
-            color: 'white',
-            fontSize: '12px',
-            zIndex: 1000,
-          }}
-        >
-          Scale: {scale.toFixed(3)} | Canvas: {template.canvas.width}x{template.canvas.height} | Display: {Math.round(template.canvas.width * scale)}x{Math.round(template.canvas.height * scale)}
-        </Box>
-      )}
       {/* Canvas wrapper with scale */}
       <Box
         ref={canvasRef}
@@ -555,7 +538,7 @@ Authorized Signature: _____________________`,
               ...(isDefaultLayout && template.category === 'Promotion Banner'
                 ? { left: 46, bottom: 30 }  // 하단 좌측 (30 + 16 = 46)
                 : template.format.id === 'banner-square' 
-                  ? { left: template.canvas.width - 150, top: 4 }  // 1080 - 150 = 930 (10px 좌측), top: 4 (16px 위로)
+                  ? { left: template.canvas.width - 150, top: 4 }  // 1200 - 150 = 1050 (10px 좌측), top: 4 (16px 위로)
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
               width: isDefaultLayout && template.category === 'Promotion Banner' ? 168 : 120, // 1.4배 크기 (120 * 1.4 = 168)
@@ -649,7 +632,7 @@ Authorized Signature: _____________________`,
               // Center horizontally for vertical banner format
               // Check both format id and canvas dimensions
               const isVerticalBanner = template.format.id === 'banner-vertical' || 
-                                     (template.canvas.width === 400 && template.canvas.height === 900);
+                                     (template.canvas.width === 960 && template.canvas.height === 1200);
               
               if (isVerticalBanner) {
                 adjustedLeft = (template.canvas.width - size.width) / 2;

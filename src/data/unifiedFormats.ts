@@ -894,18 +894,18 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  // 프로모션 배너 포맷 - Horizontal Banner Templates
+  // 프로모션 배너 포맷 - Horizontal Templates
   // Template 1: Default (텍스트 왼쪽 상단)
   {
     id: 'banner-horizontal-default',
-    name: 'Horizontal Banner (1280*700px)',
+    name: 'Horizontal',
     category: 'Promotion Banner',
-    dimensions: { width: 1280, height: 700 },
+    dimensions: { width: 1200, height: 628 },
     templateVariant: 'default',
     formatGroup: 'banner-horizontal',
     canvas: {
-      width: 1280,
-      height: 700,
+      width: 1200,
+      height: 628,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1007,14 +1007,14 @@ export const unifiedFormats: UnifiedFormat[] = [
   // Template 2: Center (로고 중앙)
   {
     id: 'banner-horizontal-center',
-    name: 'Horizontal Banner (1280*700px)',
+    name: 'Horizontal',
     category: 'Promotion Banner',
-    dimensions: { width: 1280, height: 700 },
+    dimensions: { width: 1200, height: 628 },
     templateVariant: 'center',
     formatGroup: 'banner-horizontal',
     canvas: {
-      width: 1280,
-      height: 700,
+      width: 1200,
+      height: 628,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1077,18 +1077,18 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  // Vertical Banner Templates
+  // Vertical Templates
   // Template 1: Default (텍스트 상단)
   {
     id: 'banner-vertical-default',
-    name: 'Vertical Banner\n(400*900px)',
+    name: 'Vertical',
     category: 'Promotion Banner',
-    dimensions: { width: 400, height: 900 },
+    dimensions: { width: 960, height: 1200 },
     templateVariant: 'default',
     formatGroup: 'banner-vertical',
     canvas: {
-      width: 400,
-      height: 900,
+      width: 960,
+      height: 1200,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1190,14 +1190,14 @@ export const unifiedFormats: UnifiedFormat[] = [
   // Template 2: Center (로고 중앙)
   {
     id: 'banner-vertical-center',
-    name: 'Vertical Banner\n(400*900px)',
+    name: 'Vertical',
     category: 'Promotion Banner',
-    dimensions: { width: 400, height: 900 },
+    dimensions: { width: 960, height: 1200 },
     templateVariant: 'center',
     formatGroup: 'banner-vertical',
     canvas: {
-      width: 400,
-      height: 900,
+      width: 960,
+      height: 1200,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1260,18 +1260,18 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  // Square Banner Templates
+  // Square Templates
   // Template 1: Default (텍스트 왼쪽)
   {
     id: 'banner-square-default',
-    name: 'Square Banner\n(1080*1080px)',
+    name: 'Square',
     category: 'Promotion Banner',
-    dimensions: { width: 1080, height: 1080 },
+    dimensions: { width: 1200, height: 1200 },
     templateVariant: 'default',
     formatGroup: 'banner-square',
     canvas: {
-      width: 1080,
-      height: 1080,
+      width: 1200,
+      height: 1200,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1373,14 +1373,14 @@ export const unifiedFormats: UnifiedFormat[] = [
   // Template 2: Center (로고 중앙)
   {
     id: 'banner-square-center',
-    name: 'Square Banner\n(1080*1080px)',
+    name: 'Square',
     category: 'Promotion Banner',
-    dimensions: { width: 1080, height: 1080 },
+    dimensions: { width: 1200, height: 1200 },
     templateVariant: 'center',
     formatGroup: 'banner-square',
     canvas: {
-      width: 1080,
-      height: 1080,
+      width: 1200,
+      height: 1200,
       backgroundColor: '#ffffff',
       objects: [
         {
@@ -1448,10 +1448,10 @@ export const unifiedFormats: UnifiedFormat[] = [
     id: 'brochure-instagram-post',
     name: 'Instagram Post (1080*1080px)',
     category: 'Brochure',
-    dimensions: { width: 1080, height: 1080 },
+    dimensions: { width: 1200, height: 1200 },
     canvas: {
-      width: 1080,
-      height: 1080,
+      width: 1200,
+      height: 1200,
       backgroundColor: '#FFFFFF',
       objects: [],
     },
