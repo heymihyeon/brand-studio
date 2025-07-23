@@ -494,7 +494,6 @@ Authorized Signature: _____________________`,
           backgroundColor: template.canvas.backgroundColor || '#ffffff',
           overflow: 'hidden',
           // Remove border for Square Banner
-          transition: 'transform 0.3s ease', // Add transition to see scale changes
         }}
       >
         {/* Background image layer */}
