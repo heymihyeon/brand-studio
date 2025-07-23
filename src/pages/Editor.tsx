@@ -123,8 +123,12 @@ const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
         <Box
           sx={{
             position: 'absolute',
-            left: `${(vehicleObj.left / variant.canvas.width) * 100}%`,
-            top: `${(vehicleObj.top / variant.canvas.height) * 100}%`,
+            left: variant.formatGroup === 'banner-horizontal' && variant.templateVariant === 'default'
+              ? `${((vehicleObj.left - 10) / variant.canvas.width) * 100}%`
+              : `${(vehicleObj.left / variant.canvas.width) * 100}%`,
+            top: variant.formatGroup === 'banner-horizontal' && variant.templateVariant === 'default'
+              ? `${((vehicleObj.top - 10) / variant.canvas.height) * 100}%`
+              : `${(vehicleObj.top / variant.canvas.height) * 100}%`,
             width: `${(vehicleObj.width / variant.canvas.width) * 100}%`,
             height: `${(vehicleObj.height / variant.canvas.height) * 100}%`,
             display: 'flex',
@@ -134,7 +138,7 @@ const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
         >
           <CarIcon 
             sx={{ 
-              fontSize: `${Math.min(vehicleObj.width, vehicleObj.height) / variant.canvas.width * 900}%`,
+              fontSize: `${Math.min(vehicleObj.width, vehicleObj.height) / variant.canvas.width * 750}%`,
               color: 'rgba(0, 0, 0, 0.3)'
             }} 
           />
@@ -1054,8 +1058,15 @@ useEffect(() => {
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 Layout
               </Typography>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-                {availableTemplateVariants.map((variant) => (
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
+                {availableTemplateVariants
+                  .sort((a, b) => {
+                    const order = ['default', 'center-car', 'center'];
+                    const aIndex = order.indexOf(a.templateVariant || 'default');
+                    const bIndex = order.indexOf(b.templateVariant || 'default');
+                    return aIndex - bIndex;
+                  })
+                  .map((variant) => (
                   <Box key={variant.id}
                       onClick={() => handleTemplateVariantChange(variant)}
                       sx={{
@@ -1091,6 +1102,7 @@ useEffect(() => {
                         <Typography variant="caption" sx={{ fontSize: '11px' }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
                           {variant.templateVariant === 'default' && 'Default'}
                           {variant.templateVariant === 'center' && 'Center Logo'}
+                          {variant.templateVariant === 'center-car' && 'Center Car'}
                         </Typography>
                       </Box>
                     </Box>
