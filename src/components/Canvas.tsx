@@ -554,8 +554,12 @@ Authorized Signature: _____________________`,
                   ? { left: template.canvas.width - 150, top: 4 }  // 1200 - 150 = 1050 (10px 좌측), top: 4 (16px 위로)
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
-              width: isDefaultLayout && template.category === 'Google Ads' ? 168 : 120, // 1.4배 크기 (120 * 1.4 = 168)
-              height: isDefaultLayout && template.category === 'Google Ads' ? 84 : 60, // 1.4배 크기 (60 * 1.4 = 84)
+              width: isDefaultLayout && template.category === 'Google Ads' 
+                ? (template.format.id === 'banner-square' || template.format.id === 'banner-vertical' ? 240 : 168) 
+                : 120, // Square, Vertical은 240px (화면에서 180px), Horizontal은 168px
+              height: isDefaultLayout && template.category === 'Google Ads' 
+                ? (template.format.id === 'banner-square' || template.format.id === 'banner-vertical' ? 120 : 84) 
+                : 60, // Square, Vertical은 120px (화면에서 90px), Horizontal은 84px
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
