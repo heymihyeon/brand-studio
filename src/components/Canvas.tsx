@@ -755,7 +755,14 @@ Authorized Signature: _____________________`,
           // Group texts by type
           const titleElement = template.editableElements.texts.find(t => t.type === 'heading');
           const subtitleElement = template.editableElements.texts.find(t => t.type === 'subheading');
-          const otherTexts = template.editableElements.texts.filter(t => t.type !== 'heading' && t.type !== 'subheading');
+          const dealerNameElement = template.editableElements.texts.find(t => t.id === 'dealerName');
+          const dealerPhoneElement = template.editableElements.texts.find(t => t.id === 'dealerPhone');
+          const otherTexts = template.editableElements.texts.filter(t => 
+            t.type !== 'heading' && 
+            t.type !== 'subheading' && 
+            t.id !== 'dealerName' && 
+            t.id !== 'dealerPhone'
+          );
           
           // If both title and subtitle exist, render them in a stack
           if (titleElement && subtitleElement) {
@@ -952,11 +959,86 @@ Authorized Signature: _____________________`,
                     </Box>
                   );
                 })}
+                
+                {/* Dealer Information Stack for Google Ads */}
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && (
+                  <Box
+                    key="dealer-info-stack"
+                    sx={{
+                      position: 'absolute',
+                      right: 60, // 왼쪽으로 조금 이동
+                      bottom: 100, // 위로 많이 이동
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-end', // 오른쪽 정렬
+                      gap: '4px',
+                    }}
+                  >
+                    {/* Dealer Name */}
+                    <Box
+                      onClick={() => onTextEdit && onTextEdit('dealerName', editableValues['dealerName'] || '')}
+                      sx={{
+                        cursor: 'text',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: isSquareOrVertical ? 24 : 18,
+                          fontWeight: 'normal',
+                          fontFamily: 'Kia Signature Fix OTF',
+                          color: editableValues['dealerName'] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        }}
+                      >
+                        {editableValues['dealerName'] || 'Dealer name'}
+                      </Typography>
+                    </Box>
+                    
+                    {/* Phone Number */}
+                    <Box
+                      onClick={() => onTextEdit && onTextEdit('dealerPhone', editableValues['dealerPhone'] || '')}
+                      sx={{
+                        cursor: 'text',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: isSquareOrVertical ? 24 : 18,
+                          fontWeight: 'normal',
+                          fontFamily: 'Kia Signature Fix OTF',
+                          color: editableValues['dealerPhone'] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        }}
+                      >
+                        {editableValues['dealerPhone'] || '010-1234-5678'}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
               </>
             );
           } else {
             // If no title-subtitle pair, render texts individually as before
-            return template.editableElements.texts.map((textElement) => {
+            return (
+              <>
+                {otherTexts.map((textElement) => {
               const value = editableValues[textElement.id] || textElement.text || '';
               const displayText = getTextValue(textElement.id, textElement.type);
               const isPlaceholder = !value;
@@ -1083,7 +1165,82 @@ Authorized Signature: _____________________`,
                   </Typography>
                 </Box>
               );
-            });
+            })}
+                
+                {/* Dealer Information Stack for Google Ads */}
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && (
+                  <Box
+                    key="dealer-info-stack"
+                    sx={{
+                      position: 'absolute',
+                      right: 60, // 왼쪽으로 조금 이동
+                      bottom: 100, // 위로 많이 이동
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-end', // 오른쪽 정렬
+                      gap: '4px',
+                    }}
+                  >
+                    {/* Dealer Name */}
+                    <Box
+                      onClick={() => onTextEdit && onTextEdit('dealerName', editableValues['dealerName'] || '')}
+                      sx={{
+                        cursor: 'text',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: isSquareOrVertical ? 24 : 18,
+                          fontWeight: 'normal',
+                          fontFamily: 'Kia Signature Fix OTF',
+                          color: editableValues['dealerName'] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        }}
+                      >
+                        {editableValues['dealerName'] || 'Dealer name'}
+                      </Typography>
+                    </Box>
+                    
+                    {/* Phone Number */}
+                    <Box
+                      onClick={() => onTextEdit && onTextEdit('dealerPhone', editableValues['dealerPhone'] || '')}
+                      sx={{
+                        cursor: 'text',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: isSquareOrVertical ? 24 : 18,
+                          fontWeight: 'normal',
+                          fontFamily: 'Kia Signature Fix OTF',
+                          color: editableValues['dealerPhone'] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                        }}
+                      >
+                        {editableValues['dealerPhone'] || '010-1234-5678'}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+              </>
+            );
           }
         })()}
 
