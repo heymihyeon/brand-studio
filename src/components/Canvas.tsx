@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import { ContractData } from './CarSalesContractEditor';
 import { QuotationData } from './QuotationEditor';
 import { PurchaseOrderData } from './PurchaseOrderEditor';
+import { getVehicleImageUrl, getVehicleColorFilter } from '../data/vehicleColors';
 
 interface CanvasProps {
   template: Template;
@@ -633,9 +634,17 @@ Authorized Signature: _____________________`,
               (obj: any) => obj.type === 'image' && obj.id === imageElement.id
             ) as any;
             
-            const imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
+            let imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
+            
+            // Vehicle 이미지인 경우 선택된 색상에 따라 이미지 URL 변경
+            let vehicleFilter = '';
+            if (isVehicleImage) {
+              const selectedColor = editableValues[`${imageElement.id}_color`] || 'cyber-gray-matte';
+              imageSrc = getVehicleImageUrl(selectedColor);
+              vehicleFilter = getVehicleColorFilter(selectedColor);
+            }
             
             const size = {
               width: (canvasImgObj?.width || imageElement.size.width) * scaleFactor,
@@ -726,6 +735,7 @@ Authorized Signature: _____________________`,
                       width: '100%',
                       height: '100%',
                       objectFit: 'contain',
+                      filter: vehicleFilter || undefined,
                     }}
                   />
                 ) : (

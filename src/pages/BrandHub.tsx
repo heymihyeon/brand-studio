@@ -146,17 +146,6 @@ const BrandHub: React.FC = () => {
         dimensions: { width: 800, height: 450 },
       },
       {
-        id: 'vehicle-preset-3',
-        name: 'KIA Seltos',
-        url: '/images/cars/seltos.png',
-        thumbnailUrl: '/images/cars/seltos.png',
-        category: 'Vehicle',
-        type: 'image',
-        uploadedAt: new Date(),
-        fileSize: 0,
-        dimensions: { width: 800, height: 450 },
-      },
-      {
         id: 'vehicle-preset-4',
         name: 'KIA Telluride',
         url: '/images/cars/telluride.png',

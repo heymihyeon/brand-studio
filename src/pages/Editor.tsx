@@ -38,6 +38,7 @@ import {
   getUniqueFormatsByCategory 
 } from '../data/unifiedFormats';
 import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data/brandPresets';
+import { vehicleColors, getDefaultVehicleColor, getVehicleImageUrl, VehicleColor } from '../data/vehicleColors';
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
@@ -233,12 +234,20 @@ const Editor: React.FC = () => {
   const [saveSuccessDialogOpen, setSaveSuccessDialogOpen] = useState(false);
   const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
   const [selectedTemplateVariant, setSelectedTemplateVariant] = useState<string>('default');
+  const [selectedVehicleColor, setSelectedVehicleColor] = useState<string>(getDefaultVehicleColor().id);
   const canvasRef = useRef<CanvasRef>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 useEffect(() => {
   console.log(template);
 }, [template]);
+
+// 차량 색상 초기화
+useEffect(() => {
+  if (template && editableValues['vehicle_color']) {
+    setSelectedVehicleColor(editableValues['vehicle_color']);
+  }
+}, [template, editableValues]);
 
   useEffect(() => {
     // 카테고리에 따른 포맷과 템플릿 로드
@@ -388,6 +397,10 @@ useEffect(() => {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   initialValues[image.id] = getDefaultVehicle();
+                  // 기본 차량 색상도 설정
+                  if (!editableValues[`${image.id}_color`]) {
+                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                  }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -445,6 +458,10 @@ useEffect(() => {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   initialValues[image.id] = getDefaultVehicle();
+                  // 기본 차량 색상도 설정
+                  if (!editableValues[`${image.id}_color`]) {
+                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                  }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -1028,6 +1045,56 @@ useEffect(() => {
                         ? (editableValues[imageElement.id] as BrandAsset).name
                         : `Select ${imageElement.label || 'Image'}`}
                     </Button>
+                    
+                    {/* Vehicle Model 색상 선택기 */}
+                    {(imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model') && template?.category === 'Google Ads' && (
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                          Vehicle Color
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+                          {vehicleColors.map((color) => (
+                            <Box
+                              key={color.id}
+                              onClick={() => {
+                                setSelectedVehicleColor(color.id);
+                                // editableValues에 선택된 색상 저장
+                                setEditableValues(prev => ({
+                                  ...prev,
+                                  [`${imageElement.id}_color`]: color.id
+                                }));
+                              }}
+                              sx={{
+                                cursor: 'pointer',
+                                border: selectedVehicleColor === color.id ? '2px solid' : '1px solid',
+                                borderColor: selectedVehicleColor === color.id ? 'primary.main' : 'divider',
+                                borderRadius: 1,
+                                overflow: 'hidden',
+                                transition: 'all 0.2s ease',
+                                '&:hover': {
+                                  borderColor: 'primary.main',
+                                  transform: 'scale(1.02)',
+                                }
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: '100%',
+                                  height: 40,
+                                  backgroundColor: color.colorCode,
+                                  border: color.colorCode === '#FFFFFF' ? '1px solid #e0e0e0' : 'none',
+                                }}
+                              />
+                              <Box sx={{ p: 1, textAlign: 'center' }}>
+                                <Typography variant="caption" sx={{ fontSize: '10px', lineHeight: 1.2 }}>
+                                  {color.displayName}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
                   </Box>
                 ))}
                 
@@ -1212,6 +1279,10 @@ useEffect(() => {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   initialValues[image.id] = getDefaultVehicle();
+                  // 기본 차량 색상도 설정
+                  if (!editableValues[`${image.id}_color`]) {
+                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                  }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -1267,6 +1338,10 @@ useEffect(() => {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   initialValues[image.id] = getDefaultVehicle();
+                  // 기본 차량 색상도 설정
+                  if (!editableValues[`${image.id}_color`]) {
+                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                  }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
