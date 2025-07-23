@@ -1021,35 +1021,44 @@ useEffect(() => {
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                   {template?.category === 'Google Ads' ? 'Title' : 'Text Edit'}
                 </Typography>
-                {template.editableElements.texts.map((textElement) => (
-                  <TextField
-                    key={textElement.id}
-                    fullWidth
-                    label={
-                      textElement.type === 'heading' ? 'Title' :
-                      textElement.type === 'subheading' ? 'Subtitle' : 'Body'
+                {template.editableElements.texts
+                  .filter((textElement) => {
+                    // Google Ads에서 dealerName과 dealerPhone은 Information 섹션에서만 표시
+                    if (template?.category === 'Google Ads' && 
+                        (textElement.id === 'dealerName' || textElement.id === 'dealerPhone')) {
+                      return false;
                     }
-                    value={editableValues[textElement.id] || ''}
-                    onChange={(e) => handleTextChange(textElement.id, e.target.value)}
-                    multiline={true}
-                    rows={
-                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 :
-                      textElement.type === 'heading' ? 2 :
-                      textElement.type === 'subheading' ? 2 : 4
-                    }
-                    maxRows={
-                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
-                    }
-                    sx={
-                      template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
-                        '& .MuiInputBase-root': {
-                          maxHeight: '56px',
-                          overflow: 'auto'
-                        }
-                      } : {}
-                    }
-                  />
-                ))}
+                    return true;
+                  })
+                  .map((textElement) => (
+                    <TextField
+                      key={textElement.id}
+                      fullWidth
+                      label={
+                        textElement.type === 'heading' ? 'Title' :
+                        textElement.type === 'subheading' ? 'Subtitle' : 'Body'
+                      }
+                      value={editableValues[textElement.id] || ''}
+                      onChange={(e) => handleTextChange(textElement.id, e.target.value)}
+                      multiline={true}
+                      rows={
+                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 :
+                        textElement.type === 'heading' ? 2 :
+                        textElement.type === 'subheading' ? 2 : 4
+                      }
+                      maxRows={
+                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
+                      }
+                      sx={
+                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
+                          '& .MuiInputBase-root': {
+                            maxHeight: '56px',
+                            overflow: 'auto'
+                          }
+                        } : {}
+                      }
+                    />
+                  ))}
                 
                 <>
                   <Divider />
