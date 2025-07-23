@@ -63,7 +63,7 @@ export interface FormatOption {
   id: string;
   name: string;
   dimensions: { width: number; height: number };
-  category: 'Document' | 'Promotion Banner' | 'Brochure';
+  category: 'Document' | 'Google Ads' | 'Brochure';
 }
 
 export interface CanvasData {
@@ -138,7 +138,7 @@ export interface Content {
   id: string;
   name: string;
   templateId: string;
-  category: 'Document' | 'Promotion Banner' | 'Brochure';
+  category: 'Document' | 'Google Ads' | 'Brochure';
   editedElements: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
