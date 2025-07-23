@@ -1049,7 +1049,7 @@ useEffect(() => {
                     {/* Vehicle Model 색상 선택기 */}
                     {(imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model') && template?.category === 'Google Ads' && (
                       <Box sx={{ mt: 2 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
                           Vehicle Color
                         </Typography>
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
@@ -1086,7 +1086,7 @@ useEffect(() => {
                                 }}
                               />
                               <Box sx={{ p: 1, textAlign: 'center' }}>
-                                <Typography variant="caption" sx={{ fontSize: '10px', lineHeight: 1.2 }}>
+                                <Typography variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
                                   {color.displayName}
                                 </Typography>
                               </Box>
