@@ -5,7 +5,7 @@ export interface UnifiedFormat {
   name: string;
   category: string;
   dimensions: { width: number; height: number };
-  templateVariant?: 'default' | 'center' | 'center-car' | 'bottom' | 'middle' | 'top' | 'right';
+  templateVariant?: 'default' | 'center' | 'center-car' | 'center-new' | 'bottom' | 'middle' | 'top' | 'right';
   formatGroup?: string; // 같은 포맷의 템플릿들을 그룹화
   canvas: {
     width: number;
@@ -1077,13 +1077,13 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  // Template 3: Center Car (차량 중앙)
+  // Template 3: Center (Default 복제)
   {
-    id: 'banner-horizontal-center-car',
-    name: 'Center Car',
+    id: 'banner-horizontal-center-new',
+    name: 'Horizontal',
     category: 'Google Ads',
     dimensions: { width: 1200, height: 628 },
-    templateVariant: 'center-car',
+    templateVariant: 'center-new',
     formatGroup: 'banner-horizontal',
     canvas: {
       width: 1200,
@@ -1137,14 +1137,12 @@ export const unifiedFormats: UnifiedFormat[] = [
           type: 'image',
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          left: 270,
-          top: 149,
+          left: 640,
+          top: 304,
           width: 660,
           height: 330,
           scaleX: 1,
           scaleY: 1,
-          originX: 'center',
-          originY: 'center',
         },
       ],
     },
@@ -1177,7 +1175,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          position: { x: 270, y: 149 },
+          position: { x: 640, y: 304 },
           size: { width: 660, height: 330 },
           editable: true,
           label: 'Vehicle Model',

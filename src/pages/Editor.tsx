@@ -1061,7 +1061,7 @@ useEffect(() => {
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                 {availableTemplateVariants
                   .sort((a, b) => {
-                    const order = ['default', 'center-car', 'center'];
+                    const order = ['default', 'center-new', 'center-car', 'center'];
                     const aIndex = order.indexOf(a.templateVariant || 'default');
                     const bIndex = order.indexOf(b.templateVariant || 'default');
                     return aIndex - bIndex;
@@ -1103,6 +1103,7 @@ useEffect(() => {
                           {variant.templateVariant === 'default' && 'Default'}
                           {variant.templateVariant === 'center' && 'Center Logo'}
                           {variant.templateVariant === 'center-car' && 'Center Car'}
+                          {variant.templateVariant === 'center-new' && 'Center'}
                         </Typography>
                       </Box>
                     </Box>
