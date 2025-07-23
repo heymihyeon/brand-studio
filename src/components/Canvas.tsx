@@ -615,10 +615,10 @@ Authorized Signature: _____________________`,
             // Apply consistent scale factors for all formats
             let scaleFactor = 1;
             if (isVehicleImage) {
-              // Vehicle images: scale to show as 780×390px on screen
-              // For Square/Vertical (0.75 scale): need 1.3 / 0.75 = 1.73x
-              // For Horizontal (1.0 scale): need 1.3x
-              scaleFactor = isSquareOrVertical ? 1.3 / 0.75 : 1.3;
+              // Vehicle images: reduced scale for Square/Vertical formats
+              // For Square/Vertical (0.75 scale): need 1.2 / 0.75 = 1.6x
+              // For Horizontal (1.0 scale): need 1.2x
+              scaleFactor = isSquareOrVertical ? 1.2 / 0.75 : 1.2;
             } else if (isCenterLogo) {
               // Center Logo images: compensate for canvas scale
               // For Square/Vertical (0.75 scale): need 1 / 0.75 = 1.33x
