@@ -534,9 +534,12 @@ Authorized Signature: _____________________`,
           // Default 레이아웃인지 확인
           const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
           console.log('Logo rendering info:', {
-            formatId: template.format.id,
+            formatId: template.format?.id,
+            templateId: template.id,
+            isDefaultLayout,
+            category: template.category,
             logoUrl: (logo as BrandAsset).url,
-            position: template.format.id === 'banner-square' 
+            position: template.format?.id === 'banner-square' 
               ? `left: ${template.canvas.width - 140}, top: 20`
               : 'right: 20, top: 20',
             size: '120x60',
@@ -555,11 +558,11 @@ Authorized Signature: _____________________`,
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
               width: isDefaultLayout && template.category === 'Google Ads' 
-                ? (template.format.id === 'banner-square' || template.format.id === 'banner-vertical' ? 240 : 168) 
-                : 120, // Square, Vertical은 240px (화면에서 180px), Horizontal은 168px
+                ? (template.id?.includes('square') || template.id?.includes('vertical') ? 280 : 210) 
+                : 120, // Square, Vertical은 280px (화면에서 210px), Horizontal도 210px
               height: isDefaultLayout && template.category === 'Google Ads' 
-                ? (template.format.id === 'banner-square' || template.format.id === 'banner-vertical' ? 120 : 84) 
-                : 60, // Square, Vertical은 120px (화면에서 90px), Horizontal은 84px
+                ? (template.id?.includes('square') || template.id?.includes('vertical') ? 140 : 105) 
+                : 60, // Square, Vertical은 140px (화면에서 105px), Horizontal도 105px
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
