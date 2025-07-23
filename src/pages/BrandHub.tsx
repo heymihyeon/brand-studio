@@ -508,7 +508,7 @@ const BrandHub: React.FC = () => {
                         height="200"
                         image={vehicle.url}
                         alt={vehicle.name}
-                        sx={{ objectFit: 'cover', bgcolor: 'grey.100' }}
+                        sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{vehicle.name}</Typography>
