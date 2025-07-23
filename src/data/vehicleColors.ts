@@ -19,20 +19,20 @@ export const vehicleColors: VehicleColor[] = [
     isDefault: true,
   },
   {
-    id: 'snow-whitepearl',
-    name: 'snow-whitepearl',
+    id: 'snow-white',
+    name: 'snow-white',
     displayName: 'Snow White',
     colorCode: '#F0F0F0',
     imageUrl: '/images/cars/EV9.png',
-    filter: 'brightness(1.3) contrast(1.1)',
+    filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
   },
   {
-    id: 'aurora-blackpearl',
-    name: 'aurora-blackpearl',
+    id: 'aurora-black',
+    name: 'aurora-black',
     displayName: 'Aurora Black',
     colorCode: '#0E1213',
     imageUrl: '/images/cars/EV9.png',
-    filter: 'brightness(0.3) saturate(0.8)',
+    filter: 'brightness(1.0) contrast(1.2) saturate(0.8)',
   },
   {
     id: 'glacier',
@@ -40,7 +40,7 @@ export const vehicleColors: VehicleColor[] = [
     displayName: 'Glacier',
     colorCode: '#979893',
     imageUrl: '/images/cars/EV9.png',
-    filter: 'grayscale(0.3) brightness(0.8) contrast(1.2)',
+    filter: 'sepia(0.2) brightness(1.0) contrast(1.0) saturate(1.0)',
   },
   {
     id: 'yacht-blue',
@@ -48,7 +48,7 @@ export const vehicleColors: VehicleColor[] = [
     displayName: 'Yacht Blue',
     colorCode: '#263346',
     imageUrl: '/images/cars/EV9.png',
-    filter: 'sepia(1) saturate(1.5) hue-rotate(200deg) brightness(0.7)',
+    filter: 'brightness(1.0) contrast(1.05) saturate(6)',
   },
   {
     id: 'runway-red',
@@ -56,7 +56,7 @@ export const vehicleColors: VehicleColor[] = [
     displayName: 'Runway Red',
     colorCode: '#7D2F23',
     imageUrl: '/images/cars/EV9.png',
-    filter: 'sepia(1) saturate(2) hue-rotate(320deg) brightness(0.8)',
+    filter: 'saturate(6) brightness(1.0) contrast(1.05) hue-rotate(115deg)',
   },
 ];
 
