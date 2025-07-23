@@ -26,6 +26,9 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
   const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const textColor = '#ffffff'; // Always white
+  
+  // Check if current template is Square or Vertical format
+  const isSquareOrVertical = template.id?.includes('square') || template.id?.includes('vertical');
 
   useImperativeHandle(ref, () => ({
     exportCanvas: async (format: string, quality: number) => {
@@ -46,8 +49,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         // Store original transform
         const originalTransform = canvasRef.current.style.transform;
         
-        // For Square and Vertical formats, we need to adjust image sizes for export
-        const isSquareOrVertical = template.id?.includes('square') || template.id?.includes('vertical');
         console.log('Export adjustment check:', { 
           templateId: template.id, 
           isSquareOrVertical,
@@ -61,33 +62,20 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         };
         
         try {
-          // Don't modify the canvas transform or element sizes
-          // Just use html2canvas with the appropriate scale compensation
-          console.log('Using current canvas state for export with scale compensation');
+          console.log('Creating canvas with html2canvas with scale compensation');
           
-          // Wait for DOM to update
-          await new Promise(resolve => requestAnimationFrame(resolve));
-          
-          console.log('Creating canvas with html2canvas with compensated scale');
-          
-          // Calculate the correct export scale considering current display scale
-          const compensatedExportScale = exportScale / scale;
-          
-          // Create a canvas from the original element with compensated scale
+          // Use current canvas state but compensate for display scale in html2canvas options
           const canvas = await html2canvas(canvasRef.current, {
-            scale: compensatedExportScale,
+            scale: exportScale / scale, // Compensate for display scale
             backgroundColor: null,
             allowTaint: true,
             useCORS: true,
-            width: template.canvas.width * scale, // Adjust width for current scale
-            height: template.canvas.height * scale, // Adjust height for current scale
+            width: template.canvas.width,
+            height: template.canvas.height,
             logging: false,
             imageTimeout: 15000,
           });
-          console.log('html2canvas completed, canvas:', canvas, 'compensated scale:', compensatedExportScale);
-          
-          // Restore original state
-          restoreOriginalState();
+          console.log('html2canvas completed, canvas:', canvas, 'compensated scale:', exportScale / scale);
           
           // Convert to requested format
           if (format === 'png') {
@@ -589,11 +577,11 @@ Authorized Signature: _____________________`,
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
               width: isDefaultLayout && template.category === 'Google Ads' 
-                ? (template.id?.includes('square') || template.id?.includes('vertical') ? 280 : 210) 
-                : 120, // Square, Vertical은 280px (화면에서 210px), Horizontal도 210px
+                ? (isSquareOrVertical ? 210 / 0.75 : 210) 
+                : 120,
               height: isDefaultLayout && template.category === 'Google Ads' 
-                ? (template.id?.includes('square') || template.id?.includes('vertical') ? 140 : 105) 
-                : 60, // Square, Vertical은 140px (화면에서 105px), Horizontal도 105px
+                ? (isSquareOrVertical ? 105 / 0.75 : 105) 
+                : 60,
               cursor: 'pointer',
               zIndex: 10, // Increased z-index to ensure logo is always on top
               '&:hover': {
@@ -620,10 +608,23 @@ Authorized Signature: _____________________`,
         {template.editableElements.images
           .filter(img => img.id !== 'background' && img.id !== 'bg-image' && img.label !== 'Background Image')
           .map((imageElement) => {
-            // Increase vehicle image size by 1.4x
+            // Increase vehicle image size by scale factor based on format
             const isVehicleImage = imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model';
             const isCenterLogo = imageElement.id === 'centerLogo' || imageElement.label === 'Center Logo';
-            const scaleFactor = isVehicleImage ? 1.4 : 1;
+            
+            // Apply consistent scale factors for all formats
+            let scaleFactor = 1;
+            if (isVehicleImage) {
+              // Vehicle images: scale to show as 780×390px on screen
+              // For Square/Vertical (0.75 scale): need 1.3 / 0.75 = 1.73x
+              // For Horizontal (1.0 scale): need 1.3x
+              scaleFactor = isSquareOrVertical ? 1.3 / 0.75 : 1.3;
+            } else if (isCenterLogo) {
+              // Center Logo images: compensate for canvas scale
+              // For Square/Vertical (0.75 scale): need 1 / 0.75 = 1.33x
+              // For Horizontal (1.0 scale): need 1x
+              scaleFactor = isSquareOrVertical ? 1 / 0.75 : 1;
+            }
             
             // centerLogo의 경우 brandLogo 값을 사용
             const imageId = isCenterLogo ? 'brandLogo' : imageElement.id;
