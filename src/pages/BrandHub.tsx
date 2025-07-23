@@ -180,20 +180,9 @@ const BrandHub: React.FC = () => {
       },
     ];
     
-    // Load saved vehicles or use presets
-    if (savedVehicles) {
-      const vehicles = JSON.parse(savedVehicles);
-      // If saved data is empty, use presets
-      if (vehicles.length === 0) {
-        setVehicleModels(presetVehicles);
-        localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
-      } else {
-        setVehicleModels(vehicles);
-      }
-    } else {
-      setVehicleModels(presetVehicles);
-      localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
-    }
+    // Always use presets for vehicles (ignore saved data)
+    setVehicleModels(presetVehicles);
+    localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
     
     // Add preset background images
     const presetBackgrounds: BrandAsset[] = [
@@ -232,20 +221,9 @@ const BrandHub: React.FC = () => {
       },
     ];
     
-    // Load saved backgrounds or use presets
-    if (savedBackgrounds) {
-      const backgrounds = JSON.parse(savedBackgrounds);
-      // If saved data is empty, use presets
-      if (backgrounds.length === 0) {
-        setBackgroundImages(presetBackgrounds);
-        localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
-      } else {
-        setBackgroundImages(backgrounds);
-      }
-    } else {
-      setBackgroundImages(presetBackgrounds);
-      localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
-    }
+    // Always use presets for backgrounds (ignore saved data)
+    setBackgroundImages(presetBackgrounds);
+    localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
   }, []);
 
   // Logo management functions
