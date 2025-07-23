@@ -777,7 +777,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 42 : 48),
                         fontWeight: 'bold',
-                        fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
+                        fontFamily: template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[titleElement.id] ? textColor : (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'),
                         lineHeight: titleCanvasObj?.lineHeight || 1.2,
                         whiteSpace: 'pre-wrap',
@@ -809,7 +809,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
                         fontWeight: '500',
-                        fontFamily: titleCanvasObj?.fontFamily || 'Arial, sans-serif',
+                        fontFamily: template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[subtitleElement.id] ? textColor : (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'),
                         lineHeight: 1.2,
                         whiteSpace: 'pre-wrap',
@@ -846,7 +846,7 @@ Authorized Signature: _____________________`,
                   
                   const fontSize = canvasTextObj?.fontSize || 18;
                   const fontWeight = canvasTextObj?.fontWeight || 'normal';
-                  const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
+                  const fontFamily = template.category === 'Promotion Banner' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
                   const color = isPlaceholder 
                     ? (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)') 
                     : (template.category === 'Promotion Banner' ? textColor : (canvasTextObj?.fill || '#ffffff'));
