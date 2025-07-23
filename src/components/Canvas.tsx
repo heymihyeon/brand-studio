@@ -5,7 +5,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ContractData } from './CarSalesContractEditor';
 import { QuotationData } from './QuotationEditor';
-import { PurchaseOrderData, VehicleItem } from './PurchaseOrderEditor';
+import { PurchaseOrderData } from './PurchaseOrderEditor';
 
 interface CanvasProps {
   template: Template;
@@ -36,13 +36,6 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
       }
       
       try {
-        // Store original scale
-        const originalScale = scale;
-        console.log('Original scale:', originalScale);
-        
-        // Temporarily set scale to 1 for export
-        canvasRef.current.style.transform = 'scale(1)';
-        
         console.log('Creating canvas with html2canvas...');
         console.log('Template canvas dimensions:', template.canvas.width, 'x', template.canvas.height);
         
@@ -50,8 +43,17 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         const isThumbnail = format === 'jpg' && quality <= 30;
         const exportScale = isThumbnail ? 0.5 : 2; // 썸네일은 0.5배, 일반 내보내기는 2배
         
-        // Create a canvas from the DOM element
-        const canvas = await html2canvas(canvasRef.current, {
+        // Clone the canvas element to avoid visual changes
+        const clonedCanvas = canvasRef.current.cloneNode(true) as HTMLDivElement;
+        
+        // Apply scale 1 to the cloned element
+        clonedCanvas.style.transform = 'scale(1)';
+        clonedCanvas.style.position = 'absolute';
+        clonedCanvas.style.left = '-9999px';
+        document.body.appendChild(clonedCanvas);
+        
+        // Create a canvas from the cloned element
+        const canvas = await html2canvas(clonedCanvas, {
           scale: exportScale,
           backgroundColor: null,
           allowTaint: true,
@@ -62,8 +64,8 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         });
         console.log('html2canvas completed, canvas:', canvas, 'scale:', exportScale);
         
-        // Restore original scale
-        canvasRef.current.style.transform = `scale(${originalScale})`;
+        // Remove cloned element
+        document.body.removeChild(clonedCanvas);
         
         // Convert to requested format
         if (format === 'png') {

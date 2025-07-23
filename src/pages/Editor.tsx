@@ -1109,7 +1109,7 @@ useEffect(() => {
           sx={{ 
             flex: 1, 
             bgcolor: 'grey.100', 
-            overflow: 'auto', // Changed from 'hidden' to 'auto'
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
