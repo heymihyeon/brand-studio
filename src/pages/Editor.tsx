@@ -49,10 +49,12 @@ const categoryMap: Record<string, string> = {
 const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
   // Get actual layout from variant
   const vehicleImage = variant.editableElements.images.find(img => img.id === 'vehicle');
+  const centerLogoImage = variant.editableElements.images.find(img => img.id === 'centerLogo');
   
   // Find overlay object for positioning
   const vehicleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'vehicle') as any;
   const titleObj = variant.canvas.objects?.find((obj: any) => obj.id === 'title') as any;
+  const centerLogoObj = variant.canvas.objects?.find((obj: any) => obj.id === 'centerLogo') as any;
   
   return (
     <Box sx={{ 
@@ -83,6 +85,36 @@ const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
           }}
         >
           Text
+        </Box>
+      )}
+      
+      {/* Center Logo for center variant */}
+      {variant.templateVariant === 'center' && centerLogoImage && centerLogoObj && (
+        <Box
+          sx={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: `${(centerLogoObj.width / variant.canvas.width) * 100}%`,
+            height: `${(centerLogoObj.height / variant.canvas.height) * 100}%`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box 
+            sx={{ 
+              fontSize: '10px',
+              color: 'rgba(0, 0, 0, 0.5)',
+              fontWeight: 'bold',
+              border: '1px solid rgba(0, 0, 0, 0.2)',
+              padding: '4px 8px',
+              borderRadius: '2px',
+            }}
+          >
+            LOGO
+          </Box>
         </Box>
       )}
       
@@ -340,6 +372,9 @@ useEffect(() => {
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
                 } 
+                else if (image.id === 'centerLogo' || image.label === 'Center Logo') {
+                  initialValues[image.id] = getDefaultLogo();
+                }
                 else {
                   initialValues[image.id] = image.src || '';
                 }
@@ -378,6 +413,9 @@ useEffect(() => {
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
                 } 
+                else if (image.id === 'centerLogo' || image.label === 'Center Logo') {
+                  initialValues[image.id] = getDefaultLogo();
+                }
                 else {
                   initialValues[image.id] = image.src || '';
                 }
@@ -1015,18 +1053,8 @@ useEffect(() => {
                       </Box>
                       <Box sx={{ p: 0.5, textAlign: 'center' }}>
                         <Typography variant="caption" sx={{ fontSize: '11px' }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
-                          {variant.templateVariant === 'default' && 
-                            (variant.formatGroup === 'banner-horizontal' ? 'Default Layout' :
-                             variant.formatGroup === 'banner-vertical' ? 'Top Text' :
-                             variant.formatGroup === 'banner-square' ? 'Left Text' :
-                             'Default')}
-                          {variant.templateVariant === 'bottom-left' && 'Bottom Left'}
-                          {variant.templateVariant === 'top-right' && 'Top Right'}
-                          {variant.templateVariant === 'center' && 'Center Text'}
-                          {variant.templateVariant === 'bottom' && 'Bottom Text'}
-                          {variant.templateVariant === 'middle' && 'Middle Text'}
-                          {variant.templateVariant === 'top' && 'Top Center'}
-                          {variant.templateVariant === 'right' && 'Right Text'}
+                          {variant.templateVariant === 'default' && 'Default'}
+                          {variant.templateVariant === 'center' && 'Center Logo'}
                         </Typography>
                       </Box>
                     </Box>
@@ -1127,6 +1155,9 @@ useEffect(() => {
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
                 } 
+                else if (image.id === 'centerLogo' || image.label === 'Center Logo') {
+                  initialValues[image.id] = getDefaultLogo();
+                }
                 else {
                   initialValues[image.id] = image.src || '';
                 }
@@ -1168,6 +1199,9 @@ useEffect(() => {
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
                 } 
+                else if (image.id === 'centerLogo' || image.label === 'Center Logo') {
+                  initialValues[image.id] = getDefaultLogo();
+                }
                 else {
                   initialValues[image.id] = image.src || '';
                 }

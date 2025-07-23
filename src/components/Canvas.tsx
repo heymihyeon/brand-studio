@@ -466,6 +466,14 @@ Authorized Signature: _____________________`,
             console.log('No logo found in editableValues');
             return null;
           }
+          
+          // center 레이아웃에서는 상단 로고를 숨김 (centerLogo로 대체)
+          const isCenterLayout = template.id?.includes('center') || 
+                                template.name?.includes('Center') || 
+                                template.editableElements.images.some(img => img.id === 'centerLogo');
+          if (isCenterLayout) {
+            return null;
+          }
           console.log('Logo rendering info:', {
             formatId: template.format.id,
             logoUrl: (logo as BrandAsset).url,
@@ -513,7 +521,14 @@ Authorized Signature: _____________________`,
         {template.editableElements.images
           .filter(img => img.id !== 'background' && img.id !== 'bg-image' && img.label !== 'Background Image')
           .map((imageElement) => {
-            const value = editableValues[imageElement.id];
+            // Increase vehicle image size by 1.4x
+            const isVehicleImage = imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model';
+            const isCenterLogo = imageElement.id === 'centerLogo' || imageElement.label === 'Center Logo';
+            const scaleFactor = isVehicleImage ? 1.4 : 1;
+            
+            // centerLogo의 경우 brandLogo 값을 사용
+            const imageId = isCenterLogo ? 'brandLogo' : imageElement.id;
+            const value = editableValues[imageId];
             const canvasImgObj = template.canvas.objects?.find(
               (obj: any) => obj.type === 'image' && obj.id === imageElement.id
             ) as any;
@@ -521,10 +536,6 @@ Authorized Signature: _____________________`,
             const imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
-            
-            // Increase vehicle image size by 1.4x
-            const isVehicleImage = imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model';
-            const scaleFactor = isVehicleImage ? 1.4 : 1;
             
             const size = {
               width: (canvasImgObj?.width || imageElement.size.width) * scaleFactor,
@@ -538,6 +549,20 @@ Authorized Signature: _____________________`,
             // Adjust position to ensure margins
             let adjustedLeft = canvasImgObj?.left || imageElement.position.x;
             let adjustedTop = canvasImgObj?.top || imageElement.position.y;
+            
+            // Center logo 처리
+            if (isCenterLogo) {
+              // originX와 originY가 center인 경우 처리
+              const originX = canvasImgObj?.originX || 'left';
+              const originY = canvasImgObj?.originY || 'top';
+              
+              if (originX === 'center') {
+                adjustedLeft = adjustedLeft - (size.width / 2);
+              }
+              if (originY === 'center') {
+                adjustedTop = adjustedTop - (size.height / 2);
+              }
+            }
             
             // Ensure the vehicle doesn't go beyond canvas bounds with margins
             if (isVehicleImage) {
@@ -640,13 +665,10 @@ Authorized Signature: _____________________`,
             // Use title position as the base position for the stack
             // Adjust position based on layout type
             const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
-            const isBottomLeftLayout = template.name?.includes('Bottom Left') || template.id?.includes('bottom-left');
             
             let topAdjustment = 0;
             if (isDefaultLayout) {
                 topAdjustment = -30; // Move up by 30px for default layout
-            } else if (isBottomLeftLayout) {
-                topAdjustment = 24; // Move down by 24px for bottom left layout
             }
             
             const stackPosition = {
@@ -848,14 +870,11 @@ Authorized Signature: _____________________`,
               const isSquareBanner = template.format.id === 'banner-square';
               const isSpecialBanner = isVerticalBanner || isSquareBanner;
               const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
-              const isBottomLeftLayout = template.name?.includes('Bottom Left') || template.id?.includes('bottom-left');
               
               // Apply different offsets based on layout type
               let topOffset = 0;
               if (isDefaultLayout && (isHeading || textElement.type === 'subheading')) {
                 topOffset = -30; // Move up for default layout
-              } else if (isBottomLeftLayout && (isHeading || textElement.type === 'subheading')) {
-                topOffset = 24; // Move down for bottom left layout
               } else if (isPromotionBanner && isHeading && !isSpecialBanner) {
                 topOffset = -30;
               }

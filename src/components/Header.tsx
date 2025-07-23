@@ -77,7 +77,7 @@ const Header: React.FC = () => {
           }}
           onClick={() => navigate('/')}
         >
-          Brand Studio
+          Content Maker
         </Typography>
       </Box>
 
@@ -150,7 +150,7 @@ const Header: React.FC = () => {
             textAlign: 'center',
           }}
         >
-          Brand Studio v1.0
+          Content Maker v1.0
         </Typography>
       </Box>
     </Box>

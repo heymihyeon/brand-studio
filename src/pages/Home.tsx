@@ -396,7 +396,7 @@ const Home: React.FC = () => {
     }}>
         <Box sx={{ mb: 10 }}>
         <Typography variant="h2" component="h1" gutterBottom align="center"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
-        Welcome to Brand Studio. <br/> What content would you like to create?
+        Welcome to Content Maker. <br/> What content would you like to create?
         </Typography>
         
 

@@ -65,5 +65,14 @@ tail -f vite-server.log
 - 특정 컴포넌트나 기능 수정 시 관련 없는 파일이나 코드는 수정하지 않습니다
 - 변경사항이 다른 기능에 영향을 주지 않도록 격리된 수정을 수행합니다
 
+## 🎨 레이아웃 추가 지침
+
+- **Promotion Banner에 새로운 레이아웃을 추가할 때는 반드시 모든 포맷에 적용해야 합니다**
+  - banner-horizontal (1280*700px)
+  - banner-vertical (400*900px)
+  - banner-square (1080*1080px)
+- 각 포맷 그룹에 동일한 templateVariant로 레이아웃을 추가합니다
+- unifiedFormats.ts 파일에서 각 포맷 그룹별로 템플릿을 추가합니다
+
 ---
-Last updated: 2025-07-22
+Last updated: 2025-07-23
