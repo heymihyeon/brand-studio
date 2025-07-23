@@ -5,7 +5,7 @@ export interface UnifiedFormat {
   name: string;
   category: string;
   dimensions: { width: number; height: number };
-  templateVariant?: 'default' | 'center' | 'bottom' | 'middle' | 'top' | 'right';
+  templateVariant?: 'default' | 'center' | 'centerCar';
   formatGroup?: string; // 같은 포맷의 템플릿들을 그룹화
   canvas: {
     width: number;
@@ -1003,8 +1003,117 @@ export const unifiedFormats: UnifiedFormat[] = [
     },
     thumbnail: '',
   },
+
+  //  Template 2: centerCar (Default 레이아웃 복사)
+  {
+    id: 'banner-horizontal-default',
+    name: 'Horizontal',
+    category: 'Google Ads',
+    dimensions: { width: 1200, height: 628 },
+    templateVariant: 'centerCar',
+    formatGroup: 'banner-horizontal',
+    canvas: {
+      width: 1200,
+      height: 628,
+      backgroundColor: '#ffffff',
+      objects: [
+        {
+          type: 'image',
+          id: 'bg-image',
+          src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=628&fit=crop',
+          left: 0,
+          top: 0,
+          width: 1200,
+          height: 628,
+          scaleX: 1,
+          scaleY: 1,
+        },
+        {
+          type: 'rect',
+          id: 'overlay',
+          left: 0,
+          top: 0,
+          width: 600,
+          height: 628,
+          fill: 'rgba(0, 0, 0, 0.5)',
+        },
+        {
+          type: 'text',
+          id: 'title',
+          text: 'Your Journey Starts Here',
+          left: 34,
+          top: 68,
+          fontSize: 48,
+          fontWeight: 'bold',
+          fill: '#ffffff',
+          fontFamily: 'Noto Sans KR',
+          lineHeight: 1.2,
+        },
+        {
+          type: 'text',
+          id: 'subtitle',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
+          left: 34,
+          top: 184,
+          fontSize: 24,
+          fontWeight: 'normal',
+          fill: '#ffffff',
+          fontFamily: 'Noto Sans KR',
+        },
+        {
+          type: 'image',
+          id: 'vehicle',
+          src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
+          left: 640,
+          top: 304,
+          width: 660,
+          height: 330,
+          scaleX: 1,
+          scaleY: 1,
+        },
+      ],
+    },
+    editableElements: {
+      texts: [
+        {
+          id: 'title',
+          type: 'heading',
+          text: 'Your Journey Starts Here',
+          position: { x: 34, y: 68 },
+          editable: true,
+        },
+        {
+          id: 'subtitle',
+          type: 'subheading',
+          text: 'Upgrade Your Ride, Elevate Your Drive!',
+          position: { x: 34, y: 184 },
+          editable: true,
+        },
+      ],
+      images: [
+        {
+          id: 'bg-image',
+          src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=628&fit=crop',
+          position: { x: 0, y: 0 },
+          size: { width: 1200, height: 628 },
+          editable: true,
+          label: 'Background Image',
+        },
+        {
+          id: 'vehicle',
+          src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
+          position: { x: 640, y: 304 },
+          size: { width: 660, height: 330 },
+          editable: true,
+          label: 'Vehicle Model',
+        },
+      ],
+      colors: [],
+    },
+    thumbnail: '',
+  },
   
-  // Template 2: Center (로고 중앙)
+  // Template 3: Center (로고 중앙)
   {
     id: 'banner-horizontal-center',
     name: 'Horizontal',
@@ -1076,6 +1185,8 @@ export const unifiedFormats: UnifiedFormat[] = [
     },
     thumbnail: '',
   },
+
+
 
 
   // Vertical Templates

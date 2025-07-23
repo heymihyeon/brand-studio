@@ -65,7 +65,7 @@ const TemplatePreview: React.FC<{ variant: UnifiedFormat }> = ({ variant }) => {
       backgroundColor: '#f1f1f1',
       overflow: 'hidden',
     }}>
-      
+
       {/* Text Preview */}
       {titleObj && (
         <Box
@@ -1152,7 +1152,7 @@ useEffect(() => {
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                 {availableTemplateVariants
                   .sort((a, b) => {
-                    const order = ['default', 'center'];
+                    const order = ['default', 'centerCar', 'center'];
                     const aIndex = order.indexOf(a.templateVariant || 'default');
                     const bIndex = order.indexOf(b.templateVariant || 'default');
                     return aIndex - bIndex;
@@ -1193,6 +1193,7 @@ useEffect(() => {
                         <Typography variant="caption" sx={{ fontSize: '11px' }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
                           {variant.templateVariant === 'default' && 'Default'}
                           {variant.templateVariant === 'center' && 'Center Logo'}
+                          {variant.templateVariant === 'centerCar' && 'Center Car'}
                         </Typography>
                       </Box>
                     </Box>
