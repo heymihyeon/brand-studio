@@ -638,11 +638,11 @@ Authorized Signature: _____________________`,
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
             
-            // Vehicle 이미지인 경우 선택된 색상에 따라 이미지 URL 변경
+            // Vehicle 이미지인 경우 선택된 색상에 따라 필터만 적용 (이미지는 이미 선택된 모델 사용)
             let vehicleFilter = '';
             if (isVehicleImage) {
               const selectedColor = editableValues[`${imageElement.id}_color`] || 'matte-silver';
-              imageSrc = getVehicleImageUrl(selectedColor);
+              // 색상 필터만 가져오고, 이미지 URL은 이미 선택된 차량 모델의 것을 사용
               vehicleFilter = getVehicleColorFilter(selectedColor);
             }
             

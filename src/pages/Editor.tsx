@@ -599,10 +599,22 @@ useEffect(() => {
 
   const handleAssetSelect = (asset: BrandAsset) => {
     if (currentEditingElement) {
-      setEditableValues((prev) => ({
-        ...prev,
-        [currentEditingElement]: asset,
-      }));
+      setEditableValues((prev) => {
+        const newValues = {
+          ...prev,
+          [currentEditingElement]: asset,
+        };
+        
+        // 차량 모델을 변경하는 경우, 현재 선택된 색상은 유지
+        // (색상 필터가 새 차량 이미지에 적용됨)
+        if (currentEditingElement === 'vehicle' || 
+            template?.editableElements.images.find(img => img.id === currentEditingElement)?.label === 'Vehicle Model') {
+          // 색상은 그대로 유지 (별도 처리 불필요)
+          console.log('Vehicle model changed, keeping current color:', prev[`${currentEditingElement}_color`]);
+        }
+        
+        return newValues;
+      });
       
       // 이미지 변경 시 자동 저장 (즉시)
       debouncedSave(1000); // 1초 디바운스
