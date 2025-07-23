@@ -675,14 +675,7 @@ Authorized Signature: _____________________`,
             
             // Ensure the vehicle doesn't go beyond canvas bounds with margins
             if (isVehicleImage) {
-              console.log('Vehicle image processing:', {
-                templateFormatId: template.format.id,
-                templateName: template.name,
-                canvasWidth: template.canvas.width,
-                originalLeft: adjustedLeft,
-                vehicleWidth: size.width,
-                scaleFactor: scaleFactor
-              });
+              
               
               const maxLeft = template.canvas.width - size.width - rightMargin;
               const maxTop = template.canvas.height - size.height - bottomMargin;
@@ -697,10 +690,7 @@ Authorized Signature: _____________________`,
               
               if (isVerticalBanner) {
                 adjustedLeft = (template.canvas.width - size.width) / 2;
-                console.log('Centering vehicle for vertical banner:', {
-                  newLeft: adjustedLeft,
-                  calculation: `(${template.canvas.width} - ${size.width}) / 2`
-                });
+            
               }
             }
             
@@ -708,6 +698,7 @@ Authorized Signature: _____________________`,
               left: adjustedLeft,
               top: adjustedTop,
             };
+
             
             return (
               <Box
@@ -775,7 +766,7 @@ Authorized Signature: _____________________`,
             
             // Use title position as the base position for the stack
             // Adjust position based on layout type
-            const isDefaultLayout = template.name?.includes('Default') || template.id?.includes('default');
+            const isDefaultLayout =  template.id?.includes('centerCar') || template.id?.includes('default');
             
             let topAdjustment = 0;
             let leftAdjustment = 0;

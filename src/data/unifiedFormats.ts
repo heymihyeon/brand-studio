@@ -894,8 +894,9 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  // 프로모션 배너 포맷 - Horizontal Templates
+  // 프로모션 배너 포맷 - Horizontal Templates : default
   // Template 1: Default (텍스트 왼쪽 상단)
+  //banner-horizontal : default
   {
     id: 'banner-horizontal-default',
     name: 'Horizontal',
@@ -993,7 +994,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          position: { x: 640, y: 304 },
+          position: { x: 340, y: 304 },
           size: { width: 660, height: 330 },
           editable: true,
           label: 'Vehicle Model',
@@ -1004,9 +1005,10 @@ export const unifiedFormats: UnifiedFormat[] = [
     thumbnail: '',
   },
 
-  //  Template 2: centerCar (Default 레이아웃 복사)
+  //  Template 2: centerCar (Default 레이아웃 복사)\
+  //banner-horizontal : centerCar
   {
-    id: 'banner-horizontal-default',
+    id: 'banner-horizontal-centerCar',
     name: 'Horizontal',
     category: 'Google Ads',
     dimensions: { width: 1200, height: 628 },
@@ -1064,7 +1066,7 @@ export const unifiedFormats: UnifiedFormat[] = [
           type: 'image',
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          left: 640,
+          left: 300,
           top: 304,
           width: 660,
           height: 330,
@@ -1114,8 +1116,9 @@ export const unifiedFormats: UnifiedFormat[] = [
   },
   
   // Template 3: Center (로고 중앙)
+  //banner-horizontal : center
   {
-    id: 'banner-horizontal-center',
+    id: 'banner-horizontal-centerLogo',
     name: 'Horizontal',
     category: 'Google Ads',
     dimensions: { width: 1200, height: 628 },
@@ -1187,10 +1190,9 @@ export const unifiedFormats: UnifiedFormat[] = [
   },
 
 
-
-
   // Vertical Templates
   // Template 1: Default (텍스트 상단)
+  //banner-vertical : default
   {
     id: 'banner-vertical-default',
     name: 'Vertical',
@@ -1300,8 +1302,9 @@ export const unifiedFormats: UnifiedFormat[] = [
   },
 
   // Template 2: Center (로고 중앙)
+  //banner-vertical : center
   {
-    id: 'banner-vertical-center',
+    id: 'banner-vertical-centerLogo',
     name: 'Vertical',
     category: 'Google Ads',
     dimensions: { width: 960, height: 1200 },
@@ -1374,6 +1377,7 @@ export const unifiedFormats: UnifiedFormat[] = [
 
   // Square Templates
   // Template 1: Default (텍스트 왼쪽)
+  //banner-square : default
   {
     id: 'banner-square-default',
     name: 'Square',
@@ -1483,8 +1487,9 @@ export const unifiedFormats: UnifiedFormat[] = [
   },
 
   // Template 2: Center (로고 중앙)
+  //banner-square : center
   {
-    id: 'banner-square-center',
+    id: 'banner-square-centerLogo',
     name: 'Square',
     category: 'Google Ads',
     dimensions: { width: 1200, height: 1200 },

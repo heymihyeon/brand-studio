@@ -1151,6 +1151,13 @@ useEffect(() => {
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
                 {availableTemplateVariants
+                  .filter((variant) => {
+                    // vertical 포맷에서는 centerCar 제외
+                    if (variant.formatGroup === 'banner-vertical' && variant.templateVariant === 'centerCar') {
+                      return false;
+                    }
+                    return true;
+                  })
                   .sort((a, b) => {
                     const order = ['default', 'centerCar', 'center'];
                     const aIndex = order.indexOf(a.templateVariant || 'default');
