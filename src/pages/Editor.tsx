@@ -156,6 +156,11 @@ const Editor: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Helper function to remove 'KIA' from asset names
+  const removeKIAFromName = (name: string): string => {
+    return name.replace(/^KIA\s+/i, '');
+  };
   const [template, setTemplate] = useState<Template | null>(null);
   const [editableValues, setEditableValues] = useState<Record<string, any>>({});
   const [contractData, setContractData] = useState<ContractData>({
@@ -1178,7 +1183,7 @@ useEffect(() => {
                               onClick={() => handleImageSelect(vehicleElement.id)}
                             >
                               {editableValues[vehicleElement.id] && typeof editableValues[vehicleElement.id] === 'object'
-                                ? (editableValues[vehicleElement.id] as BrandAsset).name
+                                ? removeKIAFromName((editableValues[vehicleElement.id] as BrandAsset).name)
                                 : 'Select Vehicle Model'}
                             </Button>
                             
@@ -1258,7 +1263,7 @@ useEffect(() => {
                               onClick={() => handleImageSelect(bgElement.id)}
                             >
                               {editableValues[bgElement.id] && typeof editableValues[bgElement.id] === 'object'
-                                ? (editableValues[bgElement.id] as BrandAsset).name
+                                ? removeKIAFromName((editableValues[bgElement.id] as BrandAsset).name)
                                 : 'Select Background Image'}
                             </Button>
                           </Box>
@@ -1276,7 +1281,7 @@ useEffect(() => {
                           onClick={() => handleImageSelect('brandLogo')}
                         >
                           {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
-                            ? (editableValues['brandLogo'] as BrandAsset).name
+                            ? removeKIAFromName((editableValues['brandLogo'] as BrandAsset).name)
                             : 'Select Logo'}
                         </Button>
                       </Box>
@@ -1302,7 +1307,7 @@ useEffect(() => {
                             onClick={() => handleImageSelect(imageElement.id)}
                           >
                             {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
-                              ? (editableValues[imageElement.id] as BrandAsset).name
+                              ? removeKIAFromName((editableValues[imageElement.id] as BrandAsset).name)
                               : `Select ${imageElement.label || 'Image'}`}
                           </Button>
                         </Box>
@@ -1319,7 +1324,7 @@ useEffect(() => {
                           onClick={() => handleImageSelect('brandLogo')}
                         >
                           {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
-                            ? (editableValues['brandLogo'] as BrandAsset).name
+                            ? removeKIAFromName((editableValues['brandLogo'] as BrandAsset).name)
                             : 'Select Logo'}
                         </Button>
                       </Box>

@@ -82,7 +82,7 @@ const BrandHub: React.FC = () => {
     const presetLogos: BrandAsset[] = [
       {
         id: 'logo-preset-1',
-        name: 'KIA Logo White',
+        name: 'Logo White',
         type: 'logo',
         url: '/images/logos/logo_white.png',
         thumbnailUrl: '/images/logos/logo_white.png',
@@ -93,7 +93,7 @@ const BrandHub: React.FC = () => {
       },
       {
         id: 'logo-preset-2',
-        name: 'KIA Logo Black',
+        name: 'Logo Black',
         type: 'logo',
         url: '/images/logos/logo_black.png',
         thumbnailUrl: '/images/logos/logo_black.png',
@@ -125,7 +125,7 @@ const BrandHub: React.FC = () => {
     const presetVehicles: BrandAsset[] = [
       {
         id: 'vehicle-preset-1',
-        name: 'KIA EV9',
+        name: 'EV9',
         url: '/images/cars/EV9.png',
         thumbnailUrl: '/images/cars/EV9.png',
         category: 'Vehicle',
@@ -136,7 +136,7 @@ const BrandHub: React.FC = () => {
       },
       {
         id: 'vehicle-preset-2',
-        name: 'KIA K8',
+        name: 'K8',
         url: '/images/cars/K8.png',
         thumbnailUrl: '/images/cars/K8.png',
         category: 'Vehicle',
@@ -147,7 +147,7 @@ const BrandHub: React.FC = () => {
       },
       {
         id: 'vehicle-preset-5',
-        name: 'KIA Carnival',
+        name: 'Carnival',
         url: '/images/cars/carnival.png',
         thumbnailUrl: '/images/cars/carnival.png',
         category: 'Vehicle',
