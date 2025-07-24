@@ -479,6 +479,11 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
             
+            // Motif 표시 토글 상태 설정 (Google Ads만)
+            if (convertedTemplate.category === 'Google Ads') {
+              initialValues['showMotif'] = (hasExistingValues && editableValues['showMotif'] !== undefined) ? editableValues['showMotif'] : true;
+            }
+            
             setEditableValues(initialValues);
           } else {
             // formatGroup이 없는 경우 기존 방식대로 처리
@@ -547,6 +552,11 @@ useEffect(() => {
             
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
+            
+            // Motif 표시 토글 상태 설정 (Google Ads만)
+            if (convertedTemplate.category === 'Google Ads') {
+              initialValues['showMotif'] = (hasExistingValues && editableValues['showMotif'] !== undefined) ? editableValues['showMotif'] : true;
+            }
             
             setEditableValues(initialValues);
           }
@@ -1320,6 +1330,43 @@ useEffect(() => {
             )
           )}
 
+          {/* Motif 섹션 - Google Ads일 때만 표시 */}
+          {template?.category === 'Google Ads' && (
+            <>
+              <Divider />
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  Motif
+                </Typography>
+                <Box sx={{ flexGrow: 1 }} />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={editableValues['showMotif'] !== false}
+                      onChange={(e) => {
+                        setEditableValues((prev) => ({
+                          ...prev,
+                          showMotif: e.target.checked,
+                        }));
+                        debouncedSave(3000);
+                      }}
+                      sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                          color: '#1F7AFC',
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                          backgroundColor: '#1F7AFC',
+                        },
+                      }}
+                    />
+                  }
+                  label=""
+                  sx={{ marginRight: -1 }}
+                />
+              </Box>
+            </>
+          )}
+
           {/* 템플릿 선택 섹션 - 템플릿 변형이 있는 경우 표시 */}
           {availableTemplateVariants.length > 0 && (
             <>
@@ -1566,6 +1613,11 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
             
+            // Motif 표시 토글 상태 설정 (Google Ads만)
+            if (convertedTemplate.category === 'Google Ads') {
+              initialValues['showMotif'] = editableValues['showMotif'] !== undefined ? editableValues['showMotif'] : true;
+            }
+            
             setEditableValues(initialValues);
           } else {
             // formatGroup이 없는 경우 기존 방식대로 처리
@@ -1632,6 +1684,11 @@ useEffect(() => {
             
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
+            
+            // Motif 표시 토글 상태 설정 (Google Ads만)
+            if (convertedTemplate.category === 'Google Ads') {
+              initialValues['showMotif'] = editableValues['showMotif'] !== undefined ? editableValues['showMotif'] : true;
+            }
             
             setEditableValues(initialValues);
           }

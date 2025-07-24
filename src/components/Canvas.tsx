@@ -557,6 +557,7 @@ Authorized Signature: _____________________`,
           />
         )}
 
+
         {/* Logo image layer - render logo from brandLogo if available */}
         {(() => {
           const logo = editableValues['brandLogo'];
@@ -630,7 +631,17 @@ Authorized Signature: _____________________`,
 
         {/* Vehicle/Product images layer */}
         {template.editableElements.images
-          .filter(img => img.id !== 'background' && img.id !== 'bg-image' && img.label !== 'Background Image')
+          .filter(img => {
+            // 배경 이미지 제외
+            if (img.id === 'background' || img.id === 'bg-image' || img.label === 'Background Image') {
+              return false;
+            }
+            // motif는 showMotif가 false일 때만 제외
+            if (img.id === 'motif' && template.category === 'Google Ads' && editableValues['showMotif'] === false) {
+              return false;
+            }
+            return true;
+          })
           .map((imageElement) => {
             // Increase vehicle image size by scale factor based on format
             const isVehicleImage = imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model';
