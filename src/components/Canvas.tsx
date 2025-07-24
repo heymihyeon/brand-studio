@@ -961,7 +961,7 @@ Authorized Signature: _____________________`,
                 })}
                 
                 {/* Dealer Information Stack for Google Ads */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && (
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && editableValues['showDealerInfo'] !== false && (
                   <Box
                     key="dealer-info-stack"
                     sx={{
@@ -1168,7 +1168,7 @@ Authorized Signature: _____________________`,
             })}
                 
                 {/* Dealer Information Stack for Google Ads */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && (
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && editableValues['showDealerInfo'] !== false && (
                   <Box
                     key="dealer-info-stack"
                     sx={{

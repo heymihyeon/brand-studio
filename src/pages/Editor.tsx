@@ -14,6 +14,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
@@ -235,6 +237,7 @@ const Editor: React.FC = () => {
   const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
   const [selectedTemplateVariant, setSelectedTemplateVariant] = useState<string>('default');
   const [selectedVehicleColor, setSelectedVehicleColor] = useState<string>(getDefaultVehicleColor().id);
+  const [showDealerInfo, setShowDealerInfo] = useState<boolean>(true); // 기본값 true
   const canvasRef = useRef<CanvasRef>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -248,6 +251,13 @@ useEffect(() => {
     setSelectedVehicleColor(editableValues['vehicle_color']);
   }
 }, [template, editableValues]);
+
+// 딜러 정보 토글 상태 동기화
+useEffect(() => {
+  if (editableValues['showDealerInfo'] !== undefined) {
+    setShowDealerInfo(editableValues['showDealerInfo']);
+  }
+}, [editableValues['showDealerInfo']]);
 
   useEffect(() => {
     // 카테고리에 따른 포맷과 템플릿 로드
@@ -421,6 +431,9 @@ useEffect(() => {
             // 로고 이미지도 기존 값 유지 또는 기본값 설정
             initialValues['brandLogo'] = (hasExistingValues && editableValues['brandLogo']) ? editableValues['brandLogo'] : getDefaultLogo();
             
+            // 딜러 정보 표시 토글 상태 설정
+            initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
+            
             setEditableValues(initialValues);
           } else {
             // formatGroup이 없는 경우 기존 방식대로 처리
@@ -486,6 +499,9 @@ useEffect(() => {
             // 로고 이미지 기본값 설정 - 항상 프리셋 로고 사용
             initialValues['brandLogo'] = (hasExistingValues && editableValues['brandLogo']) ? editableValues['brandLogo'] : getDefaultLogo();
             
+            // 딜러 정보 표시 토글 상태 설정
+            initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
+            
             setEditableValues(initialValues);
           }
         } else if (!template) {
@@ -506,6 +522,17 @@ useEffect(() => {
     
     // 텍스트 변경 시 더 긴 디바운스 시간으로 자동 저장
     debouncedSave(3000); // 3초 디바운스
+  };
+
+  const handleDealerInfoToggle = (checked: boolean) => {
+    setShowDealerInfo(checked);
+    setEditableValues((prev) => ({
+      ...prev,
+      showDealerInfo: checked,
+    }));
+    
+    // 토글 변경 시 자동 저장
+    debouncedSave(1000); // 1초 디바운스
   };
 
   // 템플릿 변형 변경 핸들러
@@ -1230,22 +1257,45 @@ useEffect(() => {
           {template?.category === 'Google Ads' && (
             <>
               <Divider />
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Information
-              </Typography>
-              <TextField
-                fullWidth
-                label="Dealer Name"
-                value={editableValues['dealerName'] || 'Dealer name'}
-                onChange={(e) => handleTextChange('dealerName', e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Phone Number"
-                value={editableValues['dealerPhone'] || '010-1234-5678'}
-                onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
-              />
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  Information
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showDealerInfo}
+                      onChange={(e) => handleDealerInfoToggle(e.target.checked)}
+                      sx={{
+                        '& .MuiSwitch-switchBase.Mui-checked': {
+                          color: '#1F7AFC',
+                        },
+                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                          backgroundColor: '#1F7AFC',
+                        },
+                      }}
+                    />
+                  }
+                  label=""
+                />
+              </Box>
+              {showDealerInfo && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="Dealer Name"
+                    value={editableValues['dealerName'] || 'Dealer name'}
+                    onChange={(e) => handleTextChange('dealerName', e.target.value)}
+                    sx={{ mb: 2 }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    value={editableValues['dealerPhone'] || '010-1234-5678'}
+                    onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
+                  />
+                </>
+              )}
             </>
           )}
 
@@ -1375,6 +1425,9 @@ useEffect(() => {
             // 로고 이미지도 기존 값 유지
             initialValues['brandLogo'] = editableValues['brandLogo'] || getDefaultLogo();
             
+            // 딜러 정보 표시 토글 상태 설정
+            initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
+            
             setEditableValues(initialValues);
           } else {
             // formatGroup이 없는 경우 기존 방식대로 처리
@@ -1437,6 +1490,9 @@ useEffect(() => {
             
             // 로고 이미지도 기존 값 유지
             initialValues['brandLogo'] = editableValues['brandLogo'] || getDefaultLogo();
+            
+            // 딜러 정보 표시 토글 상태 설정
+            initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
             
             setEditableValues(initialValues);
           }
