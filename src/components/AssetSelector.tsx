@@ -33,9 +33,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
 
   // Load assets from Brand Hub
   useEffect(() => {
-    if (open) {
-      // 이미 assets가 로드되어 있으면 다시 로드하지 않음
-      if (assets.length > 0) return;
+    if (open && assets.length === 0) {
       
       const savedLogos = localStorage.getItem('brandLogos');
       const savedVehicles = localStorage.getItem('brandVehicles');
@@ -105,10 +103,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
   };
 
   const handleClose = () => {
-    // setTimeout을 사용하여 상태 업데이트를 지연시켜 깜박거림 방지
-    setTimeout(() => {
-      setSelectedAsset(null);
-    }, 0);
+    setSelectedAsset(null);
     onClose();
   };
 

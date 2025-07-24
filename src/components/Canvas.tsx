@@ -723,14 +723,16 @@ Authorized Signature: _____________________`,
                 adjustedTop = Math.min(adjustedTop, maxTop);
               }
               
-              // Center horizontally for vertical banner format
+              // Center horizontally for vertical and square banner formats
               // Check both format id and canvas dimensions
               const isVerticalBanner = template.format.id === 'banner-vertical' || 
                                      (template.canvas.width === 960 && template.canvas.height === 1200);
               
-              if (isVerticalBanner) {
+              const isSquareBanner = template.format.id === 'banner-square' || 
+                                   (template.canvas.width === 1200 && template.canvas.height === 1200);
+              
+              if (isVerticalBanner || isSquareBanner) {
                 adjustedLeft = (template.canvas.width - size.width) / 2;
-            
               }
             }
             
@@ -808,9 +810,9 @@ Authorized Signature: _____________________`,
                           src="/images/360-icon.png"
                           alt="360° View"
                           style={{
-                            width: 40,
-                            height: 24,
-                            opacity: 0.7,
+                            width: 48 / (isSquareOrVertical ? 0.75 : 1),
+                            height: 29 / (isSquareOrVertical ? 0.75 : 1),
+                            opacity: 0.9,
                             filter: 'brightness(0) invert(1)', // 흰색으로 변경
                           }}
                         />

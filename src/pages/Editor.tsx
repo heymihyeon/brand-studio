@@ -711,6 +711,7 @@ useEffect(() => {
     }
     setAssetSelectorOpen(false);
     setCurrentEditingElement(null);
+    setAssetFilterCategory(undefined);
   };
 
   const handleCanvasTextEdit = (elementId: string, value: string) => {
@@ -1652,10 +1653,7 @@ useEffect(() => {
       {/* Asset Selection Modal */}
       <AssetSelector
         open={assetSelectorOpen}
-        onClose={() => {
-          setAssetSelectorOpen(false);
-          setAssetFilterCategory(undefined);
-        }}
+        onClose={() => setAssetSelectorOpen(false)}
         onSelect={handleAssetSelect}
         filterCategory={assetFilterCategory}
       />
