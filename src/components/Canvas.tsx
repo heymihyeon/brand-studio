@@ -779,14 +779,43 @@ Authorized Signature: _____________________`,
                 {imageSrc ? (
                   // Google Ads의 차량 이미지는 360도 뷰 시도, 실패시 일반 이미지
                   isVehicleImage && template.category === 'Google Ads' && value ? (
-                    <Vehicle360View
-                      vehicleId={(value as BrandAsset).id}
-                      colorId={editableValues[`${imageElement.id}_color`] || getDefaultColorForModel((value as BrandAsset).id)?.id || 'snow-white-pearl'}
-                      width={size.width}
-                      height={size.height}
-                      fallbackImage={imageSrc}
-                      onDragEnd={() => setRecentlyDragged(true)}
-                    />
+                    <>
+                      <Vehicle360View
+                        vehicleId={(value as BrandAsset).id}
+                        colorId={editableValues[`${imageElement.id}_color`] || getDefaultColorForModel((value as BrandAsset).id)?.id || 'snow-white-pearl'}
+                        width={size.width}
+                        height={size.height}
+                        fallbackImage={imageSrc}
+                        onDragEnd={() => setRecentlyDragged(true)}
+                      />
+                      {/* 360도 아이콘 */}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 74,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          width: 44,
+                          height: 25,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          zIndex: 10,
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        <img
+                          src="/images/360-icon.png"
+                          alt="360° View"
+                          style={{
+                            width: 40,
+                            height: 24,
+                            opacity: 0.7,
+                            filter: 'brightness(0) invert(1)', // 흰색으로 변경
+                          }}
+                        />
+                      </Box>
+                    </>
                   ) : (
                     <img 
                       src={imageSrc} 

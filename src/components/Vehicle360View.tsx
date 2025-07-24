@@ -21,6 +21,7 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
   const [loadedImages, setLoadedImages] = useState<string[]>([]);
   const [previousImages, setPreviousImages] = useState<string[]>([]);
   const [showPrevious, setShowPrevious] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const autoRotateInterval = useRef<NodeJS.Timeout | null>(null);
@@ -234,6 +235,8 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* 이전 이미지 표시 (새 색상 로딩 중에만) */}
       {showPrevious && previousImages.length > 0 && (
@@ -293,23 +296,26 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
         </Box>
       )}
       
-      {/* 자동 회전 토글 버튼 */}
-      {loadedImages.length > 0 && (
+      {/* 자동 회전 토글 버튼 - hover 시에만 표시, 정중앙 위치 */}
+      {loadedImages.length > 0 && isHovered && (
         <IconButton
           onClick={() => setIsAutoRotating(!isAutoRotating)}
           sx={{
             position: 'absolute',
-            top: 10,
-            right: 50,
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
             },
             zIndex: 4,
+            width: 48,
+            height: 48,
           }}
-          size="small"
         >
-          {isAutoRotating ? <Pause /> : <PlayArrow />}
+          {isAutoRotating ? <Pause fontSize="large" /> : <PlayArrow fontSize="large" />}
         </IconButton>
       )}
     </Box>
