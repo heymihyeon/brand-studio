@@ -967,7 +967,7 @@ Authorized Signature: _____________________`,
                         textAlign: textAlign || 'left',
                       }}
                     >
-                      {editableValues[titleElement.id] || 'Enter title here'}
+                      {editableValues[titleElement.id] || ''}
                     </Typography>
                   </Box>
                   
@@ -1000,7 +1000,7 @@ Authorized Signature: _____________________`,
                         textAlign: textAlign || 'left',
                       }}
                     >
-                      {editableValues[subtitleElement.id] || 'Enter subtitle here'}
+                      {editableValues[subtitleElement.id] || ''}
                     </Typography>
                   </Box>
                 </Box>
