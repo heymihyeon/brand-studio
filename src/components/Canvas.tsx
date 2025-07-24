@@ -7,6 +7,8 @@ import { ContractData } from './CarSalesContractEditor';
 import { QuotationData } from './QuotationEditor';
 import { PurchaseOrderData } from './PurchaseOrderEditor';
 import { getVehicleImageUrl, getVehicleColorFilter } from '../data/vehicleColors';
+import Vehicle360View from './Vehicle360View';
+import { getVehicleModelById, getVehicleColorForModel } from '../data/vehicleModels';
 
 interface CanvasProps {
   template: Template;
@@ -26,6 +28,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
   const containerRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [recentlyDragged, setRecentlyDragged] = useState(false);
   const textColor = '#ffffff'; // Always white
   
   // Check if current template is Square or Vertical format
@@ -640,10 +643,14 @@ Authorized Signature: _____________________`,
             
             // Vehicle 이미지인 경우 선택된 색상에 따라 필터만 적용 (이미지는 이미 선택된 모델 사용)
             let vehicleFilter = '';
-            if (isVehicleImage) {
-              const selectedColor = editableValues[`${imageElement.id}_color`] || 'matte-silver';
-              // 색상 필터만 가져오고, 이미지 URL은 이미 선택된 차량 모델의 것을 사용
-              vehicleFilter = getVehicleColorFilter(selectedColor);
+            if (isVehicleImage && value) {
+              const selectedColorId = editableValues[`${imageElement.id}_color`];
+              const vehicleModel = getVehicleModelById((value as BrandAsset).id);
+              
+              if (vehicleModel && selectedColorId) {
+                const color = getVehicleColorForModel(vehicleModel.id, selectedColorId);
+                vehicleFilter = color?.filter || '';
+              }
             }
             
             const size = {
@@ -704,7 +711,14 @@ Authorized Signature: _____________________`,
               <Box
                 key={imageElement.id}
                 data-element={isVehicleImage ? 'vehicle' : imageElement.id}
-                onClick={() => onImageEdit && onImageEdit(imageElement.id)}
+                onClick={() => {
+                  // 최근에 드래그했으면 클릭 이벤트 무시
+                  if (recentlyDragged) {
+                    setRecentlyDragged(false);
+                    return;
+                  }
+                  onImageEdit && onImageEdit(imageElement.id);
+                }}
                 sx={{
                   position: 'absolute',
                   left: position.left,
@@ -719,16 +733,28 @@ Authorized Signature: _____________________`,
                 }}
               >
                 {imageSrc ? (
-                  <img 
-                    src={imageSrc} 
-                    alt={imageElement.label || 'Image'}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                      filter: vehicleFilter || undefined,
-                    }}
-                  />
+                  // Google Ads의 차량 이미지는 360도 뷰 시도, 실패시 일반 이미지
+                  isVehicleImage && template.category === 'Google Ads' && value ? (
+                    <Vehicle360View
+                      vehicleId={(value as BrandAsset).id}
+                      colorId={editableValues[`${imageElement.id}_color`] || 'matte-silver'}
+                      width={size.width}
+                      height={size.height}
+                      fallbackImage={imageSrc}
+                      onDragEnd={() => setRecentlyDragged(true)}
+                    />
+                  ) : (
+                    <img 
+                      src={imageSrc} 
+                      alt={imageElement.label || 'Image'}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        filter: vehicleFilter || undefined,
+                      }}
+                    />
+                  )
                 ) : (
                   <Box
                     sx={{

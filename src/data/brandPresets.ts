@@ -1,4 +1,5 @@
 import { BrandAsset } from '../types';
+import { vehicleModels, getDefaultVehicleModel } from './vehicleModels';
 
 export const presetLogos: BrandAsset[] = [
   {
@@ -25,63 +26,8 @@ export const presetLogos: BrandAsset[] = [
   },
 ];
 
-export const presetVehicles: BrandAsset[] = [
-  {
-    id: 'vehicle-preset-1',
-    name: 'KIA EV9',
-    url: '/images/cars/EV9.png',
-    thumbnailUrl: '/images/cars/EV9.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-  },
-  {
-    id: 'vehicle-preset-2',
-    name: 'KIA K5',
-    url: '/images/cars/K5.png',
-    thumbnailUrl: '/images/cars/K5.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-  },
-  {
-    id: 'vehicle-preset-3',
-    name: 'KIA Seltos',
-    url: '/images/cars/seltos.png',
-    thumbnailUrl: '/images/cars/seltos.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-  },
-  {
-    id: 'vehicle-preset-4',
-    name: 'KIA Telluride',
-    url: '/images/cars/telluride.png',
-    thumbnailUrl: '/images/cars/telluride.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-  },
-  {
-    id: 'vehicle-preset-5',
-    name: 'KIA Carnival',
-    url: '/images/cars/carnival.png',
-    thumbnailUrl: '/images/cars/carnival.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-  },
-];
+// vehicleModels에서 가져온 차량 데이터를 presetVehicles로 내보내기
+export const presetVehicles: BrandAsset[] = vehicleModels;
 
 export const presetBackgrounds: BrandAsset[] = [
   {
@@ -121,5 +67,5 @@ export const presetBackgrounds: BrandAsset[] = [
 
 // 기본값으로 사용할 프리셋 getter 함수들
 export const getDefaultLogo = () => presetLogos[0]; // KIA Logo White
-export const getDefaultVehicle = () => presetVehicles[0]; // KIA EV9
+export const getDefaultVehicle = () => getDefaultVehicleModel(); // KIA EV9 with colors
 export const getDefaultBackground = () => presetBackgrounds[0]; // Showroom

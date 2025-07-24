@@ -40,7 +40,8 @@ import {
   getUniqueFormatsByCategory 
 } from '../data/unifiedFormats';
 import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data/brandPresets';
-import { vehicleColors, getDefaultVehicleColor, getVehicleImageUrl, VehicleColor } from '../data/vehicleColors';
+import { vehicleColors, getVehicleImageUrl, VehicleColor } from '../data/vehicleColors';
+import { VehicleModel, getVehicleModelById, getDefaultColorForModel } from '../data/vehicleModels';
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
@@ -236,7 +237,7 @@ const Editor: React.FC = () => {
   const [saveSuccessDialogOpen, setSaveSuccessDialogOpen] = useState(false);
   const [availableTemplateVariants, setAvailableTemplateVariants] = useState<UnifiedFormat[]>([]);
   const [selectedTemplateVariant, setSelectedTemplateVariant] = useState<string>('default');
-  const [selectedVehicleColor, setSelectedVehicleColor] = useState<string>(getDefaultVehicleColor().id);
+  const [selectedVehicleColor, setSelectedVehicleColor] = useState<string>('snow-white-pearl');
   const [showDealerInfo, setShowDealerInfo] = useState<boolean>(true); // 기본값 true
   const canvasRef = useRef<CanvasRef>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -247,8 +248,14 @@ useEffect(() => {
 
 // 차량 색상 초기화
 useEffect(() => {
-  if (template && editableValues['vehicle_color']) {
-    setSelectedVehicleColor(editableValues['vehicle_color']);
+  // vehicle_color 또는 vehicle 이미지 요소의 색상 값 확인
+  const vehicleColorId = editableValues['vehicle_color'] || 
+    (template?.editableElements.images.find(img => img.id === 'vehicle' || img.label === 'Vehicle Model') 
+      ? editableValues['vehicle_color'] 
+      : null);
+      
+  if (vehicleColorId) {
+    setSelectedVehicleColor(vehicleColorId);
   }
 }, [template, editableValues]);
 
@@ -410,10 +417,12 @@ useEffect(() => {
               } else {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                  initialValues[image.id] = getDefaultVehicle();
+                  const defaultVehicle = getDefaultVehicle();
+                  initialValues[image.id] = defaultVehicle;
                   // 기본 차량 색상도 설정
                   if (!editableValues[`${image.id}_color`]) {
-                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
                   }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
@@ -478,10 +487,12 @@ useEffect(() => {
               } else {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                  initialValues[image.id] = getDefaultVehicle();
+                  const defaultVehicle = getDefaultVehicle();
+                  initialValues[image.id] = defaultVehicle;
                   // 기본 차량 색상도 설정
                   if (!editableValues[`${image.id}_color`]) {
-                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
                   }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
@@ -640,12 +651,18 @@ useEffect(() => {
           [currentEditingElement]: asset,
         };
         
-        // 차량 모델을 변경하는 경우, 현재 선택된 색상은 유지
-        // (색상 필터가 새 차량 이미지에 적용됨)
+        // 차량 모델을 변경하는 경우, 해당 모델의 기본 색상으로 변경
         if (currentEditingElement === 'vehicle' || 
             template?.editableElements.images.find(img => img.id === currentEditingElement)?.label === 'Vehicle Model') {
-          // 색상은 그대로 유지 (별도 처리 불필요)
-          console.log('Vehicle model changed, keeping current color:', prev[`${currentEditingElement}_color`]);
+          const vehicleModel = getVehicleModelById(asset.id);
+          if (vehicleModel) {
+            const defaultColor = getDefaultColorForModel(asset.id);
+            if (defaultColor) {
+              newValues[`${currentEditingElement}_color`] = defaultColor.id;
+              setSelectedVehicleColor(defaultColor.id);
+              console.log('Vehicle model changed to:', vehicleModel.name, 'Default color:', defaultColor.displayName);
+            }
+          }
         }
         
         return newValues;
@@ -1115,13 +1132,27 @@ useEffect(() => {
                     </Button>
                     
                     {/* Vehicle Model 색상 선택기 */}
-                    {(imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model') && template?.category === 'Google Ads' && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
-                          Vehicle Color
-                        </Typography>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
-                          {vehicleColors.map((color) => (
+                    {(imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model') && template?.category === 'Google Ads' && editableValues[imageElement.id] && (() => {
+                      const selectedVehicle = editableValues[imageElement.id] as BrandAsset;
+                      const vehicleModel = selectedVehicle ? getVehicleModelById(selectedVehicle.id) : null;
+                      const availableColors = (vehicleModel as VehicleModel)?.availableColors || [];
+                      
+                      console.log('Color UI Debug:', {
+                        selectedVehicle: selectedVehicle?.id,
+                        vehicleModel: vehicleModel?.name,
+                        availableColorsCount: availableColors.length,
+                        currentColor: editableValues[`${imageElement.id}_color`]
+                      });
+                      
+                      if (!vehicleModel || availableColors.length === 0) return null;
+                      
+                      return (
+                        <Box sx={{ mt: 2 }}>
+                          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
+                            Vehicle Color
+                          </Typography>
+                          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+                            {availableColors.map((color) => (
                             <Box
                               key={color.id}
                               onClick={() => {
@@ -1159,10 +1190,11 @@ useEffect(() => {
                                 </Typography>
                               </Box>
                             </Box>
-                          ))}
+                            ))}
+                          </Box>
                         </Box>
-                      </Box>
-                    )}
+                      );
+                    })()}
                   </Box>
                 ))}
                 
@@ -1404,10 +1436,12 @@ useEffect(() => {
               } else {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                  initialValues[image.id] = getDefaultVehicle();
+                  const defaultVehicle = getDefaultVehicle();
+                  initialValues[image.id] = defaultVehicle;
                   // 기본 차량 색상도 설정
                   if (!editableValues[`${image.id}_color`]) {
-                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
                   }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
@@ -1470,10 +1504,12 @@ useEffect(() => {
               } else {
                 // 없으면 기본 이미지 설정
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
-                  initialValues[image.id] = getDefaultVehicle();
+                  const defaultVehicle = getDefaultVehicle();
+                  initialValues[image.id] = defaultVehicle;
                   // 기본 차량 색상도 설정
                   if (!editableValues[`${image.id}_color`]) {
-                    initialValues[`${image.id}_color`] = getDefaultVehicleColor().id;
+                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
                   }
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
