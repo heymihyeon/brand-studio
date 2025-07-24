@@ -1147,114 +1147,173 @@ useEffect(() => {
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                     {template?.category === 'Google Ads' ? 'Image' : 'Image Edit'}
                   </Typography>
-                {template.editableElements.images.map((imageElement) => (
-                  <Box key={imageElement.id}>
-                    <Typography variant="body2" gutterBottom>
-                      {imageElement.label || 
-                       (imageElement.id === 'logo' ? 'Logo' :
-                        imageElement.id === 'main' ? 'Main Image' :
-                        imageElement.id === 'background' ? 'Background Image' :
-                        imageElement.id === 'product' ? 'Product Image' :
-                        imageElement.id === 'cover' ? 'Cover Image' : 
-                        imageElement.id === 'bg-image' ? 'Background Image' :
-                        imageElement.id === 'vehicle' ? 'Vehicle Model' : 'Image')}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      fullWidth
-                      onClick={() => handleImageSelect(imageElement.id)}
-                    >
-                      {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
-                        ? (editableValues[imageElement.id] as BrandAsset).name
-                        : `Select ${imageElement.label || 'Image'}`}
-                    </Button>
-                    
-                    {/* Vehicle Model 색상 선택기 */}
-                    {(imageElement.id === 'vehicle' || imageElement.label === 'Vehicle Model') && template?.category === 'Google Ads' && editableValues[imageElement.id] && (() => {
-                      const selectedVehicle = editableValues[imageElement.id] as BrandAsset;
-                      const vehicleModel = selectedVehicle ? getVehicleModelById(selectedVehicle.id) : null;
-                      const availableColors = (vehicleModel as VehicleModel)?.availableColors || [];
-                      
-                      console.log('Color UI Debug:', {
-                        selectedVehicle: selectedVehicle?.id,
-                        vehicleModel: vehicleModel?.name,
-                        availableColorsCount: availableColors.length,
-                        currentColor: editableValues[`${imageElement.id}_color`],
-                        selectedVehicleColor: selectedVehicleColor,
-                        availableColorIds: availableColors.map(c => c.id),
-                        isSelectedColorValid: availableColors.some(c => c.id === selectedVehicleColor)
-                      });
-                      
-                      // 차량 모델이 있고 색상이 있으면 UI 표시 (로딩 중에도 유지)
-                      if (!selectedVehicle || availableColors.length === 0) return null;
-                      
-                      return (
-                        <Box sx={{ mt: 2 }}>
-                          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
-                            Vehicle Color
-                          </Typography>
-                          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
-                            {availableColors.map((color) => (
-                            <Box
-                              key={color.id}
-                              onClick={() => {
-                                setSelectedVehicleColor(color.id);
-                                // editableValues에 선택된 색상 저장
-                                setEditableValues(prev => ({
-                                  ...prev,
-                                  [`${imageElement.id}_color`]: color.id
-                                }));
-                              }}
-                              sx={{
-                                cursor: 'pointer',
-                                border: (selectedVehicleColor === color.id || editableValues[`${imageElement.id}_color`] === color.id) ? '2px solid' : '1px solid',
-                                borderColor: (selectedVehicleColor === color.id || editableValues[`${imageElement.id}_color`] === color.id) ? 'primary.main' : 'divider',
-                                borderRadius: 1,
-                                overflow: 'hidden',
-                                transition: 'all 0.2s ease',
-                                '&:hover': {
-                                  borderColor: 'primary.main',
-                                  transform: 'scale(1.02)',
-                                }
-                              }}
+                  
+                  {/* Google Ads일 때 특별한 순서로 렌더링 */}
+                  {template?.category === 'Google Ads' ? (
+                    <>
+                      {/* 1. Vehicle Model */}
+                      {(() => {
+                        const vehicleElement = template.editableElements.images.find(img => img.id === 'vehicle' || img.label === 'Vehicle Model');
+                        if (!vehicleElement) return null;
+                        
+                        return (
+                          <Box>
+                            <Typography variant="body2" gutterBottom>
+                              Vehicle Model
+                            </Typography>
+                            <Button
+                              variant="outlined"
+                              fullWidth
+                              onClick={() => handleImageSelect(vehicleElement.id)}
                             >
-                              <Box
-                                sx={{
-                                  width: '100%',
-                                  height: 40,
-                                  backgroundColor: color.colorCode,
-                                  border: color.colorCode === '#FFFFFF' ? '1px solid #e0e0e0' : 'none',
-                                }}
-                              />
-                              <Box sx={{ p: 1, textAlign: 'center' }}>
-                                <Typography component="p" variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
-                                  {color.displayName}
-                                </Typography>
-                              </Box>
-                            </Box>
-                            ))}
+                              {editableValues[vehicleElement.id] && typeof editableValues[vehicleElement.id] === 'object'
+                                ? (editableValues[vehicleElement.id] as BrandAsset).name
+                                : 'Select Vehicle Model'}
+                            </Button>
+                            
+                            {/* Vehicle Color 바로 아래 표시 */}
+                            {editableValues[vehicleElement.id] && (() => {
+                              const selectedVehicle = editableValues[vehicleElement.id] as BrandAsset;
+                              const vehicleModel = selectedVehicle ? getVehicleModelById(selectedVehicle.id) : null;
+                              const availableColors = (vehicleModel as VehicleModel)?.availableColors || [];
+                              
+                              if (!selectedVehicle || availableColors.length === 0) return null;
+                              
+                              return (
+                                <Box sx={{ mt: 2 }}>
+                                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
+                                    Vehicle Color
+                                  </Typography>
+                                  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
+                                    {availableColors.map((color) => (
+                                    <Box
+                                      key={color.id}
+                                      onClick={() => {
+                                        setSelectedVehicleColor(color.id);
+                                        setEditableValues(prev => ({
+                                          ...prev,
+                                          [`${vehicleElement.id}_color`]: color.id
+                                        }));
+                                      }}
+                                      sx={{
+                                        cursor: 'pointer',
+                                        border: (selectedVehicleColor === color.id || editableValues[`${vehicleElement.id}_color`] === color.id) ? '2px solid' : '1px solid',
+                                        borderColor: (selectedVehicleColor === color.id || editableValues[`${vehicleElement.id}_color`] === color.id) ? 'primary.main' : 'divider',
+                                        borderRadius: 1,
+                                        overflow: 'hidden',
+                                        transition: 'all 0.2s ease',
+                                        '&:hover': {
+                                          borderColor: 'primary.main',
+                                          transform: 'scale(1.02)',
+                                        }
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          width: '100%',
+                                          height: 40,
+                                          backgroundColor: color.colorCode,
+                                          border: color.colorCode === '#FFFFFF' ? '1px solid #e0e0e0' : 'none',
+                                        }}
+                                      />
+                                      <Box sx={{ p: 1, textAlign: 'center' }}>
+                                        <Typography component="p" variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
+                                          {color.displayName}
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                    ))}
+                                  </Box>
+                                </Box>
+                              );
+                            })()}
                           </Box>
+                        );
+                      })()}
+                      
+                      {/* 2. Background Image */}
+                      {(() => {
+                        const bgElement = template.editableElements.images.find(img => img.id === 'background' || img.id === 'bg-image' || img.label === 'Background Image');
+                        if (!bgElement) return null;
+                        
+                        return (
+                          <Box sx={{ mt: 2 }}>
+                            <Typography variant="body2" gutterBottom>
+                              Background Image
+                            </Typography>
+                            <Button
+                              variant="outlined"
+                              fullWidth
+                              onClick={() => handleImageSelect(bgElement.id)}
+                            >
+                              {editableValues[bgElement.id] && typeof editableValues[bgElement.id] === 'object'
+                                ? (editableValues[bgElement.id] as BrandAsset).name
+                                : 'Select Background Image'}
+                            </Button>
+                          </Box>
+                        );
+                      })()}
+                      
+                      {/* 3. Logo Image */}
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant="body2" gutterBottom>
+                          Logo Image
+                        </Typography>
+                        <Button
+                          variant="outlined"
+                          fullWidth
+                          onClick={() => handleImageSelect('brandLogo')}
+                        >
+                          {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
+                            ? (editableValues['brandLogo'] as BrandAsset).name
+                            : 'Select Logo'}
+                        </Button>
+                      </Box>
+                    </>
+                  ) : (
+                    /* Google Ads가 아닌 경우 기존 방식대로 렌더링 */
+                    <>
+                      {template.editableElements.images.map((imageElement) => (
+                        <Box key={imageElement.id}>
+                          <Typography variant="body2" gutterBottom>
+                            {imageElement.label || 
+                             (imageElement.id === 'logo' ? 'Logo' :
+                              imageElement.id === 'main' ? 'Main Image' :
+                              imageElement.id === 'background' ? 'Background Image' :
+                              imageElement.id === 'product' ? 'Product Image' :
+                              imageElement.id === 'cover' ? 'Cover Image' : 
+                              imageElement.id === 'bg-image' ? 'Background Image' :
+                              imageElement.id === 'vehicle' ? 'Vehicle Model' : 'Image')}
+                          </Typography>
+                          <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => handleImageSelect(imageElement.id)}
+                          >
+                            {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
+                              ? (editableValues[imageElement.id] as BrandAsset).name
+                              : `Select ${imageElement.label || 'Image'}`}
+                          </Button>
                         </Box>
-                      );
-                    })()}
-                  </Box>
-                ))}
-                
-                {/* Logo Image - Always show for all templates */}
-                <Box>
-                  <Typography variant="body2" gutterBottom>
-                    Logo Image
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    fullWidth
-                    onClick={() => handleImageSelect('brandLogo')}
-                  >
-                    {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
-                      ? (editableValues['brandLogo'] as BrandAsset).name
-                      : 'Select Logo'}
-                  </Button>
-                </Box>
+                      ))}
+                      
+                      {/* Logo Image - Always show for all templates */}
+                      <Box>
+                        <Typography variant="body2" gutterBottom>
+                          Logo Image
+                        </Typography>
+                        <Button
+                          variant="outlined"
+                          fullWidth
+                          onClick={() => handleImageSelect('brandLogo')}
+                        >
+                          {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
+                            ? (editableValues['brandLogo'] as BrandAsset).name
+                            : 'Select Logo'}
+                        </Button>
+                      </Box>
+                    </>
+                  )}
                 </>
               </>
             )
