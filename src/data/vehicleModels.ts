@@ -18,12 +18,19 @@ export interface VehicleModel extends BrandAsset {
 // EV9 색상 옵션
 const ev9Colors: VehicleColor[] = [
   {
+    id: 'ivory-matte-silver',
+    name: 'ivory-matte-silver',
+    displayName: 'Ivory Matte Silver',
+    colorCode: '#B8B8B8',
+    filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
+    isDefault: true,
+  },
+  {
     id: 'snow-white-pearl',
     name: 'snow-white-pearl',
     displayName: 'Snow White Pearl',
     colorCode: '#F0F0F0',
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
-    isDefault: true,
   },
   {
     id: 'panthera-metal',
@@ -31,6 +38,20 @@ const ev9Colors: VehicleColor[] = [
     displayName: 'Panthera Metal',
     colorCode: '#3A3A3A',
     filter: 'brightness(0.8) contrast(1.1)',
+  },
+  {
+    id: 'ocean-matte-blue',
+    name: 'ocean-matte-blue',
+    displayName: 'Ocean Matte Blue',
+    colorCode: '#2C4B6B',
+    filter: 'brightness(1.0) contrast(1.1) saturate(2) hue-rotate(-10deg)',
+  },
+  {
+    id: 'iceberg-green',
+    name: 'iceberg-green',
+    displayName: 'Iceberg Green',
+    colorCode: '#4A6741',
+    filter: 'brightness(1.0) contrast(1.1) saturate(1.5) hue-rotate(-15deg)',
   },
 ];
 
@@ -173,7 +194,7 @@ export const vehicleModels: VehicleModel[] = [
     fileSize: 0,
     dimensions: { width: 800, height: 450 },
     availableColors: ev9Colors,
-    defaultColorId: 'snow-white-pearl',
+    defaultColorId: 'ivory-matte-silver',
   },
   {
     id: 'k5-default',

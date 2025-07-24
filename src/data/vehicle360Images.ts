@@ -31,6 +31,10 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
     modelId: 'ev9',
     modelName: 'EV9',
     colors: {
+      'ism': {
+        colorName: '아이보리 매트 실버',
+        images: generateEV9Images('ism')
+      },
       'swp': {
         colorName: '스노우 화이트 펄',
         images: generateEV9Images('swp')
@@ -50,6 +54,14 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
       'p2m': {
         colorName: '판테라 메탈',
         images: generateEV9Images('p2m')
+      },
+      'obm': {
+        colorName: '오션 매트 블루',
+        images: generateEV9Images('obm')
+      },
+      'ieg': {
+        colorName: '아이스버그 그린',
+        images: generateEV9Images('ieg')
       },
       'obg': {
         colorName: '오션 블루',
@@ -97,10 +109,13 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
 
 // 색상 ID를 360도 이미지 색상 코드로 매핑
 export const colorIdTo360ColorCode: Record<string, string> = {
+  'ivory-matte-silver': 'ism',
   'snow-white-pearl': 'swp',
   'aurora-black-pearl': 'abp',
   'flare-red': 'gwp',
   'panthera-metal': 'p2m',
+  'ocean-matte-blue': 'obm',
+  'iceberg-green': 'ieg',
   'ocean-blue': 'obg',
   'pebble-gray': 'pgg',
   'ivory-silver': 'i4g',
