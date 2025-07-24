@@ -956,7 +956,7 @@ export const unifiedFormats: UnifiedFormat[] = [
           type: 'image',
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          left: 300,
+          left: 280,
           top: 80,
           width: 832,
           height: 416,
@@ -1008,7 +1008,7 @@ export const unifiedFormats: UnifiedFormat[] = [
         {
           id: 'vehicle',
           src: 'https://www.hyundai.com/contents/repn-car/side-45/ioniq5-24pe-side-45-gravity-gold-matte.png',
-          position: { x: 300, y: 80 },
+          position: { x: 280, y: 80 },
           size: { width: 832, height: 416 },
           editable: true,
           label: 'Vehicle Model',
