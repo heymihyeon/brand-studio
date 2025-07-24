@@ -68,6 +68,13 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         try {
           console.log('Creating canvas with html2canvas with scale compensation');
           
+          // Hide 360-icon before export
+          const iconElement = canvasRef.current.querySelector('img[src="/images/360-icon.png"]') as HTMLImageElement;
+          const iconParent = iconElement?.parentElement as HTMLElement;
+          if (iconParent) {
+            iconParent.style.display = 'none';
+          }
+          
           // Use current canvas state but compensate for display scale in html2canvas options
           const canvas = await html2canvas(canvasRef.current, {
             scale: exportScale / scale, // Compensate for display scale
@@ -80,6 +87,11 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
             imageTimeout: 15000,
           });
           console.log('html2canvas completed, canvas:', canvas, 'compensated scale:', exportScale / scale);
+          
+          // Restore 360-icon after export
+          if (iconParent) {
+            iconParent.style.display = 'flex';
+          }
           
           // Convert to requested format
           if (format === 'png') {
@@ -810,9 +822,9 @@ Authorized Signature: _____________________`,
                           src="/images/360-icon.png"
                           alt="360° View"
                           style={{
-                            width: 48 / (isSquareOrVertical ? 0.75 : 1),
-                            height: 29 / (isSquareOrVertical ? 0.75 : 1),
-                            opacity: 0.9,
+                            width: 46 / (isSquareOrVertical ? 0.75 : 1),
+                            height: 26 / (isSquareOrVertical ? 0.75 : 1),
+                            opacity: 0.8,
                             filter: 'brightness(0) invert(1)', // 흰색으로 변경
                           }}
                         />
@@ -936,13 +948,13 @@ Authorized Signature: _____________________`,
                   >
                     <Typography
                       sx={{
-                        fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 42 : 48),
-                        fontWeight: 'bold',
+                        fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 46 : 52),
+                        fontWeight: 'regular',
                         fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[titleElement.id] ? 
                           (template.category === 'Document' ? '#000000' : '#ffffff') : 
                           (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
-                        lineHeight: titleCanvasObj?.lineHeight || 1.2,
+                        lineHeight: titleCanvasObj?.lineHeight || 1.0,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
@@ -976,7 +988,7 @@ Authorized Signature: _____________________`,
                         color: editableValues[subtitleElement.id] ? 
                           (template.category === 'Document' ? '#000000' : '#ffffff') : 
                           (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
-                        lineHeight: 0.6,
+                        lineHeight: 0.4,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
