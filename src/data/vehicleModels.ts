@@ -26,46 +26,11 @@ const ev9Colors: VehicleColor[] = [
     isDefault: true,
   },
   {
-    id: 'aurora-black-pearl',
-    name: 'aurora-black-pearl',
-    displayName: 'Aurora Black Pearl',
-    colorCode: '#0E1213',
-    filter: 'brightness(1.0) contrast(1.2) saturate(0.8)',
-  },
-  {
-    id: 'flare-red',
-    name: 'flare-red',
-    displayName: 'Flare Red',
-    colorCode: '#7D2F23',
-    filter: 'saturate(6) brightness(1.0) contrast(1.05) hue-rotate(115deg)',
-  },
-  {
     id: 'panthera-metal',
     name: 'panthera-metal',
     displayName: 'Panthera Metal',
     colorCode: '#3A3A3A',
     filter: 'brightness(0.8) contrast(1.1)',
-  },
-  {
-    id: 'ocean-blue',
-    name: 'ocean-blue',
-    displayName: 'Ocean Blue',
-    colorCode: '#263346',
-    filter: 'brightness(1.0) contrast(1.05) saturate(6)',
-  },
-  {
-    id: 'pebble-gray',
-    name: 'pebble-gray',
-    displayName: 'Pebble Gray',
-    colorCode: '#979893',
-    filter: 'sepia(0.2) brightness(1.0) contrast(1.0) saturate(1.0)',
-  },
-  {
-    id: 'ivory-silver',
-    name: 'ivory-silver',
-    displayName: 'Ivory Silver',
-    colorCode: '#C0C0C0',
-    filter: 'brightness(1.2) contrast(0.9)',
   },
 ];
 
@@ -268,9 +233,26 @@ export const vehicleModels: VehicleModel[] = [
   },
 ];
 
+// ID 매핑 (BrandHub의 vehicle-preset ID들을 vehicleModels ID로 매핑)
+const vehicleIdMapping: Record<string, string> = {
+  'vehicle-preset-1': 'ev9-default',
+  'vehicle-preset-2': 'k5-default', 
+  'vehicle-preset-4': 'seltos-default',
+  'vehicle-preset-5': 'telluride-default',
+  'vehicle-preset-6': 'carnival-default',
+};
+
 // Helper 함수들
 export const getVehicleModelById = (id: string): VehicleModel | undefined => {
-  return vehicleModels.find(model => model.id === id);
+  // 먼저 직접 ID로 찾기
+  let model = vehicleModels.find(model => model.id === id);
+  
+  // 없으면 매핑된 ID로 찾기
+  if (!model && vehicleIdMapping[id]) {
+    model = vehicleModels.find(model => model.id === vehicleIdMapping[id]);
+  }
+  
+  return model;
 };
 
 export const getDefaultVehicleModel = (): VehicleModel => {

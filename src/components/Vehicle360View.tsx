@@ -37,8 +37,12 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
     colorId,
     modelId,
     colorCode,
+    vehicleData: vehicleData ? 'found' : 'not found',
+    colorData: colorData ? 'found' : 'not found', 
     imagesCount: images.length,
-    firstImage: images[0]
+    firstImage: images[0],
+    vehicleIdToModelIdMapping: vehicleIdToModelId[vehicleId],
+    colorIdTo360ColorCodeMapping: colorIdTo360ColorCode[colorId]
   });
   
   // 이미지 프리로드

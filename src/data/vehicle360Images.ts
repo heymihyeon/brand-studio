@@ -47,6 +47,10 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
         colorName: '판테라 메탈',
         images: generateEV9Images('pgm')
       },
+      'p2m': {
+        colorName: '판테라 메탈',
+        images: generateEV9Images('p2m')
+      },
       'obg': {
         colorName: '오션 블루',
         images: generateEV9Images('obg')
@@ -96,7 +100,7 @@ export const colorIdTo360ColorCode: Record<string, string> = {
   'snow-white-pearl': 'swp',
   'aurora-black-pearl': 'abp',
   'flare-red': 'gwp',
-  'panthera-metal': 'pgm',
+  'panthera-metal': 'p2m',
   'ocean-blue': 'obg',
   'pebble-gray': 'pgg',
   'ivory-silver': 'i4g',

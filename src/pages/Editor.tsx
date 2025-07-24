@@ -246,16 +246,45 @@ useEffect(() => {
   console.log(template);
 }, [template]);
 
-// 차량 색상 초기화
+// 차량 색상 초기화 및 동기화
 useEffect(() => {
-  // vehicle_color 또는 vehicle 이미지 요소의 색상 값 확인
-  const vehicleColorId = editableValues['vehicle_color'] || 
-    (template?.editableElements.images.find(img => img.id === 'vehicle' || img.label === 'Vehicle Model') 
-      ? editableValues['vehicle_color'] 
-      : null);
+  // vehicle 이미지 요소가 있는지 확인
+  const vehicleElement = template?.editableElements.images.find(img => img.id === 'vehicle' || img.label === 'Vehicle Model');
+  
+  if (vehicleElement) {
+    // 현재 선택된 차량과 색상 확인
+    const selectedVehicle = editableValues[vehicleElement.id] as BrandAsset;
+    const vehicleColorId = editableValues[`${vehicleElement.id}_color`];
+    
+    if (selectedVehicle && vehicleColorId) {
+      // 선택된 차량 모델의 색상이 유효한지 확인
+      const vehicleModel = getVehicleModelById(selectedVehicle.id);
+      const isValidColor = vehicleModel?.availableColors.some(color => color.id === vehicleColorId);
       
-  if (vehicleColorId) {
-    setSelectedVehicleColor(vehicleColorId);
+      if (isValidColor) {
+        setSelectedVehicleColor(vehicleColorId);
+      } else {
+        // 유효하지 않은 색상이면 기본 색상으로 변경
+        const defaultColor = getDefaultColorForModel(selectedVehicle.id);
+        if (defaultColor) {
+          setSelectedVehicleColor(defaultColor.id);
+          setEditableValues(prev => ({
+            ...prev,
+            [`${vehicleElement.id}_color`]: defaultColor.id
+          }));
+        }
+      }
+    } else if (selectedVehicle) {
+      // 차량은 선택되었지만 색상이 없으면 기본 색상 설정
+      const defaultColor = getDefaultColorForModel(selectedVehicle.id);
+      if (defaultColor) {
+        setSelectedVehicleColor(defaultColor.id);
+        setEditableValues(prev => ({
+          ...prev,
+          [`${vehicleElement.id}_color`]: defaultColor.id
+        }));
+      }
+    }
   }
 }, [template, editableValues]);
 
@@ -659,7 +688,10 @@ useEffect(() => {
             const defaultColor = getDefaultColorForModel(asset.id);
             if (defaultColor) {
               newValues[`${currentEditingElement}_color`] = defaultColor.id;
-              setSelectedVehicleColor(defaultColor.id);
+              // 상태 즉시 업데이트
+              setTimeout(() => {
+                setSelectedVehicleColor(defaultColor.id);
+              }, 0);
               console.log('Vehicle model changed to:', vehicleModel.name, 'Default color:', defaultColor.displayName);
             }
           }
@@ -1141,10 +1173,14 @@ useEffect(() => {
                         selectedVehicle: selectedVehicle?.id,
                         vehicleModel: vehicleModel?.name,
                         availableColorsCount: availableColors.length,
-                        currentColor: editableValues[`${imageElement.id}_color`]
+                        currentColor: editableValues[`${imageElement.id}_color`],
+                        selectedVehicleColor: selectedVehicleColor,
+                        availableColorIds: availableColors.map(c => c.id),
+                        isSelectedColorValid: availableColors.some(c => c.id === selectedVehicleColor)
                       });
                       
-                      if (!vehicleModel || availableColors.length === 0) return null;
+                      // 차량 모델이 있고 색상이 있으면 UI 표시 (로딩 중에도 유지)
+                      if (!selectedVehicle || availableColors.length === 0) return null;
                       
                       return (
                         <Box sx={{ mt: 2 }}>
@@ -1165,8 +1201,8 @@ useEffect(() => {
                               }}
                               sx={{
                                 cursor: 'pointer',
-                                border: selectedVehicleColor === color.id ? '2px solid' : '1px solid',
-                                borderColor: selectedVehicleColor === color.id ? 'primary.main' : 'divider',
+                                border: (selectedVehicleColor === color.id || editableValues[`${imageElement.id}_color`] === color.id) ? '2px solid' : '1px solid',
+                                borderColor: (selectedVehicleColor === color.id || editableValues[`${imageElement.id}_color`] === color.id) ? 'primary.main' : 'divider',
                                 borderRadius: 1,
                                 overflow: 'hidden',
                                 transition: 'all 0.2s ease',
