@@ -219,6 +219,14 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
 
   // Get text value with placeholder
   const getTextValue = (elementId: string, type: string) => {
+    // For Document templates, always show title from template
+    if (template.category === 'Document' && elementId === 'title') {
+      const canvasTextObj = template.canvas.objects?.find(
+        (obj: any) => obj.type === 'text' && obj.id === 'title'
+      ) as any;
+      return canvasTextObj?.text || (editableValues[elementId] || 'Document Title');
+    }
+    
     // Special handling for car sales contract
     if (template.format.id === 'doc-contract-a4' && contractData) {
       return getContractText(elementId);
@@ -705,10 +713,12 @@ Authorized Signature: _____________________`,
               const maxLeft = template.canvas.width - size.width - rightMargin;
               const maxTop = template.canvas.height - size.height - bottomMargin;
               
-              // Horizontal 포맷에서는 차량 위치 제한을 완화
-              const isHorizontalBanner = template.canvas.width === 1200 && template.canvas.height === 628;
+              // Google Ads Horizontal 포맷에서만 차량 위치 제한을 완화
+              const isGoogleAdsHorizontal = template.category === 'Google Ads' && 
+                                          template.canvas.width === 1200 && 
+                                          template.canvas.height === 628;
               
-              if (!isHorizontalBanner) {
+              if (!isGoogleAdsHorizontal) {
                 adjustedLeft = Math.min(adjustedLeft, maxLeft);
                 adjustedTop = Math.min(adjustedTop, maxTop);
               }
@@ -898,7 +908,9 @@ Authorized Signature: _____________________`,
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 42 : 48),
                         fontWeight: 'bold',
                         fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
-                        color: editableValues[titleElement.id] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                        color: editableValues[titleElement.id] ? 
+                          (template.category === 'Document' ? '#000000' : '#ffffff') : 
+                          (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
                         lineHeight: titleCanvasObj?.lineHeight || 1.2,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
@@ -930,7 +942,9 @@ Authorized Signature: _____________________`,
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
                         fontWeight: '500',
                         fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
-                        color: editableValues[subtitleElement.id] ? '#ffffff' : 'rgba(255, 255, 255, 0.5)',
+                        color: editableValues[subtitleElement.id] ? 
+                          (template.category === 'Document' ? '#000000' : '#ffffff') : 
+                          (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
                         lineHeight: 1.2,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
@@ -950,8 +964,9 @@ Authorized Signature: _____________________`,
                   const displayText = getTextValue(textElement.id, textElement.type);
                   const isPlaceholder = !value;
                   
-                  // Skip rendering if displayText is empty for Quotation/Purchase Order templates
-                  if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (!displayText || displayText.trim() === '')) {
+                  // Skip rendering if displayText is empty for Quotation/Purchase Order templates, but not for title
+                  if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && 
+                      textElement.id !== 'title' && (!displayText || displayText.trim() === '')) {
                     return null;
                   }
                   
@@ -968,8 +983,9 @@ Authorized Signature: _____________________`,
                   const fontWeight = canvasTextObj?.fontWeight || 'normal';
                   const fontFamily = template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
                   const color = isPlaceholder 
-                    ? 'rgba(255, 255, 255, 0.5)' 
-                    : (template.category === 'Google Ads' ? '#ffffff' : (canvasTextObj?.fill || '#ffffff'));
+                    ? (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)') 
+                    : (template.category === 'Google Ads' ? '#ffffff' : 
+                       template.category === 'Document' ? '#000000' : (canvasTextObj?.fill || '#ffffff'));
                   const textAlign = canvasTextObj?.textAlign || 'left';
                   const originX = canvasTextObj?.originX || 'left';
                   
@@ -1014,7 +1030,7 @@ Authorized Signature: _____________________`,
                           textAlign: textAlign || 'left',
                         }}
                       >
-                        {displayText || ''}
+                        {displayText || (textElement.id === 'title' && template.category === 'Document' ? 'Document Title' : '')}
                       </Typography>
                     </Box>
                   );
@@ -1103,8 +1119,9 @@ Authorized Signature: _____________________`,
               const displayText = getTextValue(textElement.id, textElement.type);
               const isPlaceholder = !value;
               
-              // Skip rendering if displayText is empty for Quotation/Purchase Order templates
-              if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && (!displayText || displayText.trim() === '')) {
+              // Skip rendering if displayText is empty for Quotation/Purchase Order templates, but not for title
+              if ((template.format.id === 'doc-quotation-a4' || template.format.id === 'doc-purchase-order-a4') && 
+                  textElement.id !== 'title' && (!displayText || displayText.trim() === '')) {
                 return null;
               }
               
@@ -1163,8 +1180,9 @@ Authorized Signature: _____________________`,
                                  textElement.type === 'subheading' ? '500' : 'normal');
               const fontFamily = canvasTextObj?.fontFamily || 'Arial, sans-serif';
               const color = isPlaceholder 
-                ? (textColor === '#ffffff' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)') 
-                : (isPromotionBanner ? textColor : (canvasTextObj?.fill || '#ffffff'));
+                ? (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)') 
+                : (isPromotionBanner ? textColor : 
+                   template.category === 'Document' ? '#000000' : (canvasTextObj?.fill || '#ffffff'));
               
               const textAlign = canvasTextObj?.textAlign || 'left';
               const originX = canvasTextObj?.originX || 'left';
@@ -1221,7 +1239,7 @@ Authorized Signature: _____________________`,
                       textAlign: textAlign || 'left',
                     }}
                   >
-                    {displayText}
+                    {displayText || (textElement.id === 'title' && template.category === 'Document' ? 'Document Title' : '')}
                   </Typography>
                 </Box>
               );
@@ -1308,7 +1326,7 @@ Authorized Signature: _____________________`,
         {/* Static Text Objects from Canvas */}
         {template.canvas.objects?.filter((obj: any) => 
           obj.type === 'text' && 
-          !obj.id && // Only render static texts (without id)
+          (!obj.id || (template.category === 'Document' && obj.id === 'title')) && // Allow Document title
           obj.text && 
           obj.text.trim() !== ''
         ).map((textObj: any, index: number) => {
@@ -1330,6 +1348,8 @@ Authorized Signature: _____________________`,
                   color: textObj.fill || '#000000',
                   lineHeight: textObj.lineHeight || 1.2,
                   textAlign: textObj.textAlign || 'left',
+                  transform: textObj.originX === 'center' ? 'translateX(-50%)' : 'none',
+                  transformOrigin: textObj.originX === 'center' ? 'center' : 'left',
                 }}
               >
                 {textObj.text}
