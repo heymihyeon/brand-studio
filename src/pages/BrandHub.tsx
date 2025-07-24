@@ -146,17 +146,6 @@ const BrandHub: React.FC = () => {
         dimensions: { width: 800, height: 450 },
       },
       {
-        id: 'vehicle-preset-4',
-        name: 'KIA Telluride',
-        url: '/images/cars/telluride.png',
-        thumbnailUrl: '/images/cars/telluride.png',
-        category: 'Vehicle',
-        type: 'image',
-        uploadedAt: new Date(),
-        fileSize: 0,
-        dimensions: { width: 800, height: 450 },
-      },
-      {
         id: 'vehicle-preset-5',
         name: 'KIA Carnival',
         url: '/images/cars/carnival.png',

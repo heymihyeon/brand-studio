@@ -164,6 +164,10 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
       'isg': {
         colorName: '아이보리 실버',
         images: generateCarnivalImages('isg')
+      },
+      'abp': {
+        colorName: '오로라 블랙 펄',
+        images: generateCarnivalImages('abp')
       }
     }
   }
@@ -193,7 +197,6 @@ export const vehicleIdToModelId: Record<string, string> = {
   'sportage-default': 'sportage',
   'vehicle-preset-1': 'ev9',
   'vehicle-preset-2': 'k8',
-  'vehicle-preset-4': 'telluride',
   'vehicle-preset-5': 'carnival',
   'carnival-default': 'carnival',
 };

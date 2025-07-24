@@ -114,39 +114,6 @@ const seltosColors: VehicleColor[] = [
   },
 ];
 
-// Telluride 색상 옵션
-const tellurideColors: VehicleColor[] = [
-  {
-    id: 'everlasting-silver',
-    name: 'everlasting-silver',
-    displayName: 'Everlasting Silver',
-    colorCode: '#B8B8B8',
-    filter: 'brightness(1.1) contrast(0.95)',
-    isDefault: true,
-  },
-  {
-    id: 'ebony-black',
-    name: 'ebony-black',
-    displayName: 'Ebony Black',
-    colorCode: '#1A1A1A',
-    filter: 'brightness(0.9) contrast(1.3) saturate(0.7)',
-  },
-  {
-    id: 'dark-moss',
-    name: 'dark-moss',
-    displayName: 'Dark Moss',
-    colorCode: '#2F4F2F',
-    filter: 'brightness(0.9) contrast(1.1) saturate(1.5) hue-rotate(-20deg)',
-  },
-  {
-    id: 'sangria',
-    name: 'sangria',
-    displayName: 'Sangria',
-    colorCode: '#5C1F1F',
-    filter: 'brightness(1.0) contrast(1.2) saturate(3) hue-rotate(10deg)',
-  },
-];
-
 // Carnival 색상 옵션
 const carnivalColors: VehicleColor[] = [
   {
@@ -163,6 +130,13 @@ const carnivalColors: VehicleColor[] = [
     displayName: 'Ivory Silver',
     colorCode: '#B7B8B3',
     filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
+  },
+  {
+    id: 'aurora-black-pearl',
+    name: 'aurora-black-pearl',
+    displayName: 'Aurora Black Pearl',
+    colorCode: '#0E1213',
+    filter: 'brightness(1.0) contrast(1.2) saturate(0.8)',
   },
 ];
 
@@ -211,20 +185,6 @@ export const vehicleModels: VehicleModel[] = [
     defaultColorId: 'gravity-gray',
   },
   {
-    id: 'telluride-default',
-    modelId: 'telluride',
-    name: 'KIA Telluride',
-    url: '/images/cars/telluride.png',
-    thumbnailUrl: '/images/cars/telluride.png',
-    category: 'Vehicle Models',
-    type: 'image',
-    uploadedAt: new Date(),
-    fileSize: 0,
-    dimensions: { width: 800, height: 450 },
-    availableColors: tellurideColors,
-    defaultColorId: 'everlasting-silver',
-  },
-  {
     id: 'carnival-default',
     modelId: 'carnival',
     name: 'KIA Carnival',
@@ -244,7 +204,6 @@ export const vehicleModels: VehicleModel[] = [
 const vehicleIdMapping: Record<string, string> = {
   'vehicle-preset-1': 'ev9-default',
   'vehicle-preset-2': 'k8-default', 
-  'vehicle-preset-4': 'telluride-default',
   'vehicle-preset-5': 'carnival-default',
 };
 
