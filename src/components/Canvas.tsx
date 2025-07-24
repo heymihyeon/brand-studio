@@ -637,6 +637,24 @@ Authorized Signature: _____________________`,
               (obj: any) => obj.type === 'image' && obj.id === imageElement.id
             ) as any;
             
+            // 차량 이미지 디버깅
+            if (isVehicleImage) {
+              console.log('Vehicle Image Debug:', {
+                imageElementId: imageElement.id,
+                canvasImgObj: canvasImgObj,
+                canvasObjLeft: canvasImgObj?.left,
+                canvasObjTop: canvasImgObj?.top,
+                canvasObjWidth: canvasImgObj?.width,
+                canvasObjHeight: canvasImgObj?.height,
+                imageElementPosition: imageElement.position,
+                imageElementSize: imageElement.size,
+                templateId: template.id,
+                templateName: template.name,
+                formatId: template.format?.id,
+                scaleFactor: scaleFactor,
+              });
+            }
+            
             let imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
@@ -705,6 +723,17 @@ Authorized Signature: _____________________`,
               left: adjustedLeft,
               top: adjustedTop,
             };
+            
+            // 차량 이미지 최종 위치 디버깅
+            if (isVehicleImage) {
+              console.log('Vehicle Final Position:', {
+                finalLeft: position.left,
+                finalTop: position.top,
+                finalWidth: size.width,
+                finalHeight: size.height,
+                isVerticalBanner: template.format.id === 'banner-vertical' || (template.canvas.width === 960 && template.canvas.height === 1200),
+              });
+            }
 
             
             return (

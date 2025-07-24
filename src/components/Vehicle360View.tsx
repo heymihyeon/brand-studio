@@ -222,8 +222,8 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
       ref={containerRef}
       sx={{
         position: 'relative',
-        width: width,
-        height: height,
+        width: '100%',
+        height: '100%',
         cursor: isDragging ? 'grabbing' : 'grab',
         userSelect: 'none',
         WebkitUserSelect: 'none',
