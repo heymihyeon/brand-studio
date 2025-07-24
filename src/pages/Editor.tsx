@@ -256,7 +256,20 @@ useEffect(() => {
     const selectedVehicle = editableValues[vehicleElement.id] as BrandAsset;
     const vehicleColorId = editableValues[`${vehicleElement.id}_color`];
     
-    if (selectedVehicle && vehicleColorId) {
+    if (selectedVehicle && !vehicleColorId) {
+      // 차량은 선택되었지만 색상이 없으면 기본 색상 설정
+      const defaultColor = getDefaultColorForModel(selectedVehicle.id);
+      if (defaultColor) {
+        console.log('Setting default color for vehicle:', selectedVehicle.name, 'Color:', defaultColor.displayName);
+        setSelectedVehicleColor(defaultColor.id);
+        setEditableValues(prev => ({
+          ...prev,
+          [`${vehicleElement.id}_color`]: defaultColor.id
+        }));
+        // 자동 저장
+        debouncedSave(1000);
+      }
+    } else if (selectedVehicle && vehicleColorId) {
       // 선택된 차량 모델의 색상이 유효한지 확인
       const vehicleModel = getVehicleModelById(selectedVehicle.id);
       const isValidColor = vehicleModel?.availableColors.some(color => color.id === vehicleColorId);
@@ -267,26 +280,18 @@ useEffect(() => {
         // 유효하지 않은 색상이면 기본 색상으로 변경
         const defaultColor = getDefaultColorForModel(selectedVehicle.id);
         if (defaultColor) {
+          console.log('Invalid color, setting default:', defaultColor.displayName);
           setSelectedVehicleColor(defaultColor.id);
           setEditableValues(prev => ({
             ...prev,
             [`${vehicleElement.id}_color`]: defaultColor.id
           }));
+          debouncedSave(1000);
         }
-      }
-    } else if (selectedVehicle) {
-      // 차량은 선택되었지만 색상이 없으면 기본 색상 설정
-      const defaultColor = getDefaultColorForModel(selectedVehicle.id);
-      if (defaultColor) {
-        setSelectedVehicleColor(defaultColor.id);
-        setEditableValues(prev => ({
-          ...prev,
-          [`${vehicleElement.id}_color`]: defaultColor.id
-        }));
       }
     }
   }
-}, [template, editableValues]);
+}, [template?.id, editableValues.vehicle?.id]); // 의존성을 더 구체적으로 변경
 
 // 딜러 정보 토글 상태 동기화
 useEffect(() => {
@@ -448,11 +453,10 @@ useEffect(() => {
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   const defaultVehicle = getDefaultVehicle();
                   initialValues[image.id] = defaultVehicle;
-                  // 기본 차량 색상도 설정
-                  if (!editableValues[`${image.id}_color`]) {
-                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
-                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
-                  }
+                  // 기본 차량 색상도 항상 설정 (기존 값이 없을 때)
+                  const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                  initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
+                  console.log('Setting default vehicle and color:', defaultVehicle.name, defaultColor?.displayName);
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -518,11 +522,10 @@ useEffect(() => {
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   const defaultVehicle = getDefaultVehicle();
                   initialValues[image.id] = defaultVehicle;
-                  // 기본 차량 색상도 설정
-                  if (!editableValues[`${image.id}_color`]) {
-                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
-                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
-                  }
+                  // 기본 차량 색상도 항상 설정 (기존 값이 없을 때)
+                  const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                  initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
+                  console.log('Setting default vehicle and color:', defaultVehicle.name, defaultColor?.displayName);
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -1474,11 +1477,10 @@ useEffect(() => {
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   const defaultVehicle = getDefaultVehicle();
                   initialValues[image.id] = defaultVehicle;
-                  // 기본 차량 색상도 설정
-                  if (!editableValues[`${image.id}_color`]) {
-                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
-                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
-                  }
+                  // 기본 차량 색상도 항상 설정 (기존 값이 없을 때)
+                  const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                  initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
+                  console.log('Setting default vehicle and color:', defaultVehicle.name, defaultColor?.displayName);
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();
@@ -1542,11 +1544,10 @@ useEffect(() => {
                 if (image.id === 'vehicle' || image.label === 'Vehicle Model') {
                   const defaultVehicle = getDefaultVehicle();
                   initialValues[image.id] = defaultVehicle;
-                  // 기본 차량 색상도 설정
-                  if (!editableValues[`${image.id}_color`]) {
-                    const defaultColor = getDefaultColorForModel(defaultVehicle.id);
-                    initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
-                  }
+                  // 기본 차량 색상도 항상 설정 (기존 값이 없을 때)
+                  const defaultColor = getDefaultColorForModel(defaultVehicle.id);
+                  initialValues[`${image.id}_color`] = defaultColor?.id || 'snow-white-pearl';
+                  console.log('Setting default vehicle and color:', defaultVehicle.name, defaultColor?.displayName);
                 } 
                 else if (image.id === 'background' || image.id === 'bg-image' || image.label === 'Background Image') {
                   initialValues[image.id] = getDefaultBackground();

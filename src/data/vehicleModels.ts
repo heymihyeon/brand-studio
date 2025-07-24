@@ -65,27 +65,6 @@ const k8Colors: VehicleColor[] = [
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
     isDefault: true,
   },
-  {
-    id: 'aurora-black-pearl',
-    name: 'aurora-black-pearl',
-    displayName: 'Aurora Black Pearl',
-    colorCode: '#0E1213',
-    filter: 'brightness(1.0) contrast(1.2) saturate(0.8)',
-  },
-  {
-    id: 'wolf-gray',
-    name: 'wolf-gray',
-    displayName: 'Wolf Gray',
-    colorCode: '#6B7280',
-    filter: '',
-  },
-  {
-    id: 'gravity-blue',
-    name: 'gravity-blue',
-    displayName: 'Gravity Blue',
-    colorCode: '#1E3A5F',
-    filter: 'brightness(1.0) contrast(1.05) saturate(4) hue-rotate(-10deg)',
-  },
 ];
 
 // Seltos 색상 옵션
@@ -277,7 +256,7 @@ export const getVehicleModelById = (id: string): VehicleModel | undefined => {
 };
 
 export const getDefaultVehicleModel = (): VehicleModel => {
-  return vehicleModels[0]; // EV9
+  return vehicleModels[1]; // K8
 };
 
 export const getVehicleColorForModel = (modelId: string, colorId: string): VehicleColor | undefined => {

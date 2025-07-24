@@ -8,7 +8,7 @@ import { QuotationData } from './QuotationEditor';
 import { PurchaseOrderData } from './PurchaseOrderEditor';
 import { getVehicleImageUrl, getVehicleColorFilter } from '../data/vehicleColors';
 import Vehicle360View from './Vehicle360View';
-import { getVehicleModelById, getVehicleColorForModel } from '../data/vehicleModels';
+import { getVehicleModelById, getVehicleColorForModel, getDefaultColorForModel } from '../data/vehicleModels';
 
 interface CanvasProps {
   template: Template;
@@ -737,7 +737,7 @@ Authorized Signature: _____________________`,
                   isVehicleImage && template.category === 'Google Ads' && value ? (
                     <Vehicle360View
                       vehicleId={(value as BrandAsset).id}
-                      colorId={editableValues[`${imageElement.id}_color`] || 'matte-silver'}
+                      colorId={editableValues[`${imageElement.id}_color`] || getDefaultColorForModel((value as BrandAsset).id)?.id || 'snow-white-pearl'}
                       width={size.width}
                       height={size.height}
                       fallbackImage={imageSrc}
