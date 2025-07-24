@@ -137,8 +137,8 @@ const BrandHub: React.FC = () => {
       {
         id: 'vehicle-preset-2',
         name: 'K8',
-        url: '/images/cars/K8.png',
-        thumbnailUrl: '/images/cars/K8.png',
+        url: '/images/cars/k8.png',
+        thumbnailUrl: '/images/cars/k8.png',
         category: 'Vehicle',
         type: 'image',
         uploadedAt: new Date(),

@@ -22,6 +22,7 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
   const [previousImages, setPreviousImages] = useState<string[]>([]);
   const [showPrevious, setShowPrevious] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [preloadedRange, setPreloadedRange] = useState({ start: 0, end: 0 });
   
   const containerRef = useRef<HTMLDivElement>(null);
   const autoRotateInterval = useRef<NodeJS.Timeout | null>(null);
@@ -48,7 +49,7 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
     colorIdTo360ColorCodeMapping: colorIdTo360ColorCode[colorId]
   });
   
-  // 이미진 프리로드 (깜박거림 방지 개선)
+  // 초기 이미지 로드 (지연 로딩 최적화)
   useEffect(() => {
     if (images.length === 0) return;
     
@@ -60,7 +61,11 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
       setIsLoading(true);
     }
     
-    const imagePromises = images.map((src) => {
+    // 초기에는 첫 10개 이미지만 로드
+    const initialLoadCount = Math.min(10, images.length);
+    const initialImages = images.slice(0, initialLoadCount);
+    
+    const imagePromises = initialImages.map((src) => {
       return new Promise<string>((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(src);
@@ -76,21 +81,65 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
           .map(result => result.value);
         
         if (successfulImages.length > 0) {
-          setLoadedImages(successfulImages);
-          setCurrentImageIndex(0); // 새 색상으로 변경 시 첫 번째 이미지로 리셋
-          console.log(`Successfully loaded ${successfulImages.length} images`);
+          // 일단 초기 이미지만 설정
+          setLoadedImages(images); // 전체 이미지 URL은 저장하되
+          setPreloadedRange({ start: 0, end: initialLoadCount }); // 실제 로드된 범위만 추적
+          setCurrentImageIndex(0);
+          console.log(`Initially loaded ${successfulImages.length} images`);
           
           // 새 이미지 로딩 완료 후 이전 이미지 숨기기
           setTimeout(() => {
             setShowPrevious(false);
             setPreviousImages([]);
-          }, 50); // 짧은 딸레이로 부드럽게 전환
+          }, 50);
+          
+          // 나머지 이미지는 백그라운드에서 순차적으로 로드
+          if (images.length > initialLoadCount) {
+            loadRemainingImages(initialLoadCount);
+          }
         } else {
-          console.error('Failed to load all 360 images');
+          console.error('Failed to load initial 360 images');
         }
         setIsLoading(false);
       });
   }, [images]);
+  
+  // 나머지 이미지 순차적 로드
+  const loadRemainingImages = (startIndex: number) => {
+    const batchSize = 10; // 한 번에 10개씩 로드
+    let currentBatch = startIndex;
+    
+    const loadNextBatch = () => {
+      if (currentBatch >= images.length) return;
+      
+      const endIndex = Math.min(currentBatch + batchSize, images.length);
+      const batchImages = images.slice(currentBatch, endIndex);
+      
+      const batchPromises = batchImages.map((src) => {
+        return new Promise<string>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(src);
+          img.onerror = () => reject(src);
+          img.src = src;
+        });
+      });
+      
+      Promise.allSettled(batchPromises).then((results) => {
+        const successCount = results.filter(r => r.status === 'fulfilled').length;
+        console.log(`Loaded batch ${currentBatch}-${endIndex}, success: ${successCount}`);
+        
+        setPreloadedRange(prev => ({ ...prev, end: endIndex }));
+        currentBatch = endIndex;
+        
+        // 다음 배치 로드 (약간의 딸레이를 두어 성능 영향 최소화)
+        if (currentBatch < images.length) {
+          setTimeout(loadNextBatch, 100);
+        }
+      });
+    };
+    
+    loadNextBatch();
+  };
   
   // 자동 회전
   useEffect(() => {
@@ -135,7 +184,27 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
     while (newIndex >= loadedImages.length) newIndex -= loadedImages.length;
     
     setCurrentImageIndex(newIndex);
+    
+    // 현재 인덱스 주변 이미지 미리 로드
+    preloadNearbyImages(newIndex);
   }, [isDragging, startX, loadedImages.length]);
+  
+  // 현재 위치 주변 이미지 미리 로드
+  const preloadNearbyImages = useCallback((centerIndex: number) => {
+    const preloadRadius = 5; // 현재 위치에서 양쪽 5개씩 미리 로드
+    const startIdx = Math.max(0, centerIndex - preloadRadius);
+    const endIdx = Math.min(images.length, centerIndex + preloadRadius + 1);
+    
+    // 이미 로드된 범위는 건너뛰기
+    if (startIdx < preloadedRange.start || endIdx > preloadedRange.end) {
+      for (let i = startIdx; i < endIdx; i++) {
+        if (i < preloadedRange.start || i >= preloadedRange.end) {
+          const img = new Image();
+          img.src = images[i];
+        }
+      }
+    }
+  }, [images, preloadedRange]);
   
   // 마우스 드래그 종료
   const handleMouseUp = useCallback(() => {
