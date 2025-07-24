@@ -34,6 +34,9 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
   // Load assets from Brand Hub
   useEffect(() => {
     if (open) {
+      // 이미 assets가 로드되어 있으면 다시 로드하지 않음
+      if (assets.length > 0) return;
+      
       const savedLogos = localStorage.getItem('brandLogos');
       const savedVehicles = localStorage.getItem('brandVehicles');
       const savedBackgrounds = localStorage.getItem('brandBackgrounds');
@@ -102,12 +105,15 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
   };
 
   const handleClose = () => {
-    setSelectedAsset(null);
+    // setTimeout을 사용하여 상태 업데이트를 지연시켜 깜박거림 방지
+    setTimeout(() => {
+      setSelectedAsset(null);
+    }, 0);
     onClose();
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth disableRestoreFocus>
       <DialogTitle>
         {filterCategory === 'Background Images' ? 'Select Background Image' : 
          filterCategory === 'Vehicle Models' ? 'Select Vehicle Model' : 
@@ -164,7 +170,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
                       height="140"
                       image={asset.thumbnailUrl}
                       alt={asset.name}
-                      sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
+                      sx={{ objectFit: 'cover', bgcolor: 'grey.100' }}
                     />
                     <Box sx={{ p: 1 }}>
                       <Typography variant="body2" noWrap>
