@@ -1473,14 +1473,16 @@ useEffect(() => {
                   <TextField
                     fullWidth
                     label="Dealer Name"
-                    value={editableValues['dealerName'] || 'Dealer name'}
+                    value={editableValues['dealerName'] || ''}
+                    placeholder="Dealer name"
                     onChange={(e) => handleTextChange('dealerName', e.target.value)}
                     sx={{ mb: 2 }}
                   />
                   <TextField
                     fullWidth
                     label="Phone Number"
-                    value={editableValues['dealerPhone'] || '010-1234-5678'}
+                    value={editableValues['dealerPhone'] || ''}
+                    placeholder="010-1234-5678"
                     onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
                   />
                 </>

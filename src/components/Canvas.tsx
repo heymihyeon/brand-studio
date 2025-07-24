@@ -820,16 +820,26 @@ Authorized Signature: _____________________`,
                           justifyContent: 'center',
                           zIndex: 10,
                           pointerEvents: 'none',
+                          // 부드러운 전환 효과 추가
+                          transition: 'opacity 0.3s ease',
+                          // will-change로 렌더링 최적화
+                          willChange: 'opacity',
                         }}
                       >
                         <img
                           src="/images/360-icon.png"
                           alt="360° View"
+                          loading="eager" // 즉시 로딩
+                          decoding="async" // 비동기 디코딩
                           style={{
                             width: 46 / (isSquareOrVertical ? 0.75 : 1),
                             height: 26 / (isSquareOrVertical ? 0.75 : 1),
                             opacity: 0.8,
                             filter: 'brightness(0) invert(1)', // 흰색으로 변경
+                            // GPU 가속을 위한 transform 사용
+                            transform: 'translateZ(0)',
+                            // 안티앨리어싱 개선
+                            imageRendering: 'crisp-edges',
                           }}
                         />
                       </Box>
@@ -1124,7 +1134,7 @@ Authorized Signature: _____________________`,
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
                       >
-                        {editableValues['dealerName'] || 'Dealer name'}
+                        {editableValues['dealerName'] || ''}
                       </Typography>
                     </Box>
                     
@@ -1152,7 +1162,7 @@ Authorized Signature: _____________________`,
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
                       >
-                        {editableValues['dealerPhone'] || '010-1234-5678'}
+                        {editableValues['dealerPhone'] || ''}
                       </Typography>
                     </Box>
                   </Box>
@@ -1335,7 +1345,7 @@ Authorized Signature: _____________________`,
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
                       >
-                        {editableValues['dealerName'] || 'Dealer name'}
+                        {editableValues['dealerName'] || ''}
                       </Typography>
                     </Box>
                     
@@ -1363,7 +1373,7 @@ Authorized Signature: _____________________`,
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
                       >
-                        {editableValues['dealerPhone'] || '010-1234-5678'}
+                        {editableValues['dealerPhone'] || ''}
                       </Typography>
                     </Box>
                   </Box>
