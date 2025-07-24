@@ -18,19 +18,19 @@ export interface VehicleModel extends BrandAsset {
 // EV9 색상 옵션
 const ev9Colors: VehicleColor[] = [
   {
-    id: 'ivory-matte-silver',
-    name: 'ivory-matte-silver',
-    displayName: 'Ivory Matte Silver',
-    colorCode: '#B8B8B8',
-    filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
-    isDefault: true,
-  },
-  {
     id: 'snow-white-pearl',
     name: 'snow-white-pearl',
     displayName: 'Snow White Pearl',
     colorCode: '#F0F0F0',
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
+    isDefault: true,
+  },
+  {
+    id: 'ivory-matte-silver',
+    name: 'ivory-matte-silver',
+    displayName: 'Ivory Matte Silver',
+    colorCode: '#B8B8B8',
+    filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
   },
   {
     id: 'panthera-metal',
@@ -173,7 +173,7 @@ export const vehicleModels: VehicleModel[] = [
     fileSize: 0,
     dimensions: { width: 800, height: 450 },
     availableColors: ev9Colors,
-    defaultColorId: 'ivory-matte-silver',
+    defaultColorId: 'snow-white-pearl',
   },
   {
     id: 'k8-default',
@@ -256,7 +256,7 @@ export const getVehicleModelById = (id: string): VehicleModel | undefined => {
 };
 
 export const getDefaultVehicleModel = (): VehicleModel => {
-  return vehicleModels[1]; // K8
+  return vehicleModels[0]; // EV9
 };
 
 export const getVehicleColorForModel = (modelId: string, colorId: string): VehicleColor | undefined => {
