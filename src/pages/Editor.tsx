@@ -1074,7 +1074,7 @@ useEffect(() => {
           </Button>
         </Stack>
 
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           {/* Document 포맷별 전용 에디터 사용 */}
           {template && template.format.id === 'doc-contract-a4' ? (
             <CarSalesContractEditor

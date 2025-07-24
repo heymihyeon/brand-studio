@@ -583,7 +583,7 @@ Authorized Signature: _____________________`,
               position: 'absolute',
               // Default 레이아웃인 경우 하단 좌측으로 배치, 그 외는 기존 위치 유지
               ...(isDefaultLayout && template.category === 'Google Ads'
-                ? { left: 46, bottom: 30 }  // 하단 좌측 (30 + 16 = 46)
+                ? { left: 36, bottom: 20 }  // 하단 좌측 (30 + 16 = 46)
                 : template.format.id === 'banner-square' 
                   ? { left: template.canvas.width - 150, top: 4 }  // 1200 - 150 = 1050 (10px 좌측), top: 4 (16px 위로)
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
@@ -1073,8 +1073,8 @@ Authorized Signature: _____________________`,
                     key="dealer-info-stack"
                     sx={{
                       position: 'absolute',
-                      right: 44, // 우측으로 16px 이동 (60 - 16 = 44)
-                      bottom: 34, // 아래로 16px 이동 (50 - 16 = 34)
+                      right: 30, // 우측으로 16px 이동 (60 - 16 = 44)
+                      bottom: 30, // 아래로 16px 이동 (50 - 16 = 34)
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
