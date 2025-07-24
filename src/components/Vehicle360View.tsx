@@ -19,6 +19,8 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
   const [startX, setStartX] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(false);
   const [loadedImages, setLoadedImages] = useState<string[]>([]);
+  const [previousImages, setPreviousImages] = useState<string[]>([]);
+  const [showPrevious, setShowPrevious] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const autoRotateInterval = useRef<NodeJS.Timeout | null>(null);
@@ -45,11 +47,18 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
     colorIdTo360ColorCodeMapping: colorIdTo360ColorCode[colorId]
   });
   
-  // 이미지 프리로드
+  // 이미진 프리로드 (깜박거림 방지 개선)
   useEffect(() => {
     if (images.length === 0) return;
     
-    setIsLoading(true);
+    // 새로운 이미지 로딩 시작 시 이전 이미지를 유지
+    if (loadedImages.length > 0) {
+      setPreviousImages(loadedImages);
+      setShowPrevious(true);
+    } else {
+      setIsLoading(true);
+    }
+    
     const imagePromises = images.map((src) => {
       return new Promise<string>((resolve, reject) => {
         const img = new Image();
@@ -67,7 +76,14 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
         
         if (successfulImages.length > 0) {
           setLoadedImages(successfulImages);
+          setCurrentImageIndex(0); // 새 색상으로 변경 시 첫 번째 이미지로 리셋
           console.log(`Successfully loaded ${successfulImages.length} images`);
+          
+          // 새 이미지 로딩 완료 후 이전 이미지 숨기기
+          setTimeout(() => {
+            setShowPrevious(false);
+            setPreviousImages([]);
+          }, 50); // 짧은 딸레이로 부드럽게 전환
         } else {
           console.error('Failed to load all 360 images');
         }
@@ -219,7 +235,46 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {isLoading ? (
+      {/* 이전 이미지 표시 (새 색상 로딩 중에만) */}
+      {showPrevious && previousImages.length > 0 && (
+        <img
+          src={previousImages[Math.min(currentImageIndex, previousImages.length - 1)]}
+          alt={`Previous ${vehicleData?.modelName || 'Vehicle'}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+        />
+      )}
+      
+      {/* 현재 이미지 */}
+      {loadedImages.length > 0 && (
+        <img
+          src={loadedImages[currentImageIndex]}
+          alt={`${vehicleData?.modelName || 'Vehicle'}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: showPrevious ? 2 : 1,
+            opacity: showPrevious ? 0.95 : 1,
+            transition: showPrevious ? 'opacity 0.1s ease-in-out' : 'none',
+          }}
+        />
+      )}
+      
+      {/* 초기 로딩 상태에서만 로딩 화면 표시 */}
+      {isLoading && loadedImages.length === 0 && (
         <Box
           sx={{
             width: '100%',
@@ -227,43 +282,35 @@ const Vehicle360View: React.FC<Vehicle360ViewProps> = ({ vehicleId, colorId, wid
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 3,
             backgroundColor: 'rgba(245, 245, 245, 0.8)',
           }}
         >
           <CircularProgress />
         </Box>
-      ) : (
-        <>
-          <img
-            src={loadedImages[currentImageIndex]}
-            alt={`${vehicleData?.modelName} - ${colorData?.colorName}`}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              pointerEvents: 'none',
-              display: 'block',
-            }}
-            draggable={false}
-          />
-          
-          {/* 자동 회전 토글 버튼 */}
-          <IconButton
-            onClick={() => setIsAutoRotating(!isAutoRotating)}
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: 50,
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              },
-            }}
-            size="small"
-          >
-            {isAutoRotating ? <Pause /> : <PlayArrow />}
-          </IconButton>
-        </>
+      )}
+      
+      {/* 자동 회전 토글 버튼 */}
+      {loadedImages.length > 0 && (
+        <IconButton
+          onClick={() => setIsAutoRotating(!isAutoRotating)}
+          sx={{
+            position: 'absolute',
+            top: 10,
+            right: 50,
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            },
+            zIndex: 4,
+          }}
+          size="small"
+        >
+          {isAutoRotating ? <Pause /> : <PlayArrow />}
+        </IconButton>
       )}
     </Box>
   );

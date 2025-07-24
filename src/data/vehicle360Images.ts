@@ -25,6 +25,21 @@ const generateEV9Images = (colorCode: string): string[] => {
   return images;
 };
 
+// K8 360도 이미지 생성 함수
+const generateK8Images = (colorCode: string): string[] => {
+  const images: string[] = [];
+  // 로컬 public 폴더 경로 사용
+  const baseUrl = '/images/360/k8';
+  
+  // 72개 전체 이미지 사용
+  for (let i = 1; i <= 72; i++) {
+    const imageNumber = i.toString().padStart(2, '0');
+    images.push(`${baseUrl}/${colorCode}/${colorCode}_${imageNumber}.png`);
+  }
+  
+  return images;
+};
+
 // 차량 모델별 360도 이미지 데이터
 export const vehicle360Data: Record<string, Vehicle360Data> = {
   'ev9': {
@@ -77,6 +92,16 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
       }
     }
   },
+  'k8': {
+    modelId: 'k8',
+    modelName: 'K8',
+    colors: {
+      'swp': {
+        colorName: '스노우 화이트 펄',
+        images: generateK8Images('swp')
+      }
+    }
+  },
   'seltos': {
     modelId: 'seltos',
     modelName: 'Seltos',
@@ -125,6 +150,11 @@ export const colorIdTo360ColorCode: Record<string, string> = {
 // 차량 모델 ID 매핑 (기존 brandPresets의 차량 ID와 매핑)
 export const vehicleIdToModelId: Record<string, string> = {
   'ev9-default': 'ev9',
+  'k8-default': 'k8',
   'seltos-default': 'seltos',
   'sportage-default': 'sportage',
+  'vehicle-preset-1': 'ev9',
+  'vehicle-preset-2': 'k8',
+  'vehicle-preset-4': 'telluride',
+  'vehicle-preset-5': 'carnival',
 };

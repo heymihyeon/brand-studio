@@ -55,8 +55,8 @@ const ev9Colors: VehicleColor[] = [
   },
 ];
 
-// K5 색상 옵션
-const k5Colors: VehicleColor[] = [
+// K8 색상 옵션
+const k8Colors: VehicleColor[] = [
   {
     id: 'snow-white-pearl',
     name: 'snow-white-pearl',
@@ -197,17 +197,17 @@ export const vehicleModels: VehicleModel[] = [
     defaultColorId: 'ivory-matte-silver',
   },
   {
-    id: 'k5-default',
-    modelId: 'k5',
-    name: 'KIA K5',
-    url: '/images/cars/K5.png',
-    thumbnailUrl: '/images/cars/K5.png',
+    id: 'k8-default',
+    modelId: 'k8',
+    name: 'KIA K8',
+    url: '/images/cars/K8.png',
+    thumbnailUrl: '/images/cars/K8.png',
     category: 'Vehicle Models',
     type: 'image',
     uploadedAt: new Date(),
     fileSize: 0,
     dimensions: { width: 800, height: 450 },
-    availableColors: k5Colors,
+    availableColors: k8Colors,
     defaultColorId: 'snow-white-pearl',
   },
   {
@@ -257,7 +257,7 @@ export const vehicleModels: VehicleModel[] = [
 // ID 매핑 (BrandHub의 vehicle-preset ID들을 vehicleModels ID로 매핑)
 const vehicleIdMapping: Record<string, string> = {
   'vehicle-preset-1': 'ev9-default',
-  'vehicle-preset-2': 'k5-default', 
+  'vehicle-preset-2': 'k8-default', 
   'vehicle-preset-4': 'seltos-default',
   'vehicle-preset-5': 'telluride-default',
   'vehicle-preset-6': 'carnival-default',
