@@ -970,13 +970,13 @@ Authorized Signature: _____________________`,
                   >
                     <Typography
                       sx={{
-                        fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.5 : 32,
-                        fontWeight: '500',
+                        fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.45 : 32,
+                        fontWeight: '400',
                         fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[subtitleElement.id] ? 
                           (template.category === 'Document' ? '#000000' : '#ffffff') : 
                           (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
-                        lineHeight: 1.2,
+                        lineHeight: 0.6,
                         whiteSpace: 'pre-wrap',
                         wordBreak: 'break-word',
                         overflowWrap: 'break-word',
