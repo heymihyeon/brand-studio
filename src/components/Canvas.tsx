@@ -705,8 +705,13 @@ Authorized Signature: _____________________`,
               const maxLeft = template.canvas.width - size.width - rightMargin;
               const maxTop = template.canvas.height - size.height - bottomMargin;
               
-              adjustedLeft = Math.min(adjustedLeft, maxLeft);
-              adjustedTop = Math.min(adjustedTop, maxTop);
+              // Horizontal 포맷에서는 차량 위치 제한을 완화
+              const isHorizontalBanner = template.canvas.width === 1200 && template.canvas.height === 628;
+              
+              if (!isHorizontalBanner) {
+                adjustedLeft = Math.min(adjustedLeft, maxLeft);
+                adjustedTop = Math.min(adjustedTop, maxTop);
+              }
               
               // Center horizontally for vertical banner format
               // Check both format id and canvas dimensions
