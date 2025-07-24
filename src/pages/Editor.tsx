@@ -1387,8 +1387,9 @@ useEffect(() => {
             </>
           )}
 
-          {/* Information 섹션 - Google Ads일 때만 표시 */}
-          {template?.category === 'Google Ads' && (
+          {/* Information 섹션 - Google Ads일 때만 표시, Horizontal + Center Logo일 때는 숨김 */}
+          {template?.category === 'Google Ads' && 
+           !(template.format.id === 'banner-horizontal' && selectedTemplateVariant === 'center') && (
             <>
               <Divider />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

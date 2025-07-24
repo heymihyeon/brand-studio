@@ -704,18 +704,11 @@ Authorized Signature: _____________________`,
             let adjustedLeft = canvasImgObj?.left || imageElement.position.x;
             let adjustedTop = canvasImgObj?.top || imageElement.position.y;
             
-            // Center logo 처리
+            // Center logo 처리 - 캔버스의 정중앙에 배치
             if (isCenterLogo) {
-              // originX와 originY가 center인 경우 처리
-              const originX = canvasImgObj?.originX || 'left';
-              const originY = canvasImgObj?.originY || 'top';
-              
-              if (originX === 'center') {
-                adjustedLeft = adjustedLeft - (size.width / 2);
-              }
-              if (originY === 'center') {
-                adjustedTop = adjustedTop - (size.height / 2);
-              }
+              // 캔버스의 정중앙에 로고 배치
+              adjustedLeft = (template.canvas.width - size.width) / 2;
+              adjustedTop = (template.canvas.height - size.height) / 2;
             }
             
             // Ensure the vehicle doesn't go beyond canvas bounds with margins
@@ -1079,8 +1072,10 @@ Authorized Signature: _____________________`,
                   );
                 })}
                 
-                {/* Dealer Information Stack for Google Ads */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && editableValues['showDealerInfo'] !== false && (
+                {/* Dealer Information Stack for Google Ads - Center Logo 레이아웃에서는 숨김 */}
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && 
+                 editableValues['showDealerInfo'] !== false && 
+                 !(template.id?.includes('center') || template.name?.includes('Center')) && (
                   <Box
                     key="dealer-info-stack"
                     sx={{
@@ -1288,8 +1283,10 @@ Authorized Signature: _____________________`,
               );
             })}
                 
-                {/* Dealer Information Stack for Google Ads */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && editableValues['showDealerInfo'] !== false && (
+                {/* Dealer Information Stack for Google Ads - Center Logo 레이아웃에서는 숨김 */}
+                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && 
+                 editableValues['showDealerInfo'] !== false && 
+                 !(template.id?.includes('center') || template.name?.includes('Center')) && (
                   <Box
                     key="dealer-info-stack"
                     sx={{
