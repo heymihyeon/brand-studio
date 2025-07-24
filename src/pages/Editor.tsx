@@ -1390,10 +1390,11 @@ useEffect(() => {
           {template?.category === 'Google Ads' && (
             <>
               <Divider />
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                   Information
                 </Typography>
+                <Box sx={{ flexGrow: 1 }} />
                 <FormControlLabel
                   control={
                     <Switch
@@ -1410,6 +1411,7 @@ useEffect(() => {
                     />
                   }
                   label=""
+                  sx={{ marginRight: -1 }}
                 />
               </Box>
               {showDealerInfo && (
