@@ -107,7 +107,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
         {filterCategory === 'Background Images' ? 'Select Background Image' : 
          filterCategory === 'Vehicle Models' ? 'Select Vehicle Model' : 
@@ -151,7 +151,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
         ) : (
           <Grid container spacing={2}>
             {filteredAssets.map((asset) => (
-              <Grid size={{xs:6, sm:4, md:3}} key={asset.id}>
+              <Grid size={{xs:4, sm:4, md:4}} key={asset.id}>
                 <Card
                   sx={{
                     border: selectedAsset?.id === asset.id ? 2 : 0,
@@ -161,7 +161,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
                   <CardActionArea onClick={() => handleAssetClick(asset)}>
                     <CardMedia
                       component="img"
-                      height="120"
+                      height="140"
                       image={asset.thumbnailUrl}
                       alt={asset.name}
                       sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
