@@ -29,28 +29,28 @@ const ev9Colors: VehicleColor[] = [
     id: 'ivory-matte-silver',
     name: 'ivory-matte-silver',
     displayName: 'Ivory Matte Silver',
-    colorCode: '#B8B8B8',
+    colorCode: '#A9AAA5',
     filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
   },
   {
     id: 'panthera-metal',
     name: 'panthera-metal',
     displayName: 'Panthera Metal',
-    colorCode: '#3A3A3A',
+    colorCode: '#2A2C31',
     filter: 'brightness(0.8) contrast(1.1)',
   },
   {
     id: 'ocean-matte-blue',
     name: 'ocean-matte-blue',
     displayName: 'Ocean Matte Blue',
-    colorCode: '#2C4B6B',
+    colorCode: '#18436A',
     filter: 'brightness(1.0) contrast(1.1) saturate(2) hue-rotate(-10deg)',
   },
   {
     id: 'iceberg-green',
     name: 'iceberg-green',
     displayName: 'Iceberg Green',
-    colorCode: '#4A6741',
+    colorCode: '#6C7574',
     filter: 'brightness(1.0) contrast(1.1) saturate(1.5) hue-rotate(-15deg)',
   },
 ];
@@ -64,6 +64,20 @@ const k8Colors: VehicleColor[] = [
     colorCode: '#F0F0F0',
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
     isDefault: true,
+  },
+  {
+    id: 'ivory-silver',
+    name: 'ivory-silver',
+    displayName: 'Ivory Silver',
+    colorCode: '#B7B8B3',
+    filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
+  },
+  {
+    id: 'sunset-beige',
+    name: 'sunset-beige',
+    displayName: 'Sunset Beige',
+    colorCode: '#7A6D5C',
+    filter: 'brightness(1.05) contrast(1.1) saturate(1.2)',
   },
 ];
 
@@ -139,23 +153,16 @@ const carnivalColors: VehicleColor[] = [
     id: 'snow-white-pearl',
     name: 'snow-white-pearl',
     displayName: 'Snow White Pearl',
-    colorCode: '#F0F0F0',
+    colorCode: '#EEEEEE',
     filter: 'saturate(0.2) hue-rotate(200deg) brightness(1.8) contrast(1.3)',
     isDefault: true,
   },
   {
-    id: 'astra-blue',
-    name: 'astra-blue',
-    displayName: 'Astra Blue',
-    colorCode: '#002F6C',
-    filter: 'brightness(1.1) contrast(1.15) saturate(5)',
-  },
-  {
-    id: 'platinum-graphite',
-    name: 'platinum-graphite',
-    displayName: 'Platinum Graphite',
-    colorCode: '#5A5A5A',
-    filter: 'brightness(0.95) contrast(1.05)',
+    id: 'ivory-silver',
+    name: 'ivory-silver',
+    displayName: 'Ivory Silver',
+    colorCode: '#B7B8B3',
+    filter: 'brightness(1.1) contrast(0.95) saturate(0.8)',
   },
 ];
 
@@ -237,9 +244,8 @@ export const vehicleModels: VehicleModel[] = [
 const vehicleIdMapping: Record<string, string> = {
   'vehicle-preset-1': 'ev9-default',
   'vehicle-preset-2': 'k8-default', 
-  'vehicle-preset-4': 'seltos-default',
-  'vehicle-preset-5': 'telluride-default',
-  'vehicle-preset-6': 'carnival-default',
+  'vehicle-preset-4': 'telluride-default',
+  'vehicle-preset-5': 'carnival-default',
 };
 
 // Helper 함수들
@@ -267,7 +273,8 @@ export const getVehicleColorForModel = (modelId: string, colorId: string): Vehic
 };
 
 export const getDefaultColorForModel = (modelId: string): VehicleColor | undefined => {
-  const model = vehicleModels.find(m => m.id === modelId);
+  // getVehicleModelById를 사용하여 매핑된 ID도 처리
+  const model = getVehicleModelById(modelId);
   if (!model) return undefined;
   
   const defaultColorId = model.defaultColorId;

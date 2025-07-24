@@ -258,6 +258,7 @@ useEffect(() => {
     
     if (selectedVehicle && !vehicleColorId) {
       // 차량은 선택되었지만 색상이 없으면 기본 색상 설정
+      console.log('Vehicle selected without color:', selectedVehicle.id, selectedVehicle.name);
       const defaultColor = getDefaultColorForModel(selectedVehicle.id);
       if (defaultColor) {
         console.log('Setting default color for vehicle:', selectedVehicle.name, 'Color:', defaultColor.displayName);
@@ -268,6 +269,8 @@ useEffect(() => {
         }));
         // 자동 저장
         debouncedSave(1000);
+      } else {
+        console.log('No default color found for vehicle:', selectedVehicle.id);
       }
     } else if (selectedVehicle && vehicleColorId) {
       // 선택된 차량 모델의 색상이 유효한지 확인
@@ -291,7 +294,7 @@ useEffect(() => {
       }
     }
   }
-}, [template?.id, editableValues.vehicle?.id]); // 의존성을 더 구체적으로 변경
+}, [template?.id, editableValues.vehicle?.id, editableValues.vehicle]); // vehicle 객체 전체를 의존성에 추가
 
 // 딜러 정보 토글 상태 동기화
 useEffect(() => {

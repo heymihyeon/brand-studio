@@ -40,6 +40,21 @@ const generateK8Images = (colorCode: string): string[] => {
   return images;
 };
 
+// Carnival 360도 이미지 생성 함수
+const generateCarnivalImages = (colorCode: string): string[] => {
+  const images: string[] = [];
+  // 로컬 public 폴더 경로 사용
+  const baseUrl = '/images/360/carnival';
+  
+  // 72개 전체 이미지 사용
+  for (let i = 1; i <= 72; i++) {
+    const imageNumber = i.toString().padStart(2, '0');
+    images.push(`${baseUrl}/${colorCode}/${colorCode}_${imageNumber}.png`);
+  }
+  
+  return images;
+};
+
 // 차량 모델별 360도 이미지 데이터
 export const vehicle360Data: Record<string, Vehicle360Data> = {
   'ev9': {
@@ -99,6 +114,14 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
       'swp': {
         colorName: '스노우 화이트 펄',
         images: generateK8Images('swp')
+      },
+      'isg': {
+        colorName: '아이보리 실버',
+        images: generateK8Images('isg')
+      },
+      'byg': {
+        colorName: '선셋 베이지',
+        images: generateK8Images('byg')
       }
     }
   },
@@ -129,6 +152,20 @@ export const vehicle360Data: Record<string, Vehicle360Data> = {
         images: []
       }
     }
+  },
+  'carnival': {
+    modelId: 'carnival',
+    modelName: 'Carnival',
+    colors: {
+      'swp': {
+        colorName: '스노우 화이트 펄',
+        images: generateCarnivalImages('swp')
+      },
+      'isg': {
+        colorName: '아이보리 실버',
+        images: generateCarnivalImages('isg')
+      }
+    }
   }
 };
 
@@ -143,7 +180,8 @@ export const colorIdTo360ColorCode: Record<string, string> = {
   'iceberg-green': 'ieg',
   'ocean-blue': 'obg',
   'pebble-gray': 'pgg',
-  'ivory-silver': 'i4g',
+  'ivory-silver': 'isg', // K8 아이보리 실버
+  'sunset-beige': 'byg', // K8 선셋 베이지
   'matte-silver': 'i4g', // 기본값으로 아이보리 실버 사용
 };
 
@@ -157,4 +195,5 @@ export const vehicleIdToModelId: Record<string, string> = {
   'vehicle-preset-2': 'k8',
   'vehicle-preset-4': 'telluride',
   'vehicle-preset-5': 'carnival',
+  'carnival-default': 'carnival',
 };
