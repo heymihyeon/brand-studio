@@ -30,9 +30,8 @@ import ExportDialog from '../components/ExportDialog';
 import CarSalesContractEditor, { ContractData } from '../components/CarSalesContractEditor';
 import QuotationEditor, { QuotationData } from '../components/QuotationEditor';
 import PurchaseOrderEditor, { PurchaseOrderData } from '../components/PurchaseOrderEditor';
-import { Template, FormatOption, BrandAsset, RecentWork } from '../types';
+import { Template, BrandAsset, RecentWork } from '../types';
 import { getTemplatesByCategory } from '../data/templates';
-import { getFormatsByCategory } from '../data/formats';
 import { 
   UnifiedFormat, 
   convertToTemplate,
@@ -40,7 +39,6 @@ import {
   getUniqueFormatsByCategory 
 } from '../data/unifiedFormats';
 import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data/brandPresets';
-import { vehicleColors, getVehicleImageUrl, VehicleColor } from '../data/vehicleColors';
 import { VehicleModel, getVehicleModelById, getDefaultColorForModel } from '../data/vehicleModels';
 
 const categoryMap: Record<string, string> = {
@@ -302,11 +300,12 @@ useEffect(() => {
 }, [template?.id, editableValues.vehicle?.id, editableValues.vehicle]); // vehicle 객체 전체를 의존성에 추가
 
 // 딜러 정보 토글 상태 동기화
+const showDealerInfoValue = editableValues['showDealerInfo'];
 useEffect(() => {
-  if (editableValues['showDealerInfo'] !== undefined) {
-    setShowDealerInfo(editableValues['showDealerInfo']);
+  if (showDealerInfoValue !== undefined) {
+    setShowDealerInfo(showDealerInfoValue);
   }
-}, [editableValues['showDealerInfo']]);
+}, [showDealerInfoValue]);
 
   useEffect(() => {
     // 카테고리에 따른 포맷과 템플릿 로드
@@ -314,7 +313,6 @@ useEffect(() => {
       const category = categoryMap[categoryId];
       if (category) {
         setCurrentCategory(category);
-        const categoryFormats = getFormatsByCategory(category);
         const categoryTemplates = getTemplatesByCategory(category);
         
         // location.state에서 work 데이터 확인 (최근 작업에서 편집하는 경우)

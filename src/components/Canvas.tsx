@@ -6,7 +6,6 @@ import jsPDF from 'jspdf';
 import { ContractData } from './CarSalesContractEditor';
 import { QuotationData } from './QuotationEditor';
 import { PurchaseOrderData } from './PurchaseOrderEditor';
-import { getVehicleImageUrl, getVehicleColorFilter } from '../data/vehicleColors';
 import Vehicle360View from './Vehicle360View';
 import { getVehicleModelById, getVehicleColorForModel, getDefaultColorForModel } from '../data/vehicleModels';
 
@@ -282,7 +281,7 @@ const Canvas = forwardRef<CanvasRef, CanvasProps>(({ template, editableValues, c
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${year} Year ${month} Month ${day} Day`;
-      } catch (e) {
+      } catch (_e) {
         return '_____ Year _____ Month _____ Day';
       }
     };
@@ -335,7 +334,7 @@ Contact: ${field(contractData.buyerContact)}
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${year} Year ${month} Month ${day} Day`;
-      } catch (e) {
+      } catch (_e) {
         return '_____ Year _____ Month _____ Day';
       }
     };
@@ -421,7 +420,7 @@ Delivery Charges: ${field(quotationData.deliveryCharges)}`,
         const month = date.getMonth() + 1;
         const day = date.getDate();
         return `${year} Year ${month} Month ${day} Day`;
-      } catch (e) {
+      } catch (_e) {
         return '_____ Year _____ Month _____ Day';
       }
     };
@@ -686,7 +685,7 @@ Authorized Signature: _____________________`,
               });
             }
             
-            let imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
+            const imageSrc = (value && typeof value === 'object' && (value as BrandAsset).url) 
                             ? (value as BrandAsset).url 
                             : canvasImgObj?.src || imageElement.src;
             
@@ -1046,7 +1045,7 @@ Authorized Signature: _____________________`,
                   const textAlign = canvasTextObj?.textAlign || 'left';
                   const originX = canvasTextObj?.originX || 'left';
                   
-                  let maxWidth = template.canvas.width - (position.left * 2);
+                  const maxWidth = template.canvas.width - (position.left * 2);
                   
                   const boxStyles: any = {
                     position: 'absolute',

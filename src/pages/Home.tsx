@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Container,
   Typography,
   Grid,
   Card,
@@ -21,12 +20,8 @@ import {
   MenuItem,
 } from '@mui/material';
 import {
-  Description as DocumentIcon,
-  CampaignOutlined as BannerIcon,
-  PhotoCamera as SnsIcon,
   MoreVert as MoreVertIcon,
   Article,
-  Campaign,
   MenuBook,
   ViewCarousel,
 } from '@mui/icons-material';
@@ -286,12 +281,13 @@ const Home: React.FC = () => {
       case 'delete':
         handleDelete(selectedWork);
         break;
-      case 'rename':
+      case 'rename': {
         const newName = prompt('Enter new name:', selectedWork.name);
         if (newName) {
           handleRename(selectedWork, newName);
         }
         break;
+      }
     }
     handleMenuClose();
   };
