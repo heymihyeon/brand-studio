@@ -925,7 +925,7 @@ Authorized Signature: _____________________`,
               maxWidth = template.canvas.width - (stackPosition.left * 2);
             }
             
-            const stackBoxStyles: any = {
+            const stackBoxStyles: React.CSSProperties = {
               position: 'absolute',
               left: textAlign === 'center' && originX === 'center' ? '50%' : stackPosition.left,
               top: stackPosition.top,
