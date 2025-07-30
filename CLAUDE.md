@@ -1,4 +1,4 @@
-# Brand Studio 개발 가이드
+# Contents Creator 개발 가이드
 
 ## 🚀 서버 실행 방법
 
@@ -70,8 +70,8 @@ tail -f vite-server.log
 ### idcx-admin/ 폴더 사용 규칙
 - **`idcx-admin/` 폴더는 완전히 참고용으로만 사용합니다**
 - **`idcx-admin/` 폴더의 소스는 절대 수정하지 않습니다**
-- 현재 루트 폴더의 Brand Studio 파일들만 수정하고 서버를 실행합니다
-- `idcx-admin/`의 디자인 시스템과 UI 컴포넌트를 참고하여 Brand Studio를 개선합니다
+- 현재 루트 폴더의 Contents Creator 파일들만 수정하고 서버를 실행합니다
+- `idcx-admin/`의 디자인 시스템과 UI 컴포넌트를 참고하여 Contents Creator를 개선합니다
 
 ### 참고 대상
 - `/idcx-admin/src/components/` - UI 컴포넌트 디자인 참고
