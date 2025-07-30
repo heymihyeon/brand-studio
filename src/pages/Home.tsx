@@ -23,25 +23,14 @@ import {
   ViewCarousel,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
-import FormatSelector from '../components/FormatSelector';
 import { getUniqueFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
 
-const categories: Category[] = [
-  {
-    id: 'banner',
-    name: 'Google Ads',
-    icon: 'campaign',
-    description: 'Create web banners, advertising banners, and more.',
-    defaultTemplate: 'banner-template-1',
-  },
-];
+// Google Ads 포맷들을 직접 가져오기
+const googleAdsFormats = getUniqueFormatsByCategory('Google Ads');
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const [recentWorks, setRecentWorks] = useState<RecentWork[]>([]);
-  const [formatSelectorOpen, setFormatSelectorOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [availableFormats, setAvailableFormats] = useState<UnifiedFormat[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedWork, setSelectedWork] = useState<RecentWork | null>(null);
 
@@ -91,34 +80,22 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  const handleCategoryClick = (category: Category) => {
-    const categoryMap: Record<string, string> = {
-      'banner': 'Google Ads',
-    };
-    const categoryName = categoryMap[category.id] || category.name;
-    const categoryFormats = getUniqueFormatsByCategory(categoryName);
-    
-    setSelectedCategory(category);
-    setAvailableFormats(categoryFormats);
-    setFormatSelectorOpen(true);
-  };
-
   const handleFormatSelect = (format: UnifiedFormat) => {
-    if (selectedCategory) {
-      navigate(`/editor/${selectedCategory.id}`, { 
-        state: { 
-          category: selectedCategory,
-          selectedFormat: format 
-        } 
-      });
-    }
-    setFormatSelectorOpen(false);
-    setSelectedCategory(null);
-  };
-
-  const handleFormatSelectorClose = () => {
-    setFormatSelectorOpen(false);
-    setSelectedCategory(null);
+    // Google Ads 포맷 선택 시 직접 에디터로 이동
+    const mockCategory: Category = {
+      id: 'banner',
+      name: 'Google Ads',
+      icon: 'campaign',
+      description: 'Create web banners, advertising banners, and more.',
+      defaultTemplate: 'banner-template-1',
+    };
+    
+    navigate(`/editor/banner`, { 
+      state: { 
+        category: mockCategory,
+        selectedFormat: format 
+      } 
+    });
   };
 
   const handleEdit = (work: RecentWork) => {
@@ -229,38 +206,6 @@ const Home: React.FC = () => {
     }
   };
 
-  const getIcon = (iconName: string) => {
-    const iconSize = 64;
-    
-    switch (iconName) {
-      case 'campaign':
-        // Carousel/Banner icon
-        return (
-          <Box sx={{ 
-            position: 'relative', 
-            width: iconSize, 
-            height: iconSize,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <ViewCarousel sx={{ fontSize: 48, color: '#FF70FA' }} />
-          </Box>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const getCategoryStyle = (categoryId: string) => {
-    const styles = {
-      'banner': {
-        background: '#ffffff',
-        iconBg: '#f8f9fa',
-      },
-    };
-    return styles[categoryId as keyof typeof styles] || styles.banner;
-  };
 
   return (
     <Box sx={{ 
@@ -285,82 +230,104 @@ const Home: React.FC = () => {
             justifyItems: 'center',
           }}
         >
-          {categories.map((category) => {
-            const categoryStyle = getCategoryStyle(category.id);
-            return (
-              <Box key={category.id} sx={{ width: '100%', maxWidth: 320 }}>
-                <Card
-                  sx={{
-                    height: 240,
-                    width: '100%',
-                    maxWidth: 320,
-                    borderRadius: 2,
-                    overflow: 'hidden',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    cursor: 'pointer',
-                    border: '1px solid #e5e7eb',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-                    },
-                  }}
+          {googleAdsFormats.map((format) => (
+            <Box key={format.id} sx={{ width: '100%', maxWidth: 320 }}>
+              <Card
+                sx={{
+                  height: 240,
+                  width: '100%',
+                  maxWidth: 320,
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  cursor: 'pointer',
+                  border: '1px solid #e5e7eb',
+                  '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                  },
+                }}
+              >
+                <CardActionArea
+                  onClick={() => handleFormatSelect(format)}
+                  sx={{ height: '100%' }}
                 >
-                  <CardActionArea
-                    onClick={() => handleCategoryClick(category)}
-                    sx={{ height: '100%' }}
-                  >
-                    <CardContent sx={{ 
-                      p: 4,
-                      height: '100%',
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      justifyContent: 'flex-start',
-                      alignItems: 'flex-start',
-                      backgroundColor: categoryStyle.background
-                    }}>
-                      {/* Icon */}
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          mb: 3,
+                  <CardContent sx={{ 
+                    p: 4,
+                    height: '100%',
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#ffffff'
+                  }}>
+                    {/* Format Preview */}
+                    <Box
+                      sx={{
+                        width: (() => {
+                          const ratio = format.dimensions.width / format.dimensions.height;
+                          const maxWidth = 120;
+                          const maxHeight = 80;
+                          
+                          if (ratio > 1) {
+                            return maxWidth;
+                          } else {
+                            return Math.round(maxHeight * ratio);
+                          }
+                        })(),
+                        height: (() => {
+                          const ratio = format.dimensions.width / format.dimensions.height;
+                          const maxWidth = 120;
+                          const maxHeight = 80;
+                          
+                          if (ratio > 1) {
+                            return Math.round(maxWidth / ratio);
+                          } else {
+                            return maxHeight;
+                          }
+                        })(),
+                        border: `2px solid #FF70FA`,
+                        borderRadius: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 3,
+                        bgcolor: '#f8f9fa',
+                      }}
+                    >
+                      <ViewCarousel sx={{ fontSize: 24, color: '#FF70FA' }} />
+                    </Box>
+                    
+                    {/* Text */}
+                    <Box sx={{ textAlign: 'center', width: '100%' }}>
+                      <Typography 
+                        variant="h5" 
+                        component="h2" 
+                        sx={{ 
+                          mb: 1, 
+                          fontWeight: 700,
+                          color: '#111827',
+                          fontSize: '20px'
                         }}
                       >
-                        {getIcon(category.icon)}
-                      </Box>
-                      
-                      {/* Text */}
-                      <Box sx={{ textAlign: 'left', width: '100%' }}>
-                        <Typography 
-                          variant="h5" 
-                          component="h2" 
-                          sx={{ 
-                            mb: 1, 
-                            fontWeight: 700,
-                            color: '#111827',
-                            fontSize: '24px'
-                          }}
-                        >
-                          {category.name}
-                        </Typography>
-                        <Typography 
-                          variant="body2" 
-                          sx={{ 
-                            color: '#6b7280',
-                            lineHeight: 1.5,
-                            fontSize: '14px'
-                          }}
-                        >
-                          {category.description}
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Box>
-            );
-          })}
+                        {format.name}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          color: '#6b7280',
+                          lineHeight: 1.5,
+                          fontSize: '14px'
+                        }}
+                      >
+                        {format.dimensions.width} × {format.dimensions.height}px
+                      </Typography>
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+          ))}
         </Box>
       </Box>
 
@@ -466,14 +433,6 @@ const Home: React.FC = () => {
         </Box>
       )}
 
-      {/* Format Selection Modal */}
-      <FormatSelector
-        open={formatSelectorOpen}
-        onClose={handleFormatSelectorClose}
-        onSelect={handleFormatSelect}
-        formats={availableFormats}
-        category={selectedCategory ? selectedCategory.name : ''}
-      />
     </Box>
   );
 };

@@ -38,7 +38,7 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
     },
     {
       path: '/brand-hub',
-      label: 'Brand Hub',
+      label: 'Brand Asset',
       icon: <LibraryIcon sx={{ fontSize: '20px' }} />,
       exact: false,
     },

@@ -342,7 +342,7 @@ const BrandHub: React.FC = () => {
     }}>
 
       <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 0 ,lineHeight:1.3,letterSpacing:"-1px"}}>
-      Brand Hub
+      Brand Asset
       </Typography>  
       <Typography variant="subtitle1" color="text.secondary" sx={{mb:3}}>
         Manage your brand assets to maintain consistency.
