@@ -365,8 +365,8 @@ const BrandAsset: React.FC = () => {
 
           {/* Logo Management */}
           <TabPanel value={currentTab} index={0} >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">Brand Logos</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontSize: '18px' }}>Brand Logos</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -410,8 +410,8 @@ const BrandAsset: React.FC = () => {
 
           {/* Color Management */}
           <TabPanel value={currentTab} index={1}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">Brand Colors</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontSize: '18px' }}>Brand Colors</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -461,8 +461,8 @@ const BrandAsset: React.FC = () => {
 
           {/* Vehicle Models Management */}
           <TabPanel value={currentTab} index={2}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">Vehicle Models</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontSize: '18px' }}>Vehicle Models</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -506,8 +506,8 @@ const BrandAsset: React.FC = () => {
 
           {/* Background Images Management */}
           <TabPanel value={currentTab} index={3}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">Background Images</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontSize: '18px' }}>Background Images</Typography>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
