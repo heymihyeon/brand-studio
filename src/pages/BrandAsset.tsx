@@ -37,7 +37,7 @@ import {
   Image as ImageIcon,
   AccountCircle as LogoIcon,
 } from '@mui/icons-material';
-import { BrandAsset, ColorPalette, FontStyle } from '../types';
+import { BrandAsset as BrandAssetType, ColorPalette, FontStyle } from '../types';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,11 +53,11 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
   );
 };
 
-const BrandHub: React.FC = () => {
+const BrandAsset: React.FC = () => {
   const [currentTab, setCurrentTab] = useState(0);
   
   // Logo management
-  const [logos, setLogos] = useState<BrandAsset[]>([]);
+  const [logos, setLogos] = useState<BrandAssetType[]>([]);
   const [logoDialogOpen, setLogoDialogOpen] = useState(false);
   const [logoForm, setLogoForm] = useState({ name: '', file: null as File | null });
   
@@ -67,19 +67,19 @@ const BrandHub: React.FC = () => {
   const [colorForm, setColorForm] = useState({ name: '', colors: ['#1F7AFC'] });
   
   // Vehicle Models management
-  const [vehicleModels, setVehicleModels] = useState<BrandAsset[]>([]);
+  const [vehicleModels, setVehicleModels] = useState<BrandAssetType[]>([]);
   const [vehicleDialogOpen, setVehicleDialogOpen] = useState(false);
   const [vehicleForm, setVehicleForm] = useState({ name: '', file: null as File | null });
   
   // Background Images management
-  const [backgroundImages, setBackgroundImages] = useState<BrandAsset[]>([]);
+  const [backgroundImages, setBackgroundImages] = useState<BrandAssetType[]>([]);
   const [backgroundDialogOpen, setBackgroundDialogOpen] = useState(false);
   const [backgroundForm, setBackgroundForm] = useState({ name: '', file: null as File | null });
 
   const addPresetLogoImage =()=>{
 
     // Add preset logos
-    const presetLogos: BrandAsset[] = [
+    const presetLogos: BrandAssetType[] = [
       {
         id: 'logo-preset-1',
         name: 'Logo White',
@@ -122,7 +122,7 @@ const BrandHub: React.FC = () => {
     if (savedColors) setColorPalettes(JSON.parse(savedColors));
     
     // Add preset vehicle images
-    const presetVehicles: BrandAsset[] = [
+    const presetVehicles: BrandAssetType[] = [
       {
         id: 'vehicle-preset-1',
         name: 'EV9',
@@ -163,7 +163,7 @@ const BrandHub: React.FC = () => {
     localStorage.setItem('brandVehicles', JSON.stringify(presetVehicles));
     
     // Add preset background images
-    const presetBackgrounds: BrandAsset[] = [
+    const presetBackgrounds: BrandAssetType[] = [
       {
         id: 'bg-preset-1',
         name: 'Showroom',
@@ -207,7 +207,7 @@ const BrandHub: React.FC = () => {
   // Logo management functions
   const handleLogoUpload = () => {
     if (logoForm.file && logoForm.name) {
-      const newLogo: BrandAsset = {
+      const newLogo: BrandAssetType = {
         id: Date.now().toString(),
         name: logoForm.name,
         type: 'logo',
@@ -276,7 +276,7 @@ const BrandHub: React.FC = () => {
   // Vehicle Model management functions
   const handleVehicleUpload = () => {
     if (vehicleForm.file && vehicleForm.name) {
-      const newVehicle: BrandAsset = {
+      const newVehicle: BrandAssetType = {
         id: Date.now().toString(),
         name: vehicleForm.name,
         type: 'image',
@@ -306,7 +306,7 @@ const BrandHub: React.FC = () => {
   // Background Image management functions
   const handleBackgroundUpload = () => {
     if (backgroundForm.file && backgroundForm.name) {
-      const newBackground: BrandAsset = {
+      const newBackground: BrandAssetType = {
         id: Date.now().toString(),
         name: backgroundForm.name,
         type: 'image',
@@ -336,23 +336,22 @@ const BrandHub: React.FC = () => {
   return (
     <Box sx={{ 
       padding: 4,
-      maxWidth: '1200px',
-      margin: '0 auto',
       minHeight: '100vh',
     }}>
 
-      <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 0 ,lineHeight:1.3,letterSpacing:"-1px"}}>
+      <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 4 ,lineHeight:1.3,letterSpacing:"-1px"}}>
       Brand Asset
       </Typography>  
-      <Typography variant="subtitle1" color="text.secondary" sx={{mb:3}}>
-        Manage your brand assets to maintain consistency.
-      </Typography>
 
       
       
       
 
-        <Paper sx={{ width: '100%' }}>
+        <Paper sx={{ 
+          width: '100%',
+          boxShadow: '0 1px 12px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08)',
+          borderRadius: '8px',
+        }}>
           <Tabs 
             value={currentTab} 
             onChange={(_, newValue) => setCurrentTab(newValue)}
@@ -763,4 +762,4 @@ const BrandHub: React.FC = () => {
   );
 };
 
-export default BrandHub;
+export default BrandAsset;

@@ -6,7 +6,7 @@ import NavBar from './components/NavBar';
 import SideBar from './components/SideBar';
 import Home from './pages/Home';
 import Editor from './pages/Editor';
-import BrandHub from './pages/BrandHub';
+import BrandAsset from './pages/BrandAsset';
 
 function App() {
   console.log('App component rendering');
@@ -91,7 +91,7 @@ function AppLayout() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/brand-hub" element={<BrandHub />} />
+            <Route path="/brand-asset" element={<BrandAsset />} />
           </Routes>
         </Box>
       </Box>

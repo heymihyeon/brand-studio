@@ -338,7 +338,7 @@ const Home: React.FC = () => {
 
       {/* Recent Works Section */}
       {recentWorks.length > 0 && (
-        <Box sx={{ mt: 12 }}>
+        <Box sx={{ mt: 8 }}>
         
           <Box sx={{ textAlign: 'left', mb: 3 }}>
             <Stack>
@@ -360,9 +360,9 @@ const Home: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: '#f3f4f6' }}>
-                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Name</TableCell>
-                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Last modified</TableCell>
-                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '13px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Created</TableCell>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '14px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Name</TableCell>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '14px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Last modified</TableCell>
+                  <TableCell sx={{ fontWeight: 600, color: '#374151', fontSize: '14px', py: 1.5, borderBottom: '1px solid #e5e7eb' }}>Created</TableCell>
                   <TableCell width={50} sx={{ borderBottom: '1px solid #e5e7eb' }}></TableCell>
                 </TableRow>
               </TableHead>
@@ -396,15 +396,15 @@ const Home: React.FC = () => {
                             bgcolor: '#fff'
                           }}
                         />
-                        <Typography variant="body2" sx={{ fontWeight: 500, color: '#1f2937' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: '#1f2937', fontSize: '14px' }}>
                           {work.name}
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell sx={{ color: '#6b7280', fontSize: '13px' }}>
+                    <TableCell sx={{ color: '#6b7280', fontSize: '14px' }}>
                       {formatDate(work.lastModified)}
                     </TableCell>
-                    <TableCell sx={{ color: '#6b7280', fontSize: '13px' }}>
+                    <TableCell sx={{ color: '#6b7280', fontSize: '14px' }}>
                       {formatDate(work.lastModified)}
                     </TableCell>
                     <TableCell>
@@ -430,6 +430,14 @@ const Home: React.FC = () => {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
           >
             <MenuItem onClick={() => handleMenuAction('edit')}>Edit</MenuItem>
             <MenuItem onClick={() => handleMenuAction('duplicate')}>Duplicate</MenuItem>

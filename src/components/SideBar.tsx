@@ -13,10 +13,10 @@ import {
 } from '@mui/material';
 import {
   Home as HomeIcon,
-  PhotoLibrary as LibraryIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
+import { ArchiveIcon } from './icons/ArchiveIcon';
 
 interface SideBarProps {
   isExpanded: boolean;
@@ -37,9 +37,9 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
       exact: true,
     },
     {
-      path: '/brand-hub',
+      path: '/brand-asset',
       label: 'Brand Asset',
-      icon: <LibraryIcon sx={{ fontSize: '20px' }} />,
+      icon: <ArchiveIcon sx={{ fontSize: '20px' }} />,
       exact: false,
     },
   ];
