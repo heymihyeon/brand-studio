@@ -224,22 +224,18 @@ const Home: React.FC = () => {
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
+              sm: 'repeat(auto-fit, minmax(200px, 1fr))',
+              md: 'repeat(auto-fit, minmax(250px, 1fr))',
             },
-            gap: 4,
-            justifyItems: 'center',
-            maxWidth: '1200px',
-            margin: '0 auto',
+            gap: 2,
           }}
         >
           {googleAdsFormats.map((format) => (
-            <Box key={format.id} sx={{ width: '100%', maxWidth: 320 }}>
+            <Box key={format.id} sx={{ width: '100%' }}>
               <Card
                 sx={{
                   height: 240,
                   width: '100%',
-                  maxWidth: 320,
                   borderRadius: 2,
                   overflow: 'hidden',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
