@@ -384,13 +384,11 @@ const Home: React.FC = () => {
 
   return (
     <Box sx={{ 
-      padding: 4,
-      maxWidth: '1200px',
-      margin: '0 auto',
+      padding: '32px',
       minHeight: '100vh',
     }}>
         <Box sx={{ mb: 10 }}>
-        <Typography variant="h2" component="h1" gutterBottom align="center"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
+        <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
         Welcome to Content Maker. <br/> What content would you like to create?
         </Typography>
         
@@ -490,7 +488,7 @@ const Home: React.FC = () => {
       {recentWorks.length > 0 && (
         <Box sx={{ mt: 12 }}>
         
-          <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Box sx={{ textAlign: 'left', mb: 6 }}>
             <Typography variant="h4" gutterBottom>
               Recent Works
             </Typography>
