@@ -78,12 +78,15 @@ function AppLayout() {
           component="main"
           sx={{
             flex: 1,
-            marginLeft: `${sidebarWidth}px`,
             backgroundColor: theme.colors.Primary.PolarWhite,
-            minHeight: 'calc(100vh - 48px)',
+            minHeight: 'calc(100vh - 64px)',
             overflow: 'auto',
             transition: 'margin-left 0.3s ease',
             position: 'relative',
+            borderTopLeftRadius: '20px',
+            margin: '16px',
+            marginTop: '16px',
+            marginLeft: `${sidebarWidth + 16}px`,
           }}
         >
           <Routes>

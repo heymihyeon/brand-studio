@@ -70,31 +70,6 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
         overflow: 'hidden',
       }}
     >
-      {/* 토글 버튼 */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: isExpanded ? 'flex-end' : 'center',
-          p: 1,
-          borderBottom: `1px solid ${theme.colors.Gray[800]}`,
-        }}
-      >
-        <IconButton
-          onClick={onToggle}
-          sx={{
-            color: theme.colors.Primary.PolarWhite,
-            '&:hover': {
-              backgroundColor: theme.colors.OpacityWhite[15],
-            },
-          }}
-        >
-          {isExpanded ? (
-            <ChevronLeftIcon sx={{ fontSize: '20px' }} />
-          ) : (
-            <ChevronRightIcon sx={{ fontSize: '20px' }} />
-          )}
-        </IconButton>
-      </Box>
 
       {/* 메뉴 리스트 */}
       <Box sx={{ flex: 1, py: 1 }}>
@@ -166,6 +141,39 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
             return menuItem;
           })}
         </List>
+      </Box>
+
+      {/* 하단 토글 버튼 - 빨간색 동그라미 */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 20,
+          left: isExpanded ? 16 : 16, // 메뉴 아이콘과 동일한 위치
+          zIndex: 1000,
+        }}
+      >
+        <IconButton
+          onClick={onToggle}
+          sx={{
+            width: 32,
+            height: 32,
+            backgroundColor: '#FF4444',
+            color: 'white',
+            borderRadius: '50%',
+            '&:hover': {
+              backgroundColor: '#FF3333',
+            },
+            '& .MuiTouchRipple-root': {
+              borderRadius: '50%',
+            },
+          }}
+        >
+          {isExpanded ? (
+            <ChevronLeftIcon sx={{ fontSize: '20px', fontWeight: 'bold' }} />
+          ) : (
+            <ChevronRightIcon sx={{ fontSize: '20px', fontWeight: 'bold' }} />
+          )}
+        </IconButton>
       </Box>
     </Box>
   );

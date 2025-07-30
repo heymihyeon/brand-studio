@@ -41,13 +41,13 @@ const NavBar: React.FC = () => {
           variant="body1"
           sx={{
             fontFamily: 'KiaSignature',
-            fontWeight: theme.kiaTypography.weights.regular,
-            fontSize: theme.kiaTypography.S2.fontSize,
-            lineHeight: theme.kiaTypography.S2.lineHeight,
+            fontWeight: theme.kiaTypography.weights.bold,
+            fontSize: theme.kiaTypography.B1.fontSize,
+            lineHeight: theme.kiaTypography.B1.lineHeight,
             color: theme.colors.Primary.PolarWhite,
           }}
         >
-          BRAND STUDIO
+          CONTENTS CREATOR
         </Typography>
       </Box>
 
@@ -82,7 +82,7 @@ const NavBar: React.FC = () => {
             },
           }}
         >
-          로그아웃
+          Logout
         </Button>
       </Box>
     </Box>
