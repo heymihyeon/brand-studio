@@ -20,8 +20,6 @@ import {
 } from '@mui/material';
 import {
   MoreVert as MoreVertIcon,
-  Article,
-  MenuBook,
   ViewCarousel,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
@@ -30,25 +28,11 @@ import { getUniqueFormatsByCategory, UnifiedFormat } from '../data/unifiedFormat
 
 const categories: Category[] = [
   {
-    id: 'document',
-    name: 'Document',
-    icon: 'description',
-    description: 'Create contract, quotation, purchase order, and more.',
-    defaultTemplate: 'doc-template-1',
-  },
-  {
     id: 'banner',
     name: 'Google Ads',
     icon: 'campaign',
     description: 'Create web banners, advertising banners, and more.',
     defaultTemplate: 'banner-template-1',
-  },
-  {
-    id: 'brochure',
-    name: 'Brochure',
-    icon: 'camera',
-    description: 'Create A3 brochure, A4 brochure, 2-fold brochure, and more.',
-    defaultTemplate: 'brochure-template-1',
   },
 ];
 
@@ -73,30 +57,6 @@ const Home: React.FC = () => {
       // Add sample data (on first run)
       const sampleWorks: RecentWork[] = [
         {
-          id: 'sample-1',
-          name: 'Product Introduction',
-          thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="200" height="150" fill="#ffffff" stroke="#eeeeee" stroke-width="2"/>
-              <circle cx="40" cy="40" r="15" fill="#1F7AFC"/>
-              <text x="100" y="25" fill="#333333" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">Product Introduction</text>
-              <rect x="20" y="55" width="160" height="3" fill="#dddddd"/>
-              <rect x="20" y="65" width="120" height="3" fill="#dddddd"/>
-              <rect x="20" y="75" width="140" height="3" fill="#dddddd"/>
-              <rect x="20" y="95" width="80" height="30" fill="#1F7AFC" rx="5"/>
-              <text x="60" y="113" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="10">Learn More</text>
-            </svg>
-          `)}`,
-          category: 'Document',
-          templateId: 'doc-proposal-1',
-          lastModified: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-          canEdit: true,
-          canDuplicate: true,
-          canDelete: true,
-          canRename: true,
-          data: { title: 'Product Introduction', content: 'Introducing the features and benefits of our product.' }
-        },
-        {
           id: 'sample-2',
           name: 'Promotion Banner',
           thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
@@ -116,7 +76,7 @@ const Home: React.FC = () => {
               <text x="100" y="116" fill="#FF6B35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Check Now</text>
             </svg>
           `)}`,
-          category: 'Promotion Banner',
+          category: 'Google Ads',
           templateId: 'banner-web-1',
           lastModified: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           canEdit: true,
@@ -124,40 +84,6 @@ const Home: React.FC = () => {
           canDelete: true,
           canRename: true,
           data: { title: 'Special Sale Event', cta: 'Check Now' }
-        },
-        {
-          id: 'sample-3',
-          name: 'Instagram Post',
-          thumbnail: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
-            <svg width="200" height="150" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="instagradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#E1306C;stop-opacity:1" />
-                  <stop offset="50%" style="stop-color:#FBF040;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#F79314;stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              <rect width="200" height="150" fill="url(#instagradient)"/>
-              <rect x="30" y="30" width="140" height="90" fill="#ffffff" fill-opacity="0.1" rx="10"/>
-              <circle cx="50" cy="50" r="10" fill="#ffffff"/>
-              <text x="100" y="55" fill="#ffffff" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold">New Updates</text>
-              <rect x="40" y="70" width="50" height="3" fill="#ffffff"/>
-              <rect x="40" y="80" width="70" height="3" fill="#ffffff"/>
-              <rect x="40" y="90" width="60" height="3" fill="#ffffff"/>
-              <rect x="40" y="100" width="40" height="3" fill="#ffffff"/>
-              <rect x="140" y="40" width="20" height="20" fill="#ffffff" fill-opacity="0.3" rx="3"/>
-              <rect x="140" y="70" width="20" height="20" fill="#ffffff" fill-opacity="0.3" rx="3"/>
-              <rect x="140" y="100" width="20" height="20" fill="#ffffff" fill-opacity="0.3" rx="3"/>
-            </svg>
-          `)}`,
-          category: 'Brochure',
-          templateId: 'sns-instagram-1',
-          lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-          canEdit: true,
-          canDuplicate: true,
-          canDelete: true,
-          canRename: true,
-          data: { title: 'New Updates', content: 'Follow us!' }
         }
       ];
       setRecentWorks(sampleWorks);
@@ -166,16 +92,8 @@ const Home: React.FC = () => {
   }, []);
 
   const handleCategoryClick = (category: Category) => {
-    // Check if brochure category is clicked
-    if (category.id === 'brochure') {
-      alert('Feature is under development.');
-      return;
-    }
-    
     const categoryMap: Record<string, string> = {
-      'document': 'Document',
       'banner': 'Google Ads',
-      'brochure': 'Brochure',
     };
     const categoryName = categoryMap[category.id] || category.name;
     const categoryFormats = getUniqueFormatsByCategory(categoryName);
@@ -205,12 +123,10 @@ const Home: React.FC = () => {
 
   const handleEdit = (work: RecentWork) => {
     const categoryMap: Record<string, string> = {
-      'Document': 'document',
       'Google Ads': 'banner',
       'Promotion Banner': 'banner', // 이전 데이터 호환성을 위해 유지
-      'Brochure': 'brochure',
     };
-    const categoryId = categoryMap[work.category] || 'document';
+    const categoryId = categoryMap[work.category] || 'banner';
     navigate(`/editor/${categoryId}`, { state: { work } });
   };
 
@@ -317,20 +233,6 @@ const Home: React.FC = () => {
     const iconSize = 64;
     
     switch (iconName) {
-      case 'description':
-        // Document icon
-        return (
-          <Box sx={{ 
-            position: 'relative', 
-            width: iconSize, 
-            height: iconSize,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <Article sx={{ fontSize: 48, color: '#1F7AFC' }} />
-          </Box>
-        );
       case 'campaign':
         // Carousel/Banner icon
         return (
@@ -345,20 +247,6 @@ const Home: React.FC = () => {
             <ViewCarousel sx={{ fontSize: 48, color: '#FF70FA' }} />
           </Box>
         );
-      case 'camera':
-        // Brochure/Book icon
-        return (
-          <Box sx={{ 
-            position: 'relative', 
-            width: iconSize, 
-            height: iconSize,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <MenuBook sx={{ fontSize: 48, color: '#FF8C00' }} />
-          </Box>
-        );
       default:
         return null;
     }
@@ -366,20 +254,12 @@ const Home: React.FC = () => {
 
   const getCategoryStyle = (categoryId: string) => {
     const styles = {
-      'document': {
-        background: '#ffffff',
-        iconBg: '#f8f9fa',
-      },
       'banner': {
         background: '#ffffff',
         iconBg: '#f8f9fa',
       },
-      'brochure': {
-        background: '#ffffff',
-        iconBg: '#f8f9fa',
-      },
     };
-    return styles[categoryId as keyof typeof styles] || styles.document;
+    return styles[categoryId as keyof typeof styles] || styles.banner;
   };
 
   return (
