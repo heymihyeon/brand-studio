@@ -900,7 +900,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-horizontal-default',
     name: 'Horizontal',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 628 },
     templateVariant: 'default',
     formatGroup: 'banner-horizontal',
@@ -1066,7 +1066,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-wide-default',
     name: 'Wide',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 360 },
     templateVariant: 'default',
     formatGroup: 'banner-wide',
@@ -1231,7 +1231,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-wide-centerLogo',
     name: 'Wide',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 360 },
     templateVariant: 'center',
     formatGroup: 'banner-wide',
@@ -1306,7 +1306,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-horizontal-centerLogo',
     name: 'Horizontal',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 628 },
     templateVariant: 'center',
     formatGroup: 'banner-horizontal',
@@ -1382,7 +1382,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-vertical-default',
     name: 'Vertical',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 960, height: 1200 },
     templateVariant: 'default',
     formatGroup: 'banner-vertical',
@@ -1547,7 +1547,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-vertical-centerLogo',
     name: 'Vertical',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 960, height: 1200 },
     templateVariant: 'center',
     formatGroup: 'banner-vertical',
@@ -1622,7 +1622,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-square-default',
     name: 'Square',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 1200 },
     templateVariant: 'default',
     formatGroup: 'banner-square',
@@ -1787,7 +1787,7 @@ export const unifiedFormats: UnifiedFormat[] = [
   {
     id: 'banner-square-centerLogo',
     name: 'Square',
-    category: 'Google Ads',
+    category: 'Format',
     dimensions: { width: 1200, height: 1200 },
     templateVariant: 'center',
     formatGroup: 'banner-square',
@@ -2066,12 +2066,12 @@ export const convertToTemplate = (format: UnifiedFormat): Template => {
   return {
     id: format.id,
     name: format.name,
-    category: format.category as 'Document' | 'Google Ads' | 'Brochure',
+    category: format.category as 'Document' | 'Format' | 'Brochure',
     format: {
       id: format.id,
       name: format.name,
       dimensions: format.dimensions,
-      category: format.category as 'Document' | 'Google Ads' | 'Brochure',
+      category: format.category as 'Document' | 'Format' | 'Brochure',
     },
     thumbnail: format.thumbnail,
     canvas: format.canvas,

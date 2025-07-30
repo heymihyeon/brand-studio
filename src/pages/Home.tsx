@@ -26,8 +26,8 @@ import {
 import { Category, RecentWork } from '../types';
 import { getUniqueFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
 
-// Google Ads 포맷들을 직접 가져오기
-const googleAdsFormats = getUniqueFormatsByCategory('Google Ads');
+// Format 포맷들을 직접 가져오기
+const formatFormats = getUniqueFormatsByCategory('Format');
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const Home: React.FC = () => {
               <text x="100" y="116" fill="#FF6B35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Check Now</text>
             </svg>
           `)}`,
-          category: 'Google Ads',
+          category: 'Format',
           templateId: 'banner-web-1',
           lastModified: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
           canEdit: true,
@@ -82,10 +82,10 @@ const Home: React.FC = () => {
   }, []);
 
   const handleFormatSelect = (format: UnifiedFormat) => {
-    // Google Ads 포맷 선택 시 직접 에디터로 이동
+    // Format 포맷 선택 시 직접 에디터로 이동
     const mockCategory: Category = {
       id: 'banner',
-      name: 'Google Ads',
+      name: 'Format',
       icon: 'campaign',
       description: 'Create web banners, advertising banners, and more.',
       defaultTemplate: 'banner-template-1',
@@ -101,7 +101,8 @@ const Home: React.FC = () => {
 
   const handleEdit = (work: RecentWork) => {
     const categoryMap: Record<string, string> = {
-      'Google Ads': 'banner',
+      'Format': 'banner',
+      'Google Ads': 'banner', // 이전 데이터 호환성을 위해 유지
       'Promotion Banner': 'banner', // 이전 데이터 호환성을 위해 유지
     };
     const categoryId = categoryMap[work.category] || 'banner';
@@ -230,7 +231,7 @@ const Home: React.FC = () => {
             gap: 2,
           }}
         >
-          {googleAdsFormats.map((format) => (
+          {formatFormats.map((format) => (
             <Box key={format.id} sx={{ width: '100%' }}>
               <Card
                 sx={{

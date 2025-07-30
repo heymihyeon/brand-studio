@@ -594,16 +594,16 @@ Authorized Signature: _____________________`,
             sx={{
               position: 'absolute',
               // Default 레이아웃인 경우 하단 좌측으로 배치, 그 외는 기존 위치 유지
-              ...(isDefaultLayout && template.category === 'Google Ads'
+              ...(isDefaultLayout && template.category === 'Format'
                 ? { left: 36, bottom: 20 }  // 하단 좌측 (30 + 16 = 46)
                 : template.format.id === 'banner-square' 
                   ? { left: template.canvas.width - 150, top: 4 }  // 1200 - 150 = 1050 (10px 좌측), top: 4 (16px 위로)
                   : { right: 30, top: 4 }  // right: 30 (10px 좌측), top: 4 (16px 위로)
               ),
-              width: isDefaultLayout && template.category === 'Google Ads' 
+              width: isDefaultLayout && template.category === 'Format' 
                 ? (isSquareOrVertical ? 210 / 0.75 : 210) 
                 : 120,
-              height: isDefaultLayout && template.category === 'Google Ads' 
+              height: isDefaultLayout && template.category === 'Format' 
                 ? (isSquareOrVertical ? 105 / 0.75 : 105) 
                 : 60,
               cursor: 'pointer',
@@ -636,7 +636,7 @@ Authorized Signature: _____________________`,
               return false;
             }
             // motif는 showMotif가 false일 때만 제외
-            if (img.id === 'motif' && template.category === 'Google Ads' && editableValues['showMotif'] === false) {
+            if (img.id === 'motif' && template.category === 'Format' && editableValues['showMotif'] === false) {
               return false;
             }
             return true;
@@ -728,8 +728,8 @@ Authorized Signature: _____________________`,
               const maxLeft = template.canvas.width - size.width - rightMargin;
               const maxTop = template.canvas.height - size.height - bottomMargin;
               
-              // Google Ads Horizontal 포맷에서만 차량 위치 제한을 완화
-              const isGoogleAdsHorizontal = template.category === 'Google Ads' && 
+              // Format Horizontal 포맷에서만 차량 위치 제한을 완화
+              const isGoogleAdsHorizontal = template.category === 'Format' && 
                                           template.canvas.width === 1200 && 
                                           template.canvas.height === 628;
               
@@ -794,8 +794,8 @@ Authorized Signature: _____________________`,
                 }}
               >
                 {imageSrc ? (
-                  // Google Ads의 차량 이미지는 360도 뷰 시도, 실패시 일반 이미지
-                  isVehicleImage && template.category === 'Google Ads' && value ? (
+                  // Format의 차량 이미지는 360도 뷰 시도, 실패시 일반 이미지
+                  isVehicleImage && template.category === 'Format' && value ? (
                     <>
                       <Vehicle360View
                         vehicleId={(value as BrandAsset).id}
@@ -903,7 +903,7 @@ Authorized Signature: _____________________`,
             
             let topAdjustment = 0;
             let leftAdjustment = 0;
-            if (isDefaultLayout && template.category === 'Google Ads') {
+            if (isDefaultLayout && template.category === 'Format') {
                 topAdjustment = -46; // Move up by 46px for default layout (30 + 16)
                 leftAdjustment = -16; // Move left by 16px for default layout
             } else if (isDefaultLayout) {
@@ -933,7 +933,7 @@ Authorized Signature: _____________________`,
               zIndex: 3,
               display: 'flex',
               flexDirection: 'column',
-              gap: isDefaultLayout && template.category === 'Google Ads' ? '-22px' : '8px', // Reduced gap for promotion banner default layout
+              gap: isDefaultLayout && template.category === 'Format' ? '-22px' : '8px', // Reduced gap for promotion banner default layout
             };
             
             if (textAlign === 'center' && originX === 'center') {
@@ -963,7 +963,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 46 : 52),
                         fontWeight: 'regular',
-                        fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
+                        fontFamily: template.category === 'Format' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[titleElement.id] ? 
                           (template.category === 'Document' ? '#000000' : '#ffffff') : 
                           (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
@@ -997,7 +997,7 @@ Authorized Signature: _____________________`,
                       sx={{
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.45 : 32,
                         fontWeight: '400',
-                        fontFamily: template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
+                        fontFamily: template.category === 'Format' ? 'Kia Signature Fix OTF' : (titleCanvasObj?.fontFamily || 'Arial, sans-serif'),
                         color: editableValues[subtitleElement.id] ? 
                           (template.category === 'Document' ? '#000000' : '#ffffff') : 
                           (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)'),
@@ -1037,10 +1037,10 @@ Authorized Signature: _____________________`,
                   
                   const fontSize = canvasTextObj?.fontSize || 18;
                   const fontWeight = canvasTextObj?.fontWeight || 'normal';
-                  const fontFamily = template.category === 'Google Ads' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
+                  const fontFamily = template.category === 'Format' ? 'Kia Signature Fix OTF' : (canvasTextObj?.fontFamily || 'Arial, sans-serif');
                   const color = isPlaceholder 
                     ? (template.category === 'Document' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.5)') 
-                    : (template.category === 'Google Ads' ? '#ffffff' : 
+                    : (template.category === 'Format' ? '#ffffff' : 
                        template.category === 'Document' ? '#000000' : (canvasTextObj?.fill || '#ffffff'));
                   const textAlign = canvasTextObj?.textAlign || 'left';
                   const originX = canvasTextObj?.originX || 'left';
@@ -1092,8 +1092,8 @@ Authorized Signature: _____________________`,
                   );
                 })}
                 
-                {/* Dealer Information Stack for Google Ads - Center Logo 레이아웃에서는 숨김 */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && 
+                {/* Dealer Information Stack for Format - Center Logo 레이아웃에서는 숨김 */}
+                {template.category === 'Format' && dealerNameElement && dealerPhoneElement && 
                  editableValues['showDealerInfo'] !== false && 
                  !(template.id?.includes('center') || template.name?.includes('Center')) && (
                   <Box
@@ -1187,7 +1187,7 @@ Authorized Signature: _____________________`,
                 (obj: any) => obj.type === 'text' && obj.id === textElement.id
               ) as any;
               
-              const isPromotionBanner = template.category === 'Google Ads';
+              const isPromotionBanner = template.category === 'Format';
               const isHeading = textElement.type === 'heading';
               const isVerticalBanner = template.format.id === 'banner-vertical';
               const isSquareBanner = template.format.id === 'banner-square';
@@ -1303,8 +1303,8 @@ Authorized Signature: _____________________`,
               );
             })}
                 
-                {/* Dealer Information Stack for Google Ads - Center Logo 레이아웃에서는 숨김 */}
-                {template.category === 'Google Ads' && dealerNameElement && dealerPhoneElement && 
+                {/* Dealer Information Stack for Format - Center Logo 레이아웃에서는 숨김 */}
+                {template.category === 'Format' && dealerNameElement && dealerPhoneElement && 
                  editableValues['showDealerInfo'] !== false && 
                  !(template.id?.includes('center') || template.name?.includes('Center')) && (
                   <Box

@@ -43,7 +43,7 @@ import { VehicleModel, getVehicleModelById, getDefaultColorForModel } from '../d
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
-  'banner': 'Google Ads',
+  'banner': 'Format',
   'sns': 'SNS',
 };
 
@@ -431,8 +431,8 @@ useEffect(() => {
               if (hasExistingValues && editableValues[text.id]) {
                 initialValues[text.id] = editableValues[text.id];
               } else {
-                // Google Ads의 경우 특별한 기본값 사용
-                if (currentCategory === 'Google Ads') {
+                // Format의 경우 특별한 기본값 사용
+                if (currentCategory === 'Format') {
                   if (text.id === 'title' && text.type === 'heading') {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -482,8 +482,8 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
             
-            // Motif 표시 토글 상태 설정 (Google Ads만)
-            if (convertedTemplate.category === 'Google Ads') {
+            // Motif 표시 토글 상태 설정 (Format만)
+            if (convertedTemplate.category === 'Format') {
               initialValues['showMotif'] = (hasExistingValues && editableValues['showMotif'] !== undefined) ? editableValues['showMotif'] : true;
             }
             
@@ -505,8 +505,8 @@ useEffect(() => {
               if (hasExistingValues && editableValues[text.id]) {
                 initialValues[text.id] = editableValues[text.id];
               } else {
-                // Google Ads의 경우 특별한 기본값 사용
-                if (currentCategory === 'Google Ads') {
+                // Format의 경우 특별한 기본값 사용
+                if (currentCategory === 'Format') {
                   if (text.id === 'title' && text.type === 'heading') {
                     initialValues[text.id] = 'Your Journey Starts Here';
                   } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -556,8 +556,8 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = (hasExistingValues && editableValues['showDealerInfo'] !== undefined) ? editableValues['showDealerInfo'] : true;
             
-            // Motif 표시 토글 상태 설정 (Google Ads만)
-            if (convertedTemplate.category === 'Google Ads') {
+            // Motif 표시 토글 상태 설정 (Format만)
+            if (convertedTemplate.category === 'Format') {
               initialValues['showMotif'] = (hasExistingValues && editableValues['showMotif'] !== undefined) ? editableValues['showMotif'] : true;
             }
             
@@ -750,9 +750,9 @@ useEffect(() => {
     if (elementId === 'brandLogo') {
       console.log('Editor (Canvas): Setting filter to Logos');
       setAssetFilterCategory('Logo');
-    } else if (elementId === 'centerLogo' && template?.category === 'Google Ads') {
-      // Google Ads의 Center Logo 레이아웃에서 로고 클릭 시 Logo 카테고리만 필터링
-      console.log('Editor (Canvas): Setting filter to Logo for Google Ads Center Logo');
+    } else if (elementId === 'centerLogo' && template?.category === 'Format') {
+      // Format의 Center Logo 레이아웃에서 로고 클릭 시 Logo 카테고리만 필터링
+      console.log('Editor (Canvas): Setting filter to Logo for Format Center Logo');
       setAssetFilterCategory('Logo');
     } else {
       const imageElement = template?.editableElements.images.find(img => img.id === elementId);
@@ -898,15 +898,15 @@ useEffect(() => {
       console.log('thumbnailData received:', thumbnailData ? 'yes' : 'no', 'length:', thumbnailData?.length);
       
       // Ensure category is valid for RecentWork type
-      let validCategory: 'Document' | 'Google Ads' | 'Brochure' = 'Document';
+      let validCategory: 'Document' | 'Format' | 'Brochure' = 'Document';
       console.log('Current category:', currentCategory);
       console.log('Template category:', template.category);
       
-      if (currentCategory === 'Document' || currentCategory === 'Google Ads' || currentCategory === 'Brochure') {
+      if (currentCategory === 'Document' || currentCategory === 'Format' || currentCategory === 'Brochure') {
         validCategory = currentCategory;
       } else if (currentCategory === 'SNS') {
-        // Map SNS to Google Ads as it's the closest match
-        validCategory = 'Google Ads';
+        // Map SNS to Format as it's the closest match
+        validCategory = 'Format';
       } else {
         // Fallback to template category
         validCategory = template.category;
@@ -1115,12 +1115,12 @@ useEffect(() => {
             template && (
               <>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                  {template?.category === 'Google Ads' ? 'Title' : 'Text Edit'}
+                  {template?.category === 'Format' ? 'Title' : 'Text Edit'}
                 </Typography>
                 {template.editableElements.texts
                   .filter((textElement) => {
-                    // Google Ads에서 dealerName과 dealerPhone은 Information 섹션에서만 표시
-                    if (template?.category === 'Google Ads' && 
+                    // Format에서 dealerName과 dealerPhone은 Information 섹션에서만 표시
+                    if (template?.category === 'Format' && 
                         (textElement.id === 'dealerName' || textElement.id === 'dealerPhone')) {
                       return false;
                     }
@@ -1138,15 +1138,15 @@ useEffect(() => {
                       onChange={(e) => handleTextChange(textElement.id, e.target.value)}
                       multiline={true}
                       rows={
-                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 :
+                        template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 :
                         textElement.type === 'heading' ? 2 :
                         textElement.type === 'subheading' ? 2 : 4
                       }
                       maxRows={
-                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
+                        template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
                       }
                       sx={
-                        template?.category === 'Google Ads' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
+                        template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
                           '& .MuiInputBase-root': {
                             maxHeight: '56px',
                             overflow: 'auto'
@@ -1159,11 +1159,11 @@ useEffect(() => {
                 <>
                   <Divider />
                   <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    {template?.category === 'Google Ads' ? 'Image' : 'Image Edit'}
+                    {template?.category === 'Format' ? 'Image' : 'Image Edit'}
                   </Typography>
                   
-                  {/* Google Ads일 때 특별한 순서로 렌더링 */}
-                  {template?.category === 'Google Ads' ? (
+                  {/* Format일 때 특별한 순서로 렌더링 */}
+                  {template?.category === 'Format' ? (
                     <>
                       {/* 1. Vehicle Model */}
                       {(() => {
@@ -1285,7 +1285,7 @@ useEffect(() => {
                       </Box>
                     </>
                   ) : (
-                    /* Google Ads가 아닌 경우 기존 방식대로 렌더링 */
+                    /* Format가 아닌 경우 기존 방식대로 렌더링 */
                     <>
                       {template.editableElements.images.map((imageElement) => (
                         <Box key={imageElement.id}>
@@ -1333,8 +1333,8 @@ useEffect(() => {
             )
           )}
 
-          {/* Motif 섹션 - Google Ads일 때만 표시 */}
-          {template?.category === 'Google Ads' && (
+          {/* Motif 섹션 - Format일 때만 표시 */}
+          {template?.category === 'Format' && (
             <>
               <Divider />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -1437,8 +1437,8 @@ useEffect(() => {
             </>
           )}
 
-          {/* Information 섹션 - Google Ads일 때만 표시, Horizontal + Center Logo일 때는 숨김 */}
-          {template?.category === 'Google Ads' && 
+          {/* Information 섹션 - Format일 때만 표시, Horizontal + Center Logo일 때는 숨김 */}
+          {template?.category === 'Format' && 
            !(template.format.id === 'banner-horizontal' && selectedTemplateVariant === 'center') && (
             <>
               <Divider />
@@ -1568,7 +1568,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (currentCategory === 'Google Ads') {
+              if (currentCategory === 'Format') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -1618,8 +1618,8 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
             
-            // Motif 표시 토글 상태 설정 (Google Ads만)
-            if (convertedTemplate.category === 'Google Ads') {
+            // Motif 표시 토글 상태 설정 (Format만)
+            if (convertedTemplate.category === 'Format') {
               initialValues['showMotif'] = editableValues['showMotif'] !== undefined ? editableValues['showMotif'] : true;
             }
             
@@ -1640,7 +1640,7 @@ useEffect(() => {
             // 텍스트 값은 기존 값 유지 또는 새 템플릿의 기본값 사용
             convertedTemplate.editableElements.texts.forEach((text) => {
               // Promotion Banner의 경우 특별한 기본값 사용
-              if (currentCategory === 'Google Ads') {
+              if (currentCategory === 'Format') {
                 if (text.id === 'title' && text.type === 'heading') {
                   initialValues[text.id] = editableValues[text.id] || 'Your Journey Starts Here';
                 } else if (text.id === 'subtitle' && text.type === 'subheading') {
@@ -1690,8 +1690,8 @@ useEffect(() => {
             // 딜러 정보 표시 토글 상태 설정
             initialValues['showDealerInfo'] = editableValues['showDealerInfo'] !== undefined ? editableValues['showDealerInfo'] : true;
             
-            // Motif 표시 토글 상태 설정 (Google Ads만)
-            if (convertedTemplate.category === 'Google Ads') {
+            // Motif 표시 토글 상태 설정 (Format만)
+            if (convertedTemplate.category === 'Format') {
               initialValues['showMotif'] = editableValues['showMotif'] !== undefined ? editableValues['showMotif'] : true;
             }
             

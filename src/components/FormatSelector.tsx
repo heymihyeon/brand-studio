@@ -193,7 +193,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                       >
                         {category === 'Document' && (format.name === 'Car sales contract (A4)' || format.name === 'Quote' || format.name === 'Purchase Order')
                           ? `${format.name.replace(' (A4)', '')}\n(A4)`
-                          : category === 'Google Ads' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
+                          : category === 'Format' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
                           ? `${format.name}\n(${format.dimensions.width}×${format.dimensions.height}px)`
                           : format.name}
                       </Typography>

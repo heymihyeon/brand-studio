@@ -1,6 +1,6 @@
 export interface Category {
   id: string;
-  name: 'Document' | 'Google Ads' | 'Brochure';
+  name: 'Document' | 'Format' | 'Brochure';
   icon: string;
   description: string;
   defaultTemplate: string;
@@ -10,7 +10,7 @@ export interface RecentWork {
   id: string;
   name: string;
   thumbnail: string;
-  category: 'Document' | 'Google Ads' | 'Promotion Banner' | 'Brochure';
+  category: 'Document' | 'Format' | 'Promotion Banner' | 'Brochure';
   templateId: string;
   lastModified: Date;
   canEdit: boolean;
@@ -23,7 +23,7 @@ export interface RecentWork {
 export interface Template {
   id: string;
   name: string;
-  category: 'Document' | 'Google Ads' | 'Brochure';
+  category: 'Document' | 'Format' | 'Brochure';
   format: FormatOption;
   thumbnail: string;
   canvas: CanvasData;
@@ -63,7 +63,7 @@ export interface FormatOption {
   id: string;
   name: string;
   dimensions: { width: number; height: number };
-  category: 'Document' | 'Google Ads' | 'Brochure';
+  category: 'Document' | 'Format' | 'Brochure';
 }
 
 export interface CanvasData {
@@ -138,7 +138,7 @@ export interface Content {
   id: string;
   name: string;
   templateId: string;
-  category: 'Document' | 'Google Ads' | 'Brochure';
+  category: 'Document' | 'Format' | 'Brochure';
   editedElements: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
