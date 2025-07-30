@@ -57,12 +57,11 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
     <Box
       sx={{
         position: 'fixed',
-        top: '48px', // NavBar 높이만큼 아래로
+        top: '56px', // NavBar 높이(48px) + 상단 마진(8px)
         left: 0,
         width: `${sidebarWidth}px`,
-        height: 'calc(100vh - 48px)',
+        height: 'calc(100vh - 56px)',
         backgroundColor: theme.colors.Primary.MidnightBlack,
-        borderRight: `1px solid ${theme.colors.Gray[800]}`,
         display: 'flex',
         flexDirection: 'column',
         transition: 'width 0.3s ease',

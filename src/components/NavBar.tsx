@@ -9,7 +9,7 @@ const NavBar: React.FC = () => {
     <Box
       sx={{
         position: 'fixed',
-        top: 0,
+        top: '8px',
         left: 0,
         right: 0,
         height: '48px',
@@ -18,21 +18,43 @@ const NavBar: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        px: 2,
+        px: '20px',
+        pt: '14px',
+        pb: '6px', // 14px - 8px
         zIndex: theme.zIndex.appBar,
-        borderBottom: `1px solid ${theme.colors.Gray[800]}`,
       }}
     >
       {/* 좌측: KIA 로고 + 브랜드명 */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         {/* KIA 로고 */}
         <Box
-          component="img"
-          src="/images/logos/logo_white.png"
-          alt="KIA Logo"
           sx={{
-            height: '24px',
-            width: 'auto',
+            width: '70px',
+            height: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+          }}
+        >
+          <Box
+            component="img"
+            src="/images/KiaLogoSmall.png"
+            alt="KIA Logo"
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+            }}
+          />
+        </Box>
+        
+        {/* Divider */}
+        <Box
+          sx={{
+            width: '1px',
+            height: '16px',
+            backgroundColor: theme.colors.OpacityWhite[30],
           }}
         />
         

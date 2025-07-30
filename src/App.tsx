@@ -63,8 +63,8 @@ function AppLayout() {
         sx={{
           display: 'flex',
           width: '100%',
-          height: 'calc(100vh - 48px)', // NavBar 높이 제외
-          paddingTop: '48px', // NavBar 높이만큼 패딩
+          height: 'calc(100vh - 56px)', // NavBar 높이(48px) + 상단 마진(8px) 제외
+          paddingTop: '56px', // NavBar 높이(48px) + 상단 마진(8px)만큼 패딩
         }}
       >
         {/* 좌측 사이드바 */}
@@ -79,11 +79,11 @@ function AppLayout() {
           sx={{
             flex: 1,
             backgroundColor: theme.colors.Primary.PolarWhite,
-            minHeight: 'calc(100vh - 64px)',
+            minHeight: 'calc(100vh - 72px)',
             overflow: 'auto',
             transition: 'margin-left 0.3s ease',
             position: 'relative',
-            borderTopLeftRadius: '20px',
+            borderRadius: '8px',
             margin: '16px',
             marginTop: '16px',
             marginLeft: `${sidebarWidth + 16}px`,
