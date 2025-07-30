@@ -84,10 +84,9 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
                     height: '48px',
                     borderRadius: 0,
                     px: isExpanded ? 2 : 1,
-                    py: 1,
-                    backgroundColor: active 
-                      ? theme.colors.OpacityWhite[15] 
-                      : 'transparent',
+                    py: 1.5,
+                    my: 0.5,
+                    backgroundColor: 'transparent', // 활성 상태에서도 불투명 배경 없음
                     color: theme.colors.Primary.PolarWhite,
                     '&:hover': {
                       backgroundColor: theme.colors.OpacityWhite[15],
@@ -99,7 +98,9 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
                   <ListItemIcon
                     sx={{
                       minWidth: isExpanded ? 40 : 'auto',
-                      color: theme.colors.Primary.PolarWhite,
+                      color: active 
+                        ? theme.colors.Primary.PolarWhite 
+                        : theme.colors.Gray[600],
                       justifyContent: 'center',
                     }}
                   >
@@ -111,11 +112,12 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
                       primary={item.label}
                       primaryTypographyProps={{
                         fontFamily: 'KiaSignature',
-                        fontWeight: active 
-                          ? theme.kiaTypography.weights.bold 
-                          : theme.kiaTypography.weights.regular,
-                        fontSize: theme.kiaTypography.S2.fontSize,
-                        lineHeight: theme.kiaTypography.S2.lineHeight,
+                        fontSize: '16px',
+                        fontStyle: 'normal',
+                        fontWeight: active ? 600 : 400,
+                        color: active 
+                          ? theme.colors.Primary.PolarWhite 
+                          : theme.colors.Gray[600],
                       }}
                     />
                   )}
