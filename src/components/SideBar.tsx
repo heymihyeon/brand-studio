@@ -61,8 +61,8 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
         left: 0,
         width: `${sidebarWidth}px`,
         height: 'calc(100vh - 48px)',
-        backgroundColor: theme.colors.Gray[900],
-        borderRight: `1px solid ${theme.colors.Gray[700]}`,
+        backgroundColor: theme.colors.Primary.MidnightBlack,
+        borderRight: `1px solid ${theme.colors.Gray[800]}`,
         display: 'flex',
         flexDirection: 'column',
         transition: 'width 0.3s ease',
@@ -76,7 +76,7 @@ const SideBar: React.FC<SideBarProps> = ({ isExpanded, onToggle }) => {
           display: 'flex',
           justifyContent: isExpanded ? 'flex-end' : 'center',
           p: 1,
-          borderBottom: `1px solid ${theme.colors.Gray[700]}`,
+          borderBottom: `1px solid ${theme.colors.Gray[800]}`,
         }}
       >
         <IconButton
