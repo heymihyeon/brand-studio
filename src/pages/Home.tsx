@@ -235,7 +235,7 @@ const Home: React.FC = () => {
             <Box key={format.id} sx={{ width: '100%' }}>
               <Card
                 sx={{
-                  height: 240,
+                  height: 270,
                   width: '100%',
                   borderRadius: 2,
                   overflow: 'hidden',
@@ -257,54 +257,54 @@ const Home: React.FC = () => {
                     height: '100%',
                     display: 'flex', 
                     flexDirection: 'column', 
-                    justifyContent: 'space-between',
                     alignItems: 'center',
                     backgroundColor: '#ffffff'
                   }}>
                     {/* Format Preview */}
-                    <Box
-                      sx={{
-                        width: (() => {
-                          const ratio = format.dimensions.width / format.dimensions.height;
-                          const maxWidth = 160;
-                          const maxHeight = 120;
-                          const minHeight = 60;
-                          
-                          if (ratio > 1) {
-                            const calculatedHeight = Math.round(maxWidth / ratio);
-                            return calculatedHeight < minHeight ? Math.round(minHeight * ratio) : maxWidth;
-                          } else {
-                            return Math.round(maxHeight * ratio);
-                          }
-                        })(),
-                        height: (() => {
-                          const ratio = format.dimensions.width / format.dimensions.height;
-                          const maxWidth = 160;
-                          const maxHeight = 120;
-                          const minHeight = 60;
-                          
-                          if (ratio > 1) {
-                            const calculatedHeight = Math.round(maxWidth / ratio);
-                            return calculatedHeight < minHeight ? minHeight : calculatedHeight;
-                          } else {
-                            return maxHeight;
-                          }
-                        })(),
-                        border: `1.3px solid`,
-                        borderColor: 'primary.main',
-                        borderRadius: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mb: 0,
-                        bgcolor: '#F1F2F4',
-                      }}
-                    >
-                      <CarIcon sx={{ fontSize: 24, color: 'primary.main' }} />
+                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Box
+                        sx={{
+                          width: (() => {
+                            const ratio = format.dimensions.width / format.dimensions.height;
+                            const maxWidth = 160;
+                            const maxHeight = 120;
+                            const minHeight = 60;
+                            
+                            if (ratio > 1) {
+                              const calculatedHeight = Math.round(maxWidth / ratio);
+                              return calculatedHeight < minHeight ? Math.round(minHeight * ratio) : maxWidth;
+                            } else {
+                              return Math.round(maxHeight * ratio);
+                            }
+                          })(),
+                          height: (() => {
+                            const ratio = format.dimensions.width / format.dimensions.height;
+                            const maxWidth = 160;
+                            const maxHeight = 120;
+                            const minHeight = 60;
+                            
+                            if (ratio > 1) {
+                              const calculatedHeight = Math.round(maxWidth / ratio);
+                              return calculatedHeight < minHeight ? minHeight : calculatedHeight;
+                            } else {
+                              return maxHeight;
+                            }
+                          })(),
+                          border: `1.3px solid`,
+                          borderColor: 'primary.main',
+                          borderRadius: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          bgcolor: '#F1F2F4',
+                        }}
+                      >
+                        <CarIcon sx={{ fontSize: 24, color: 'primary.main' }} />
+                      </Box>
                     </Box>
                     
                     {/* Text */}
-                    <Box sx={{ textAlign: 'center', width: '100%', mt: 2 }}>
+                    <Box sx={{ textAlign: 'center', width: '100%' }}>
                       <Typography 
                         variant="h5" 
                         component="h2" 
