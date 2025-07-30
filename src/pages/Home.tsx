@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
@@ -385,11 +384,10 @@ const Home: React.FC = () => {
 
   return (
     <Box sx={{ 
-      paddingBottom: 6,
-      paddingTop:14, 
+      padding: 4,
       maxWidth: '1200px',
       margin: '0 auto',
-      paddingLeft: '280px'
+      minHeight: '100vh',
     }}>
         <Box sx={{ mb: 10 }}>
         <Typography variant="h2" component="h1" gutterBottom align="center"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
@@ -397,11 +395,22 @@ const Home: React.FC = () => {
         </Typography>
         
 
-        <Grid container  justifyContent="center" spacing={4}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)',
+            },
+            gap: 4,
+            justifyItems: 'center',
+          }}
+        >
           {categories.map((category) => {
             const categoryStyle = getCategoryStyle(category.id);
             return (
-              <Grid item  size={{xs:12,sm:6,md:4,lg:4}} key={category.id}>
+              <Box key={category.id} sx={{ width: '100%', maxWidth: 320 }}>
                 <Card
                   sx={{
                     height: 240,
@@ -471,10 +480,10 @@ const Home: React.FC = () => {
                     </CardContent>
                   </CardActionArea>
                 </Card>
-              </Grid>
+              </Box>
             );
           })}
-        </Grid>
+        </Box>
       </Box>
 
       {/* Recent Works Section */}

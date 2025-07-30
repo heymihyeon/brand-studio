@@ -65,6 +65,20 @@ tail -f vite-server.log
 - 특정 컴포넌트나 기능 수정 시 관련 없는 파일이나 코드는 수정하지 않습니다
 - 변경사항이 다른 기능에 영향을 주지 않도록 격리된 수정을 수행합니다
 
+## 🎨 디자인 참고 가이드
+
+### idcx-admin/ 폴더 사용 규칙
+- **`idcx-admin/` 폴더는 완전히 참고용으로만 사용합니다**
+- **`idcx-admin/` 폴더의 소스는 절대 수정하지 않습니다**
+- 현재 루트 폴더의 Brand Studio 파일들만 수정하고 서버를 실행합니다
+- `idcx-admin/`의 디자인 시스템과 UI 컴포넌트를 참고하여 Brand Studio를 개선합니다
+
+### 참고 대상
+- `/idcx-admin/src/components/` - UI 컴포넌트 디자인 참고
+- `/idcx-admin/src/theme/` - 색상, 폰트, 테마 시스템 참고
+- `/idcx-admin/src/styles/` - 스타일 구조 참고
+- `/idcx-admin/src/pages/` - 페이지 레이아웃 구조 참고
+
 ## 🎨 레이아웃 추가 지침
 
 - **Promotion Banner에 새로운 레이아웃을 추가할 때는 반드시 모든 포맷에 적용해야 합니다**
@@ -75,4 +89,4 @@ tail -f vite-server.log
 - unifiedFormats.ts 파일에서 각 포맷 그룹별로 템플릿을 추가합니다
 
 ---
-Last updated: 2025-07-23
+Last updated: 2025-07-30

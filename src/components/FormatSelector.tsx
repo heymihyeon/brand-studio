@@ -3,14 +3,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
   Typography,
   Box,
   IconButton,
-  Stack
+  Stack,
+  useTheme,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { UnifiedFormat } from '../data/unifiedFormats';
@@ -30,6 +30,8 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
   formats,
   category,
 }) => {
+  const theme = useTheme();
+
   return (
     <Dialog
       open={open}
@@ -38,84 +40,157 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
       fullWidth
       disableEscapeKeyDown
       PaperProps={{
-        onClick: (e: React.MouseEvent) => e.stopPropagation()
+        onClick: (e: React.MouseEvent) => e.stopPropagation(),
+        sx: {
+          borderRadius: '10px',
+          boxShadow: `0px 2px 10px ${theme.colors.OpacityBlack[15]}`,
+          fontFamily: 'KiaSignature',
+        }
       }}
       BackdropProps={{
         onClick: (e: React.MouseEvent) => e.stopPropagation()
       }}
     >
-      <DialogTitle>
+      <DialogTitle
+        sx={{
+          fontFamily: 'KiaSignature',
+          borderBottom: `1px solid ${theme.colors.Gray[200]}`,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h4" sx={{ fontWeight: 600 }}>{category}</Typography>
-          <IconButton onClick={onClose} size="small">
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              fontWeight: theme.kiaTypography.weights.bold,
+              fontSize: theme.kiaTypography.H2.fontSize,
+              color: theme.colors.Primary.MidnightBlack,
+              fontFamily: 'KiaSignature',
+            }}
+          >
+            {category}
+          </Typography>
+          <IconButton 
+            onClick={onClose} 
+            size="small"
+            sx={{
+              color: theme.colors.Gray[600],
+              '&:hover': {
+                backgroundColor: theme.colors.OpacityBlack[5],
+              },
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={3} sx={{ mt: 1 }}>
+      <DialogContent sx={{ fontFamily: 'KiaSignature' }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: formats.length <= 3 
+                ? 'repeat(3, 1fr)' 
+                : formats.length === 4 
+                ? 'repeat(4, 1fr)' 
+                : 'repeat(3, 1fr)'
+            },
+            gap: 3,
+            mt: 1,
+          }}
+        >
           {formats.map((format) => (
-            <Grid item size={{xs:12,sm:6,md:formats.length <= 3 ? 4 : formats.length === 4 ? 3 : 4}} key={format.id}>
-              <Card sx={{ height: '100%' }}>
-                <CardActionArea onClick={() => onSelect(format)} sx={{ height: '100%' }}>
-                  <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Box key={format.id}>
+              <Card 
+                sx={{ 
+                  height: '100%',
+                  borderRadius: 0,
+                  border: `1px solid ${theme.colors.Gray[200]}`,
+                  '&:hover': {
+                    borderColor: theme.colors.Primary.MidnightBlack,
+                    boxShadow: `0 2px 10px ${theme.colors.OpacityBlack[15]}`,
+                  }
+                }}
+              >
+                <CardActionArea 
+                  onClick={() => onSelect(format)} 
+                  sx={{ 
+                    height: '100%',
+                    '&:hover': {
+                      backgroundColor: theme.colors.OpacityBlack[3],
+                    }
+                  }}
+                >
+                  <CardContent sx={{ 
+                    height: '100%', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    justifyContent: 'center',
+                    p: 3,
+                  }}>
                     <Box sx={{ textAlign: 'center', mb: 2 }}>
-
                       <Stack height="143px" justifyContent="center" alignItems="center">
-                      <Box
-                        sx={{
-                          width: (() => {
-                            const ratio = format.dimensions.width / format.dimensions.height;
-                            const maxWidth = 120;
-                            const maxHeight = 120;
-
-                            
-                            if (ratio > 1) {
-                              // 가로가 더 긴 경우
-                              return maxWidth;
-                            } else {
-                              // 세로가 더 길거나 정사각형인 경우
-                              return Math.round(maxHeight * ratio);
-                            }
-                          })(),
-                          height: (() => {
-                            const ratio = format.dimensions.width / format.dimensions.height;
-                            const maxWidth = 120;
-                            const maxHeight = 120;
-                            
-                            if (ratio > 1) {
-                              // 가로가 더 긴 경우
-                              return Math.round(maxWidth / ratio);
-                            } else {
-                              // 세로가 더 길거나 정사각형인 경우
-                              return maxHeight;
-                            }
-                          })(),
-                          border: '2px solid',
-                          borderColor: 'divider',
-                          borderRadius: 1,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          mx: 'auto',
-                          mb: 2,
-                          bgcolor: 'grey.50',
-                        }}
-                      >
-                        <Typography 
-                          variant="caption" 
-                          color="text.secondary"
-                          sx={{ 
-                            fontSize: '10px',
-                            textAlign: 'center',
-                            px: 1
+                        <Box
+                          sx={{
+                            width: (() => {
+                              const ratio = format.dimensions.width / format.dimensions.height;
+                              const maxWidth = 120;
+                              const maxHeight = 120;
+                              
+                              if (ratio > 1) {
+                                return maxWidth;
+                              } else {
+                                return Math.round(maxHeight * ratio);
+                              }
+                            })(),
+                            height: (() => {
+                              const ratio = format.dimensions.width / format.dimensions.height;
+                              const maxWidth = 120;
+                              const maxHeight = 120;
+                              
+                              if (ratio > 1) {
+                                return Math.round(maxWidth / ratio);
+                              } else {
+                                return maxHeight;
+                              }
+                            })(),
+                            border: `2px solid ${theme.colors.Gray[300]}`,
+                            borderRadius: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            mx: 'auto',
+                            mb: 2,
+                            bgcolor: theme.colors.Gray[50],
                           }}
                         >
-                          {format.dimensions.width} × {format.dimensions.height}
-                        </Typography>
-                      </Box>
+                          <Typography 
+                            variant="caption"
+                            sx={{ 
+                              fontSize: theme.kiaTypography.B3.fontSize,
+                              textAlign: 'center',
+                              px: 1,
+                              color: theme.colors.Gray[600],
+                              fontFamily: 'KiaSignature',
+                            }}
+                          >
+                            {format.dimensions.width} × {format.dimensions.height}
+                          </Typography>
+                        </Box>
                       </Stack>
-                      <Typography variant="h6" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
+                      <Typography 
+                        variant="h6" 
+                        gutterBottom 
+                        sx={{ 
+                          whiteSpace: 'pre-line',
+                          fontFamily: 'KiaSignature',
+                          fontWeight: theme.kiaTypography.weights.bold,
+                          fontSize: theme.kiaTypography.B1.fontSize,
+                          color: theme.colors.Primary.MidnightBlack,
+                          lineHeight: 1.4,
+                        }}
+                      >
                         {category === 'Document' && (format.name === 'Car sales contract (A4)' || format.name === 'Quote' || format.name === 'Purchase Order')
                           ? `${format.name.replace(' (A4)', '')}\n(A4)`
                           : category === 'Google Ads' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
@@ -126,9 +201,9 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                   </CardContent>
                 </CardActionArea>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </DialogContent>
     </Dialog>
   );

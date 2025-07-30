@@ -335,11 +335,10 @@ const BrandHub: React.FC = () => {
 
   return (
     <Box sx={{ 
-      paddingBottom: 6,
-      paddingTop:14, 
+      padding: 4,
       maxWidth: '1200px',
       margin: '0 auto',
-      paddingLeft: '280px'
+      minHeight: '100vh',
     }}>
 
       <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 0 ,lineHeight:1.3,letterSpacing:"-1px"}}>

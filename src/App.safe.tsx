@@ -5,7 +5,6 @@ import theme from './theme';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load components to prevent loading errors
-const Header = React.lazy(() => import('./components/Header'));
 const Home = React.lazy(() => import('./pages/Home'));
 const Editor = React.lazy(() => import('./pages/Editor'));
 const BrandHub = React.lazy(() => import('./pages/BrandHub'));
@@ -31,7 +30,6 @@ function App() {
         <CssBaseline />
         <Router>
           <Suspense fallback={<LoadingFallback />}>
-            <Header />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/editor/:categoryId" element={<Editor />} />

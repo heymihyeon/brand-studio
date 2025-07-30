@@ -2,22 +2,20 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, CssBaseline, Container, Typography, Box } from '@mui/material';
 import theme from './theme';
-import Header from './components/Header';
 
 function App() {
-  console.log('AppTest component rendering with Header');
+  console.log('AppTest component rendering');
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <Header />
         <Container>
           <Box sx={{ mt: 4 }}>
             <Typography variant="h3" component="h1" gutterBottom>
-              Brand Studio with Header
+              Brand Studio Test
             </Typography>
             <Typography variant="body1">
-              Testing full app structure...
+              Testing theme system...
             </Typography>
           </Box>
         </Container>

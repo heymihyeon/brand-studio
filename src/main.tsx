@@ -22,15 +22,15 @@ async function initApp() {
     
     console.log('Root element found, loading App component...');
     
-    // Try to load the safe version first
+    // Load the main App with idcx-admin layout
     let App;
     try {
-      const module = await import('./App.safe.tsx');
-      App = module.default;
-      console.log('Loaded App.safe.tsx');
-    } catch (e) {
-      console.warn('Failed to load App.safe.tsx, trying App.tsx:', e);
       const module = await import('./App.tsx');
+      App = module.default;
+      console.log('Loaded App.tsx with idcx-admin layout');
+    } catch (e) {
+      console.warn('Failed to load App.tsx, trying App.safe.tsx:', e);
+      const module = await import('./App.safe.tsx');
       App = module.default;
     }
     

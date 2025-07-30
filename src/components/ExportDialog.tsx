@@ -15,6 +15,7 @@ import {
   Card,
   CardContent,
   IconButton,
+  useTheme,
 } from '@mui/material';
 import {
   Close as CloseIcon,
@@ -35,6 +36,7 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   onExport,
   template,
 }) => {
+  const theme = useTheme();
   const [format, setFormat] = useState<string>('png');
   const [quality, setQuality] = useState<number>(100);
   const [fileName, setFileName] = useState<string>('');
@@ -63,32 +65,84 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="sm" 
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '10px',
+          boxShadow: `0px 2px 10px ${theme.colors.OpacityBlack[15]}`,
+          fontFamily: 'KiaSignature',
+        }
+      }}
+    >
+      <DialogTitle
+        sx={{
+          fontFamily: 'KiaSignature',
+          fontWeight: theme.kiaTypography.weights.bold,
+          fontSize: theme.kiaTypography.S1.fontSize,
+          color: theme.colors.Primary.MidnightBlack,
+          borderBottom: `1px solid ${theme.colors.Gray[200]}`,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h6">Export Content</Typography>
-          <IconButton onClick={onClose} size="small">
+          <Typography 
+            variant="h6"
+            sx={{
+              fontFamily: 'KiaSignature',
+              fontWeight: theme.kiaTypography.weights.bold,
+              fontSize: theme.kiaTypography.S1.fontSize,
+              color: theme.colors.Primary.MidnightBlack,
+            }}
+          >
+            Export Content
+          </Typography>
+          <IconButton 
+            onClick={onClose} 
+            size="small"
+            sx={{
+              color: theme.colors.Gray[600],
+              '&:hover': {
+                backgroundColor: theme.colors.OpacityBlack[5],
+              },
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
       </DialogTitle>
       
-      <DialogContent>
+      <DialogContent sx={{ fontFamily: 'KiaSignature' }}>
         <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography 
+            variant="subtitle1" 
+            gutterBottom
+            sx={{
+              fontFamily: 'KiaSignature',
+              fontWeight: theme.kiaTypography.weights.bold,
+              fontSize: theme.kiaTypography.S2.fontSize,
+              color: theme.colors.Primary.MidnightBlack,
+              mb: 2,
+            }}
+          >
             Select File Format
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
             {formatOptions.map((option) => (
               <Card 
                 key={option.value}
-                variant={format === option.value ? 'outlined' : 'elevation'}
                 sx={{ 
                   cursor: 'pointer',
-                  border: format === option.value ? '2px solid' : '1px solid',
-                  borderColor: format === option.value ? 'primary.main' : 'divider',
+                  border: `2px solid ${format === option.value ? theme.colors.Primary.MidnightBlack : theme.colors.Gray[200]}`,
+                  borderRadius: 0,
+                  backgroundColor: format === option.value 
+                    ? theme.colors.OpacityBlack[5] 
+                    : theme.colors.Primary.PolarWhite,
                   '&:hover': {
-                    borderColor: 'primary.main',
+                    borderColor: theme.colors.Primary.MidnightBlack,
+                    backgroundColor: theme.colors.OpacityBlack[3],
                   }
                 }}
                 onClick={() => setFormat(option.value)}
@@ -101,8 +155,27 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
                   textAlign: 'center',
                   minHeight: 100
                 }}>
-                  <Typography variant="h6" sx={{ mb: 0.5 }}>{option.label}</Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '11px' }}>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      mb: 0.5,
+                      fontFamily: 'KiaSignature',
+                      fontWeight: theme.kiaTypography.weights.bold,
+                      fontSize: theme.kiaTypography.B1.fontSize,
+                      color: theme.colors.Primary.MidnightBlack,
+                    }}
+                  >
+                    {option.label}
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      fontSize: theme.kiaTypography.B3.fontSize,
+                      color: theme.colors.Gray[600],
+                      fontFamily: 'KiaSignature',
+                      lineHeight: 1.3,
+                    }}
+                  >
                     {option.description}
                   </Typography>
                 </CardContent>
@@ -161,13 +234,49 @@ const ExportDialog: React.FC<ExportDialogProps> = ({
         </Box>
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+      <DialogActions 
+        sx={{ 
+          px: 3, 
+          py: 2, 
+          borderTop: `1px solid ${theme.colors.Gray[200]}`,
+          gap: 1,
+        }}
+      >
+        <Button 
+          onClick={onClose}
+          sx={{
+            fontFamily: 'KiaSignature',
+            fontWeight: theme.kiaTypography.weights.regular,
+            fontSize: theme.kiaTypography.B1.fontSize,
+            color: theme.colors.Gray[600],
+            borderColor: theme.colors.Gray[300],
+            '&:hover': {
+              borderColor: theme.colors.Primary.MidnightBlack,
+              backgroundColor: theme.colors.OpacityBlack[5],
+            },
+          }}
+        >
+          Cancel
+        </Button>
         <Button 
           onClick={handleExport}
           variant="contained"
           startIcon={<DownloadIcon />}
           disabled={!template}
+          sx={{
+            fontFamily: 'KiaSignature',
+            fontWeight: theme.kiaTypography.weights.regular,
+            fontSize: theme.kiaTypography.B1.fontSize,
+            backgroundColor: theme.colors.Primary.MidnightBlack,
+            color: theme.colors.Primary.PolarWhite,
+            '&:hover': {
+              backgroundColor: theme.colors.Gray[800],
+            },
+            '&:disabled': {
+              backgroundColor: theme.colors.Gray[300],
+              color: theme.colors.Gray[500],
+            },
+          }}
         >
           Export
         </Button>
