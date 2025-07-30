@@ -21,10 +21,10 @@ import {
 } from '@mui/material';
 import {
   MoreVert as MoreVertIcon,
-  ViewCarousel,
 } from '@mui/icons-material';
 import { Category, RecentWork } from '../types';
 import { getUniqueFormatsByCategory, UnifiedFormat } from '../data/unifiedFormats';
+import { CarIcon } from '../components/icons/CarIcon';
 
 // Format 포맷들을 직접 가져오기
 const formatFormats = getUniqueFormatsByCategory('Format');
@@ -215,7 +215,7 @@ const Home: React.FC = () => {
       minHeight: '100vh',
     }}>
         <Box sx={{ mb: 10 }}>
-        <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
+        <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 4 ,lineHeight:1.3,letterSpacing:"-1px"}}>
         What content would you like to create?
         </Typography>
         
@@ -257,7 +257,7 @@ const Home: React.FC = () => {
                     height: '100%',
                     display: 'flex', 
                     flexDirection: 'column', 
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                     backgroundColor: '#ffffff'
                   }}>
@@ -266,41 +266,45 @@ const Home: React.FC = () => {
                       sx={{
                         width: (() => {
                           const ratio = format.dimensions.width / format.dimensions.height;
-                          const maxWidth = 120;
-                          const maxHeight = 80;
+                          const maxWidth = 160;
+                          const maxHeight = 120;
+                          const minHeight = 60;
                           
                           if (ratio > 1) {
-                            return maxWidth;
+                            const calculatedHeight = Math.round(maxWidth / ratio);
+                            return calculatedHeight < minHeight ? Math.round(minHeight * ratio) : maxWidth;
                           } else {
                             return Math.round(maxHeight * ratio);
                           }
                         })(),
                         height: (() => {
                           const ratio = format.dimensions.width / format.dimensions.height;
-                          const maxWidth = 120;
-                          const maxHeight = 80;
+                          const maxWidth = 160;
+                          const maxHeight = 120;
+                          const minHeight = 60;
                           
                           if (ratio > 1) {
-                            return Math.round(maxWidth / ratio);
+                            const calculatedHeight = Math.round(maxWidth / ratio);
+                            return calculatedHeight < minHeight ? minHeight : calculatedHeight;
                           } else {
                             return maxHeight;
                           }
                         })(),
-                        border: `1.2px solid`,
+                        border: `1.3px solid`,
                         borderColor: 'primary.main',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        mb: 3,
-                        bgcolor: '#F3F4F6',
+                        mb: 0,
+                        bgcolor: '#F1F2F4',
                       }}
                     >
-                      <ViewCarousel sx={{ fontSize: 24, color: 'primary.main' }} />
+                      <CarIcon sx={{ fontSize: 24, color: 'primary.main' }} />
                     </Box>
                     
                     {/* Text */}
-                    <Box sx={{ textAlign: 'center', width: '100%' }}>
+                    <Box sx={{ textAlign: 'center', width: '100%', mt: 2 }}>
                       <Typography 
                         variant="h5" 
                         component="h2" 
