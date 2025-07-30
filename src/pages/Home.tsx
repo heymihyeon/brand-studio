@@ -17,6 +17,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Stack,
 } from '@mui/material';
 import {
   MoreVert as MoreVertIcon,
@@ -214,7 +215,7 @@ const Home: React.FC = () => {
     }}>
         <Box sx={{ mb: 10 }}>
         <Typography variant="h2" component="h1" gutterBottom align="left"  sx={{ mb: 6 ,lineHeight:1.3,letterSpacing:"-1px"}}>
-        Welcome to Content Maker. <br/> What content would you like to create?
+        What content would you like to create?
         </Typography>
         
 
@@ -228,6 +229,8 @@ const Home: React.FC = () => {
             },
             gap: 4,
             justifyItems: 'center',
+            maxWidth: '1200px',
+            margin: '0 auto',
           }}
         >
           {googleAdsFormats.map((format) => (
@@ -286,16 +289,17 @@ const Home: React.FC = () => {
                             return maxHeight;
                           }
                         })(),
-                        border: `2px solid #FF70FA`,
+                        border: `1.2px solid`,
+                        borderColor: 'primary.main',
                         borderRadius: 1,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 3,
-                        bgcolor: '#f8f9fa',
+                        bgcolor: '#F3F4F6',
                       }}
                     >
-                      <ViewCarousel sx={{ fontSize: 24, color: '#FF70FA' }} />
+                      <ViewCarousel sx={{ fontSize: 24, color: 'primary.main' }} />
                     </Box>
                     
                     {/* Text */}
@@ -307,7 +311,7 @@ const Home: React.FC = () => {
                           mb: 1, 
                           fontWeight: 700,
                           color: '#111827',
-                          fontSize: '20px'
+                          fontSize: '18px'
                         }}
                       >
                         {format.name}
@@ -335,13 +339,15 @@ const Home: React.FC = () => {
       {recentWorks.length > 0 && (
         <Box sx={{ mt: 12 }}>
         
-          <Box sx={{ textAlign: 'left', mb: 6 }}>
-            <Typography variant="h4" gutterBottom>
-              Recent Works
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-              Check your recently worked content and continue editing.
-            </Typography>
+          <Box sx={{ textAlign: 'left', mb: 3 }}>
+            <Stack>
+              <Typography variant="h4">
+                Recent Works
+              </Typography>
+              <Typography variant="body1" color="text.secondary" sx={{ mt: '4px' }}>
+                Check your recently worked content and continue editing.
+              </Typography>
+            </Stack>
           </Box>
 
           <TableContainer component={Paper} sx={{ 
