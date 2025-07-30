@@ -381,14 +381,14 @@ const BrandAsset: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {logos.map((logo) => (
-                  <Grid size={{xs:12,sm:6,md:4}} key={logo.id}>
-                    <Card>
+                  <Grid size={{xs:6,sm:4,md:3,lg:3}} key={logo.id}>
+                    <Card sx={{ border: '1px solid #e5e7eb' }}>
                       <CardMedia
                         component="img"
                         height="200"
                         image={logo.url}
                         alt={logo.name}
-                        sx={{ objectFit: 'contain', bgcolor: 'grey.50' }}
+                        sx={{ objectFit: 'contain', bgcolor: '#EEEFF1' }}
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{logo.name}</Typography>
@@ -426,8 +426,8 @@ const BrandAsset: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {colorPalettes.map((palette) => (
-                  <Grid size={{xs:12,sm:6,md:3}} key={palette.id}>
-                    <Card>
+                  <Grid size={{xs:6,sm:4,md:3,lg:3}} key={palette.id}>
+                    <Card sx={{ border: '1px solid #e5e7eb' }}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>{palette.name}</Typography>
                         <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -477,14 +477,14 @@ const BrandAsset: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {vehicleModels.map((vehicle) => (
-                  <Grid size={{md:4,sm:6,xs:12}} key={vehicle.id}>
-                    <Card>
+                  <Grid size={{xs:6,sm:4,md:3,lg:3}} key={vehicle.id}>
+                    <Card sx={{ border: '1px solid #e5e7eb' }}>
                       <CardMedia
                         component="img"
                         height="200"
                         image={vehicle.url}
                         alt={vehicle.name}
-                        sx={{ objectFit: 'contain', bgcolor: 'grey.100' }}
+                        sx={{ objectFit: 'contain', bgcolor: '#EEEFF1' }}
                       />
                       <CardContent>
                         <Typography variant="h6" noWrap>{vehicle.name}</Typography>
@@ -522,8 +522,8 @@ const BrandAsset: React.FC = () => {
             ) : (
               <Grid container spacing={3}>
                 {backgroundImages.map((bg) => (
-                  <Grid size={{xs:12,sm:6,md:4}} key={bg.id}>
-                    <Card>
+                  <Grid size={{xs:6,sm:4,md:3,lg:3}} key={bg.id}>
+                    <Card sx={{ border: '1px solid #e5e7eb' }}>
                       <CardMedia
                         component="img"
                         height="200"
