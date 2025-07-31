@@ -746,8 +746,16 @@ Authorized Signature: _____________________`,
               const isSquareBanner = template.format.id === 'banner-square' || 
                                    (template.canvas.width === 1200 && template.canvas.height === 1200);
               
+              const isWideBanner = template.format.id === 'banner-wide' || 
+                                 (template.canvas.width === 1200 && template.canvas.height === 360);
+              
               if (isVerticalBanner || isSquareBanner) {
                 adjustedLeft = (template.canvas.width - size.width) / 2;
+              }
+              
+              // Wide 포맷의 차량 위치 조정
+              if (isWideBanner) {
+                adjustedTop = adjustedTop + 70; // 40px 아래로 이동
               }
             }
             
