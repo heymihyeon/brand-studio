@@ -8,6 +8,7 @@ import { QuotationData } from './QuotationEditor';
 import { PurchaseOrderData } from './PurchaseOrderEditor';
 import Vehicle360View from './Vehicle360View';
 import { getVehicleModelById, getVehicleColorForModel, getDefaultColorForModel } from '../data/vehicleModels';
+import ProfanityHighlightText from './ProfanityHighlightText';
 
 interface CanvasProps {
   template: Template;
@@ -971,7 +972,8 @@ Authorized Signature: _____________________`,
                       }
                     }}
                   >
-                    <Typography
+                    <ProfanityHighlightText
+                      text={editableValues[titleElement.id] || ''}
                       sx={{
                         fontSize: titleCanvasObj?.fontSize || (template.format.id === 'banner-vertical' ? 46 : 52),
                         fontWeight: 'regular',
@@ -987,9 +989,7 @@ Authorized Signature: _____________________`,
                         letterSpacing: '0.5px',
                         textAlign: textAlign || 'left',
                       }}
-                    >
-                      {editableValues[titleElement.id] || ''}
-                    </Typography>
+                    />
                   </Box>
                   
                   {/* Subtitle */}
@@ -1005,7 +1005,8 @@ Authorized Signature: _____________________`,
                       }
                     }}
                   >
-                    <Typography
+                    <ProfanityHighlightText
+                      text={editableValues[subtitleElement.id] || ''}
                       sx={{
                         fontSize: titleCanvasObj?.fontSize ? titleCanvasObj.fontSize * 0.45 : 32,
                         fontWeight: '400',
@@ -1020,9 +1021,7 @@ Authorized Signature: _____________________`,
                         textShadow: template.category === 'Document' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
                         textAlign: textAlign || 'left',
                       }}
-                    >
-                      {editableValues[subtitleElement.id] || ''}
-                    </Typography>
+                    />
                   </Box>
                 </Box>
                 
@@ -1084,7 +1083,8 @@ Authorized Signature: _____________________`,
                       onClick={() => onTextEdit && onTextEdit(textElement.id, value)}
                       sx={boxStyles}
                     >
-                      <Typography
+                      <ProfanityHighlightText
+                        text={displayText || (textElement.id === 'title' && template.category === 'Document' ? 'Document Title' : '')}
                         sx={{
                           fontSize: fontSize,
                           fontWeight: fontWeight,
@@ -1097,9 +1097,7 @@ Authorized Signature: _____________________`,
                           textShadow: template.category === 'Document' ? 'none' : '0 2px 4px rgba(0,0,0,0.3)',
                           textAlign: textAlign || 'left',
                         }}
-                      >
-                        {displayText || (textElement.id === 'title' && template.category === 'Document' ? 'Document Title' : '')}
-                      </Typography>
+                      />
                     </Box>
                   );
                 })}
@@ -1134,7 +1132,8 @@ Authorized Signature: _____________________`,
                         }
                       }}
                     >
-                      <Typography
+                      <ProfanityHighlightText
+                        text={editableValues['dealerName'] || ''}
                         sx={{
                           fontSize: isSquareOrVertical ? 24 : 18,
                           fontWeight: 'normal',
@@ -1144,9 +1143,7 @@ Authorized Signature: _____________________`,
                           whiteSpace: 'nowrap',
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
-                      >
-                        {editableValues['dealerName'] || ''}
-                      </Typography>
+                      />
                     </Box>
                     
                     {/* Phone Number */}
@@ -1162,7 +1159,8 @@ Authorized Signature: _____________________`,
                         }
                       }}
                     >
-                      <Typography
+                      <ProfanityHighlightText
+                        text={editableValues['dealerPhone'] || ''}
                         sx={{
                           fontSize: isSquareOrVertical ? 24 : 18,
                           fontWeight: 'normal',
@@ -1172,9 +1170,7 @@ Authorized Signature: _____________________`,
                           whiteSpace: 'nowrap',
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
-                      >
-                        {editableValues['dealerPhone'] || ''}
-                      </Typography>
+                      />
                     </Box>
                   </Box>
                 )}
@@ -1345,7 +1341,8 @@ Authorized Signature: _____________________`,
                         }
                       }}
                     >
-                      <Typography
+                      <ProfanityHighlightText
+                        text={editableValues['dealerName'] || ''}
                         sx={{
                           fontSize: isSquareOrVertical ? 24 : 18,
                           fontWeight: 'normal',
@@ -1355,9 +1352,7 @@ Authorized Signature: _____________________`,
                           whiteSpace: 'nowrap',
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
-                      >
-                        {editableValues['dealerName'] || ''}
-                      </Typography>
+                      />
                     </Box>
                     
                     {/* Phone Number */}
@@ -1373,7 +1368,8 @@ Authorized Signature: _____________________`,
                         }
                       }}
                     >
-                      <Typography
+                      <ProfanityHighlightText
+                        text={editableValues['dealerPhone'] || ''}
                         sx={{
                           fontSize: isSquareOrVertical ? 24 : 18,
                           fontWeight: 'normal',
@@ -1383,9 +1379,7 @@ Authorized Signature: _____________________`,
                           whiteSpace: 'nowrap',
                           textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         }}
-                      >
-                        {editableValues['dealerPhone'] || ''}
-                      </Typography>
+                      />
                     </Box>
                   </Box>
                 )}

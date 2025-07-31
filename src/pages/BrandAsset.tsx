@@ -36,6 +36,7 @@ import {
   TextFields as FontIcon,
   Image as ImageIcon,
   AccountCircle as LogoIcon,
+  Block as BlockIcon,
 } from '@mui/icons-material';
 import { BrandAsset as BrandAssetType, ColorPalette, FontStyle } from '../types';
 
@@ -75,6 +76,11 @@ const BrandAsset: React.FC = () => {
   const [backgroundImages, setBackgroundImages] = useState<BrandAssetType[]>([]);
   const [backgroundDialogOpen, setBackgroundDialogOpen] = useState(false);
   const [backgroundForm, setBackgroundForm] = useState({ name: '', file: null as File | null });
+  
+  // Profanity Filter management
+  const [profanityWords, setProfanityWords] = useState<string[]>([]);
+  const [profanityDialogOpen, setProfanityDialogOpen] = useState(false);
+  const [profanityForm, setProfanityForm] = useState({ word: '' });
 
   const addPresetLogoImage =()=>{
 
@@ -113,6 +119,7 @@ const BrandAsset: React.FC = () => {
     const savedColors = localStorage.getItem('brandColors');
     const savedVehicles = localStorage.getItem('brandVehicles');
     const savedBackgrounds = localStorage.getItem('brandBackgrounds');
+    const savedProfanity = localStorage.getItem('profanityWords');
 
     
     addPresetLogoImage()
@@ -202,6 +209,11 @@ const BrandAsset: React.FC = () => {
     // Always use presets for backgrounds (ignore saved data)
     setBackgroundImages(presetBackgrounds);
     localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
+    
+    // Load profanity words
+    if (savedProfanity) {
+      setProfanityWords(JSON.parse(savedProfanity));
+    }
   }, []);
 
   // Logo management functions
@@ -333,6 +345,25 @@ const BrandAsset: React.FC = () => {
     }
   };
 
+  // Profanity Filter management functions
+  const handleProfanityAdd = () => {
+    if (profanityForm.word.trim() && !profanityWords.includes(profanityForm.word.trim().toLowerCase())) {
+      const newWords = [...profanityWords, profanityForm.word.trim().toLowerCase()];
+      setProfanityWords(newWords);
+      localStorage.setItem('profanityWords', JSON.stringify(newWords));
+      setProfanityDialogOpen(false);
+      setProfanityForm({ word: '' });
+    }
+  };
+
+  const handleProfanityDelete = (word: string) => {
+    if (confirm(`Are you sure you want to delete "${word}"?`)) {
+      const newWords = profanityWords.filter(w => w !== word);
+      setProfanityWords(newWords);
+      localStorage.setItem('profanityWords', JSON.stringify(newWords));
+    }
+  };
+
   return (
     <Box sx={{ 
       padding: 4,
@@ -361,6 +392,7 @@ const BrandAsset: React.FC = () => {
             <Tab icon={<PaletteIcon />} label="Colors" sx={{py:2}} />
             <Tab icon={<ImageIcon />} label="Vehicle Models" sx={{py:2}}/>
             <Tab icon={<ImageIcon />} label="Background Images" sx={{py:2}}/>
+            <Tab icon={<BlockIcon />} label="Profanity Filter" sx={{py:2}}/>
           </Tabs>
 
           {/* Logo Management */}
@@ -554,6 +586,44 @@ const BrandAsset: React.FC = () => {
                   </Grid>
                 ))}
               </Grid>
+            )}
+          </TabPanel>
+
+          {/* Profanity Filter Management */}
+          <TabPanel value={currentTab} index={4}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h6" sx={{ fontSize: '18px' }}>Profanity Filter</Typography>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<AddIcon />}
+                onClick={() => setProfanityDialogOpen(true)}
+                sx={{ boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
+              >
+                Add Word
+              </Button>
+            </Box>
+            
+            {profanityWords.length === 0 ? (
+              <Alert severity="info">No profanity words registered. Please add words to filter.</Alert>
+            ) : (
+              <Box>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  {profanityWords.length} word{profanityWords.length !== 1 ? 's' : ''} registered
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  {profanityWords.map((word, index) => (
+                    <Chip
+                      key={index}
+                      label={word}
+                      onDelete={() => handleProfanityDelete(word)}
+                      sx={{ mb: 1 }}
+                      color="error"
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
+              </Box>
             )}
           </TabPanel>
         </Paper>
@@ -762,6 +832,33 @@ const BrandAsset: React.FC = () => {
           <DialogActions>
             <Button onClick={() => setBackgroundDialogOpen(false)}>Cancel</Button>
             <Button onClick={handleBackgroundUpload} variant="contained" disabled={!backgroundForm.name || !backgroundForm.file}>
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Add Profanity Word Dialog */}
+        <Dialog open={profanityDialogOpen} onClose={() => setProfanityDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Profanity Word</DialogTitle>
+          <DialogContent>
+            <Box sx={{ pt: 2 }}>
+              <TextField
+                fullWidth
+                label="Profanity Word"
+                value={profanityForm.word}
+                onChange={(e) => setProfanityForm({ word: e.target.value })}
+                placeholder="Enter word to filter"
+                helperText="Text containing this word will be highlighted and save/download will be restricted."
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setProfanityDialogOpen(false)}>Cancel</Button>
+            <Button 
+              onClick={handleProfanityAdd} 
+              variant="contained" 
+              disabled={!profanityForm.word.trim() || profanityWords.includes(profanityForm.word.trim().toLowerCase())}
+            >
               Add
             </Button>
           </DialogActions>

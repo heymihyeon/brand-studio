@@ -40,6 +40,7 @@ import {
 } from '../data/unifiedFormats';
 import { getDefaultLogo, getDefaultVehicle, getDefaultBackground } from '../data/brandPresets';
 import { VehicleModel, getVehicleModelById, getDefaultColorForModel } from '../data/vehicleModels';
+import { profanityFilter } from '../utils/profanityFilter';
 
 const categoryMap: Record<string, string> = {
   'document': 'Document',
@@ -161,6 +162,7 @@ const Editor: React.FC = () => {
   };
   const [template, setTemplate] = useState<Template | null>(null);
   const [editableValues, setEditableValues] = useState<Record<string, any>>({});
+  const [hasProfanity, setHasProfanity] = useState<boolean>(false);
   const [contractData, setContractData] = useState<ContractData>({
     registrationNumber: '',
     modelName: '',
@@ -573,6 +575,20 @@ useEffect(() => {
 
 
 
+  // 비속어 체크 함수
+  const checkForProfanity = useCallback(() => {
+    profanityFilter.updateProfanityWords(JSON.parse(localStorage.getItem('profanityWords') || '[]'));
+    
+    let hasProfanityFound = false;
+    Object.values(editableValues).forEach(value => {
+      if (typeof value === 'string' && profanityFilter.hasProfanity(value)) {
+        hasProfanityFound = true;
+      }
+    });
+    
+    setHasProfanity(hasProfanityFound);
+  }, [editableValues]);
+
   const handleTextChange = (elementId: string, value: string) => {
     setEditableValues((prev) => ({
       ...prev,
@@ -821,6 +837,11 @@ useEffect(() => {
       console.error('Auto-save failed:', error);
     }
   }, [template, editableValues]);
+
+  // 비속어 체크
+  useEffect(() => {
+    checkForProfanity();
+  }, [checkForProfanity]);
   
   // 컴포넌트 언마운트 시 pending timeout 정리
   useEffect(() => {
@@ -1059,6 +1080,7 @@ useEffect(() => {
             variant="outlined"
             startIcon={<SaveIcon />}
             onClick={handleSave}
+            disabled={hasProfanity}
             sx={{
               color: (theme) => theme.colors.VisualStudio.TextPrimary,
               borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
@@ -1075,6 +1097,7 @@ useEffect(() => {
             variant="contained"
             startIcon={<DownloadIcon />}
             onClick={handleExportClick}
+            disabled={hasProfanity}
             sx={{
               backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
               color: (theme) => theme.colors.VisualStudio.TextPrimary,
@@ -1087,6 +1110,13 @@ useEffect(() => {
           </Button>
         </Stack>
       </Box>
+      
+      {/* 비속어 감지 알림 */}
+      {hasProfanity && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          Profanity detected. Please modify the text before saving or exporting.
+        </Alert>
+      )}
 
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* 좌측 패널 - KIA Visual Studio 스타일 */}
