@@ -104,20 +104,31 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
               sx={{
                 height: 270,
                 width: '100%',
-                borderRadius: 2,
+                borderRadius: '0px !important',
                 overflow: 'hidden',
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                 cursor: 'pointer',
                 border: '1px solid #e5e7eb',
+                boxShadow: 'none !important',
                 '&:hover': {
                   transform: 'translateY(-8px)',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                  boxShadow: 'none !important',
                 },
+                '& .MuiPaper-root': {
+                  borderRadius: '0px !important',
+                  boxShadow: 'none !important',
+                }
               }}
             >
               <CardActionArea
                 onClick={() => onSelect(format)}
-                sx={{ height: '100%' }}
+                sx={{ 
+                  height: '100%',
+                  borderRadius: 0,
+                  '& .MuiCardActionArea-focusHighlight': {
+                    borderRadius: 0,
+                  }
+                }}
               >
                 <CardContent sx={{ 
                   p: 4,
@@ -125,7 +136,11 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                   display: 'flex', 
                   flexDirection: 'column', 
                   alignItems: 'center',
-                  backgroundColor: '#ffffff'
+                  backgroundColor: '#ffffff',
+                  borderRadius: 0,
+                  '&:last-child': {
+                    paddingBottom: 4,
+                  }
                 }}>
                   {/* Format Preview */}
                   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -169,7 +184,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                         })(),
                         border: `1.3px solid`,
                         borderColor: 'primary.main',
-                        borderRadius: 1,
+                        borderRadius: 0,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
