@@ -786,6 +786,10 @@ Authorized Signature: _____________________`,
                     setRecentlyDragged(false);
                     return;
                   }
+                  // motif 이미지는 클릭 불가능하게 함
+                  if (imageElement.id === 'motif') {
+                    return;
+                  }
                   onImageEdit && onImageEdit(imageElement.id);
                 }}
                 sx={{
@@ -794,9 +798,9 @@ Authorized Signature: _____________________`,
                   top: position.top,
                   width: size.width,
                   height: size.height,
-                  cursor: 'pointer',
+                  cursor: imageElement.id === 'motif' ? 'default' : 'pointer',
                   zIndex: 2,
-                  '&:hover': {
+                  '&:hover': imageElement.id === 'motif' ? {} : {
                     filter: 'drop-shadow(0 0 10px rgba(31, 122, 252, 0.5))',
                   }
                 }}

@@ -155,11 +155,31 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ open, onClose, onSelect, 
               <Grid size={{xs:4, sm:4, md:4}} key={asset.id}>
                 <Card
                   sx={{
-                    border: selectedAsset?.id === asset.id ? 2 : 0,
-                    borderColor: 'primary.main',
+                    border: selectedAsset?.id === asset.id ? '2px solid' : '1px solid #e5e7eb',
+                    borderColor: selectedAsset?.id === asset.id ? 'primary.main' : '#e5e7eb',
+                    borderRadius: '0px !important',
+                    boxShadow: 'none !important',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: 'none !important',
+                    },
+                    '& .MuiPaper-root': {
+                      borderRadius: '0px !important',
+                      boxShadow: 'none !important',
+                    }
                   }}
                 >
-                  <CardActionArea onClick={() => handleAssetClick(asset)}>
+                  <CardActionArea 
+                    onClick={() => handleAssetClick(asset)}
+                    sx={{
+                      borderRadius: '0px !important',
+                      '& .MuiCardActionArea-focusHighlight': {
+                        borderRadius: '0px !important',
+                      }
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="140"
