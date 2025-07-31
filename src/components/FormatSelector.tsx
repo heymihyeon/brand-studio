@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { UnifiedFormat } from '../data/unifiedFormats';
+import { CarIcon } from '../components/icons/CarIcon';
 
 interface FormatSelectorProps {
   open: boolean;
@@ -55,6 +56,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
         sx={{
           fontFamily: 'KiaSignature',
           borderBottom: `1px solid ${theme.colors.Gray[200]}`,
+          py: 2,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -62,7 +64,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
             variant="h4" 
             sx={{ 
               fontWeight: theme.kiaTypography.weights.bold,
-              fontSize: theme.kiaTypography.H2.fontSize,
+              fontSize: '18px',
               color: theme.colors.Primary.MidnightBlack,
               fontFamily: 'KiaSignature',
             }}
@@ -83,125 +85,129 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
           </IconButton>
         </Box>
       </DialogTitle>
-      <DialogContent sx={{ fontFamily: 'KiaSignature' }}>
+      <DialogContent sx={{ fontFamily: 'KiaSignature', p: '24px !important', pt: '24px !important' }}>
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
-              md: formats.length <= 3 
-                ? 'repeat(3, 1fr)' 
-                : formats.length === 4 
-                ? 'repeat(4, 1fr)' 
-                : 'repeat(3, 1fr)'
+              md: 'repeat(4, 1fr)'
             },
-            gap: 3,
-            mt: 1,
+            gap: 2,
+            width: '100%',
           }}
         >
           {formats.map((format) => (
-            <Box key={format.id}>
-              <Card 
-                sx={{ 
-                  height: '100%',
-                  borderRadius: 0,
-                  border: `1px solid ${theme.colors.Gray[200]}`,
-                  '&:hover': {
-                    borderColor: theme.colors.Primary.MidnightBlack,
-                    boxShadow: `0 2px 10px ${theme.colors.OpacityBlack[15]}`,
-                  }
-                }}
+            <Card
+              key={format.id}
+              sx={{
+                height: 270,
+                width: '100%',
+                borderRadius: 2,
+                overflow: 'hidden',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                cursor: 'pointer',
+                border: '1px solid #e5e7eb',
+                '&:hover': {
+                  transform: 'translateY(-8px)',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                },
+              }}
+            >
+              <CardActionArea
+                onClick={() => onSelect(format)}
+                sx={{ height: '100%' }}
               >
-                <CardActionArea 
-                  onClick={() => onSelect(format)} 
-                  sx={{ 
-                    height: '100%',
-                    '&:hover': {
-                      backgroundColor: theme.colors.OpacityBlack[3],
-                    }
-                  }}
-                >
-                  <CardContent sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    justifyContent: 'center',
-                    p: 3,
-                  }}>
-                    <Box sx={{ textAlign: 'center', mb: 2 }}>
-                      <Stack height="143px" justifyContent="center" alignItems="center">
-                        <Box
-                          sx={{
-                            width: (() => {
-                              const ratio = format.dimensions.width / format.dimensions.height;
-                              const maxWidth = 120;
-                              const maxHeight = 120;
-                              
-                              if (ratio > 1) {
-                                return maxWidth;
-                              } else {
-                                return Math.round(maxHeight * ratio);
-                              }
-                            })(),
-                            height: (() => {
-                              const ratio = format.dimensions.width / format.dimensions.height;
-                              const maxWidth = 120;
-                              const maxHeight = 120;
-                              
-                              if (ratio > 1) {
-                                return Math.round(maxWidth / ratio);
-                              } else {
-                                return maxHeight;
-                              }
-                            })(),
-                            border: `2px solid ${theme.colors.Gray[300]}`,
-                            borderRadius: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            mx: 'auto',
-                            mb: 2,
-                            bgcolor: theme.colors.Gray[50],
-                          }}
-                        >
-                          <Typography 
-                            variant="caption"
-                            sx={{ 
-                              fontSize: theme.kiaTypography.B3.fontSize,
-                              textAlign: 'center',
-                              px: 1,
-                              color: theme.colors.Gray[600],
-                              fontFamily: 'KiaSignature',
-                            }}
-                          >
-                            {format.dimensions.width} × {format.dimensions.height}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                      <Typography 
-                        variant="h6" 
-                        gutterBottom 
-                        sx={{ 
-                          whiteSpace: 'pre-line',
-                          fontFamily: 'KiaSignature',
-                          fontWeight: theme.kiaTypography.weights.bold,
-                          fontSize: theme.kiaTypography.B1.fontSize,
-                          color: theme.colors.Primary.MidnightBlack,
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {category === 'Document' && (format.name === 'Car sales contract (A4)' || format.name === 'Quote' || format.name === 'Purchase Order')
-                          ? `${format.name.replace(' (A4)', '')}\n(A4)`
-                          : category === 'Format' && (format.name === 'Horizontal' || format.name === 'Vertical' || format.name === 'Square')
-                          ? `${format.name}\n(${format.dimensions.width}×${format.dimensions.height}px)`
-                          : format.name}
-                      </Typography>
+                <CardContent sx={{ 
+                  p: 4,
+                  height: '100%',
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center',
+                  backgroundColor: '#ffffff'
+                }}>
+                  {/* Format Preview */}
+                  <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box
+                      sx={{
+                        width: (() => {
+                          const ratio = format.dimensions.width / format.dimensions.height;
+                          const maxWidth = 160;
+                          const maxHeight = 120;
+                          const minHeight = 60;
+                          
+                          // Wide 포맷만 특별 처리 - Horizontal과 동일한 너비
+                          if (format.name === 'Wide') {
+                            return 160; // Horizontal과 동일한 너비로 고정
+                          }
+                          
+                          if (ratio > 1) {
+                            const calculatedHeight = Math.round(maxWidth / ratio);
+                            return calculatedHeight < minHeight ? Math.round(minHeight * ratio) : maxWidth;
+                          } else {
+                            return Math.round(maxHeight * ratio);
+                          }
+                        })(),
+                        height: (() => {
+                          const ratio = format.dimensions.width / format.dimensions.height;
+                          const maxWidth = 160;
+                          const maxHeight = 120;
+                          const minHeight = 60;
+                          
+                          // Wide 포맷만 특별 처리
+                          if (format.name === 'Wide') {
+                            return 60; // Wide 포맷의 높이를 45px로 설정
+                          }
+                          
+                          if (ratio > 1) {
+                            const calculatedHeight = Math.round(maxWidth / ratio);
+                            return calculatedHeight < minHeight ? minHeight : calculatedHeight;
+                          } else {
+                            return maxHeight;
+                          }
+                        })(),
+                        border: `1.3px solid`,
+                        borderColor: 'primary.main',
+                        borderRadius: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: '#F1F2F4',
+                      }}
+                    >
+                      <CarIcon sx={{ fontSize: 24, color: 'primary.main' }} />
                     </Box>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Box>
+                  </Box>
+                  
+                  {/* Text */}
+                  <Box sx={{ textAlign: 'center', width: '100%' }}>
+                    <Typography 
+                      variant="h5" 
+                      component="h2" 
+                      sx={{ 
+                        mb: 1, 
+                        fontWeight: 700,
+                        color: '#111827',
+                        fontSize: '18px'
+                      }}
+                    >
+                      {format.name}
+                    </Typography>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: '#6b7280',
+                        lineHeight: 1.5,
+                        fontSize: '14px'
+                      }}
+                    >
+                      {format.dimensions.width} × {format.dimensions.height}px
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
           ))}
         </Box>
       </DialogContent>
