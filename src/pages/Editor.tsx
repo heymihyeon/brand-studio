@@ -16,8 +16,6 @@ import {
   DialogActions,
   Switch,
   FormControlLabel,
-  Tabs,
-  Tab,
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
@@ -1018,15 +1016,15 @@ useEffect(() => {
       {/* KIA Visual Studio 스타일 상단 네비게이션 */}
       <Box
         sx={{
-          backgroundColor: (theme) => theme.colors.VisualStudio.SidebarBackground,
+          backgroundColor: (theme) => theme.colors.Gray[900],
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 3,
-          py: 1,
+          py: 2,
         }}
       >
-        {/* 좌측: KIA 로고와 네비게이션 탭 */}
+        {/* 좌측: 뒤로가기 버튼과 현재 포맷 이름 */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
           <Button
             onClick={() => navigate('/')}
@@ -1042,38 +1040,16 @@ useEffect(() => {
             <ArrowBackIcon />
           </Button>
           
-          <Tabs 
-            value={0} 
-            sx={{
-              minHeight: 'auto',
-              '& .MuiTabs-indicator': {
-                backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
-                height: 3,
-              },
-              '& .MuiTab-root': {
-                color: (theme) => theme.colors.VisualStudio.TextSecondary,
-                minHeight: 'auto',
-                py: 1.5,
-                px: 3,
-                textTransform: 'none',
-                fontSize: '14px',
-                fontWeight: 500,
-                '&.Mui-selected': {
-                  color: (theme) => theme.colors.VisualStudio.TextPrimary,
-                },
-                '&:hover': {
-                  backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
-                },
-              }
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: (theme) => theme.colors.VisualStudio.TextPrimary,
+              fontWeight: 500,
+              fontSize: '16px'
             }}
           >
-            <Tab label="Visual Studio" />
-            <Tab 
-              label="Asset Studio" 
-              onClick={() => navigate('/brand-asset')}
-              sx={{ cursor: 'pointer' }}
-            />
-          </Tabs>
+            {template?.name || 'Editor'}
+          </Typography>
         </Box>
         
         {/* 우측: 액션 버튼들 */}
@@ -1119,7 +1095,7 @@ useEffect(() => {
             p: 3,
             overflow: 'auto',
             borderRadius: 0,
-            backgroundColor: (theme) => theme.colors.VisualStudio.SidebarBackground,
+            backgroundColor: (theme) => theme.colors.Gray[900],
             color: (theme) => theme.colors.VisualStudio.TextPrimary,
             borderRight: `1px solid ${(theme) => theme.colors.VisualStudio.PanelBackground}`,
             height: '100%',
@@ -1676,12 +1652,12 @@ useEffect(() => {
         <Box 
           sx={{ 
             flex: 1, 
-            background: (theme: any) => `linear-gradient(135deg, ${theme.colors.VisualStudio.MainBackground} 0%, ${theme.colors.VisualStudio.PanelBackground} 100%)`,
+            backgroundColor: (theme) => theme.colors.Gray[100],
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            p: 2,
+            padding: '32px',
           }}
         >
           {template && (
