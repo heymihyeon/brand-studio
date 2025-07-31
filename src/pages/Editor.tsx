@@ -1021,7 +1021,8 @@ useEffect(() => {
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 3,
-          py: 2,
+          pt: 2,
+          pb: 0,
         }}
       >
         {/* 좌측: 뒤로가기 버튼과 현재 포맷 이름 */}
@@ -1092,7 +1093,8 @@ useEffect(() => {
         <Paper
           sx={{
             width: 320,
-            p: 3,
+            px: 3,
+            py: 2,
             overflow: 'auto',
             borderRadius: 0,
             backgroundColor: (theme) => theme.colors.Gray[900],
@@ -1104,15 +1106,14 @@ useEffect(() => {
 
         <Stack spacing={2} sx={{ mb: 3 }}>
           <Button
-            variant="outlined"
+            variant="contained"
             fullWidth
             onClick={() => setFormatSelectorOpen(true)}
             sx={{
+              backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
               color: (theme) => theme.colors.VisualStudio.TextPrimary,
-              borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
               '&:hover': {
-                borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
-                backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                backgroundColor: '#e63939',
               }
             }}
           >
@@ -1151,6 +1152,7 @@ useEffect(() => {
                   variant="subtitle1" 
                   sx={{ 
                     fontWeight: 'bold',
+                    fontSize: '16px',
                     color: (theme) => theme.colors.VisualStudio.TextPrimary
                   }}
                 >
@@ -1220,6 +1222,7 @@ useEffect(() => {
                     variant="subtitle1" 
                     sx={{ 
                       fontWeight: 'bold',
+                      fontSize: '16px',
                       color: (theme) => theme.colors.VisualStudio.TextPrimary
                     }}
                   >
@@ -1453,7 +1456,7 @@ useEffect(() => {
             <>
               <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Motif
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
@@ -1489,7 +1492,7 @@ useEffect(() => {
           {availableTemplateVariants.length > 0 && (
             <>
               <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                 Layout
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
@@ -1558,7 +1561,7 @@ useEffect(() => {
             <>
               <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Information
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
@@ -1648,19 +1651,31 @@ useEffect(() => {
 
       
 
-        {/* 중앙 캔버스 영역 - KIA Visual Studio 스타일 */}
+        {/* 중앙 캔버스 영역 - Home 스타일과 동일하게 적용 */}
         <Box 
           sx={{ 
             flex: 1, 
-            backgroundColor: (theme) => theme.colors.Gray[100],
-            overflow: 'hidden',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '32px',
+            backgroundColor: (theme) => theme.colors.Gray[900],
+            paddingTop: '16px',
+            paddingRight: '16px',
+            paddingBottom: '16px',
+            paddingLeft: '0px',
           }}
         >
-          {template && (
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#DFE0E2',
+              borderRadius: '8px',
+              padding: '32px',
+              overflow: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {template && (
             <Box
               sx={{
                 position: 'relative',
@@ -1685,7 +1700,8 @@ useEffect(() => {
                 onImageEdit={handleCanvasImageEdit}
               />
             </Box>
-          )}
+            )}
+          </Box>
         </Box>
       </Box>
 
