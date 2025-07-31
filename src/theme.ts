@@ -48,6 +48,16 @@ const colors = {
     40: '#FFFFFF66',
     60: '#FFFFFF99',
   },
+  // KIA Visual Studio 다크 테마 색상
+  VisualStudio: {
+    MainBackground: '#2a3f4f',
+    SidebarBackground: '#1e2a33',
+    SelectedBorder: '#ff4444',
+    TextPrimary: '#ffffff',
+    TextSecondary: '#b8c5d1',
+    PanelBackground: '#243540',
+    HoverBackground: '#334a5a',
+  },
 };
 
 // KiaSignature 폰트 시스템

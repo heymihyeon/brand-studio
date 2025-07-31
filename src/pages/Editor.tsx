@@ -16,6 +16,8 @@ import {
   DialogActions,
   Switch,
   FormControlLabel,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import { 
   Download as DownloadIcon, 
@@ -1007,72 +1009,119 @@ useEffect(() => {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {/* 상단 헤더 */}
-      <Paper
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: '100vh',
+      backgroundColor: (theme) => theme.colors.VisualStudio.MainBackground
+    }}>
+      {/* KIA Visual Studio 스타일 상단 네비게이션 */}
+      <Box
         sx={{
-          px: 3,
-          py: 2,
-          borderRadius: 0,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
+          backgroundColor: (theme) => theme.colors.VisualStudio.SidebarBackground,
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
+          justifyContent: 'space-between',
+          px: 3,
+          py: 1,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        {/* 좌측: KIA 로고와 네비게이션 탭 */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
           <Button
             onClick={() => navigate('/')}
             sx={{ 
               minWidth: 'auto',
               p: 1,
-              color: 'black',
+              color: (theme) => theme.colors.VisualStudio.TextPrimary,
               '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground
               }
             }}
           >
             <ArrowBackIcon />
           </Button>
-          <Box>
-            <Typography variant="h6">
-              {template ? template.name : 'Content Editor'}
-            </Typography>
-          </Box>
+          
+          <Tabs 
+            value={0} 
+            sx={{
+              minHeight: 'auto',
+              '& .MuiTabs-indicator': {
+                backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                height: 3,
+              },
+              '& .MuiTab-root': {
+                color: (theme) => theme.colors.VisualStudio.TextSecondary,
+                minHeight: 'auto',
+                py: 1.5,
+                px: 3,
+                textTransform: 'none',
+                fontSize: '14px',
+                fontWeight: 500,
+                '&.Mui-selected': {
+                  color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                },
+                '&:hover': {
+                  backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                },
+              }
+            }}
+          >
+            <Tab label="Visual Studio" />
+            <Tab 
+              label="Asset Studio" 
+              onClick={() => navigate('/brand-asset')}
+              sx={{ cursor: 'pointer' }}
+            />
+          </Tabs>
         </Box>
         
+        {/* 우측: 액션 버튼들 */}
         <Stack direction="row" spacing={2}>
-          {/* 저장 버튼 */}
           <Button
             variant="outlined"
             startIcon={<SaveIcon />}
             onClick={handleSave}
+            sx={{
+              color: (theme) => theme.colors.VisualStudio.TextPrimary,
+              borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+              '&:hover': {
+                borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+              }
+            }}
           >
             Save
           </Button>
           
-          {/* 내보내기 버튼 */}
           <Button
             variant="contained"
             startIcon={<DownloadIcon />}
             onClick={handleExportClick}
+            sx={{
+              backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+              color: (theme) => theme.colors.VisualStudio.TextPrimary,
+              '&:hover': {
+                backgroundColor: '#e63939',
+              }
+            }}
           >
             Export
           </Button>
         </Stack>
-      </Paper>
+      </Box>
 
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        {/* 좌측 패널 */}
+        {/* 좌측 패널 - KIA Visual Studio 스타일 */}
         <Paper
           sx={{
             width: 320,
             p: 3,
             overflow: 'auto',
             borderRadius: 0,
-            borderRight: '1px solid',
-            borderColor: 'divider',
+            backgroundColor: (theme) => theme.colors.VisualStudio.SidebarBackground,
+            color: (theme) => theme.colors.VisualStudio.TextPrimary,
+            borderRight: `1px solid ${(theme) => theme.colors.VisualStudio.PanelBackground}`,
             height: '100%',
           }}
         >
@@ -1082,6 +1131,14 @@ useEffect(() => {
             variant="outlined"
             fullWidth
             onClick={() => setFormatSelectorOpen(true)}
+            sx={{
+              color: (theme) => theme.colors.VisualStudio.TextPrimary,
+              borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+              '&:hover': {
+                borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+              }
+            }}
           >
             Change Format
           </Button>
@@ -1114,7 +1171,13 @@ useEffect(() => {
             /* 다른 템플릿의 경우 기존 편집 방식 사용 */
             template && (
               <>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                <Typography 
+                  variant="subtitle1" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    color: (theme) => theme.colors.VisualStudio.TextPrimary
+                  }}
+                >
                   {template?.category === 'Format' ? 'Title' : 'Text Edit'}
                 </Typography>
                 {template.editableElements.texts
@@ -1145,20 +1208,45 @@ useEffect(() => {
                       maxRows={
                         template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? 1 : undefined
                       }
-                      sx={
-                        template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
+                      sx={{
+                        ...(template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
                           '& .MuiInputBase-root': {
                             maxHeight: '56px',
                             overflow: 'auto'
                           }
-                        } : {}
-                      }
+                        } : {}),
+                        '& .MuiOutlinedInput-root': {
+                          backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground,
+                          color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                          '& fieldset': {
+                            borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                          },
+                          '&:hover fieldset': {
+                            borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                          },
+                        },
+                        '& .MuiInputLabel-root': {
+                          color: (theme) => theme.colors.VisualStudio.TextSecondary,
+                          '&.Mui-focused': {
+                            color: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                          },
+                        },
+                      }}
                     />
                   ))}
                 
                 <>
-                  <Divider />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+                  <Typography 
+                    variant="subtitle1" 
+                    sx={{ 
+                      fontWeight: 'bold',
+                      color: (theme) => theme.colors.VisualStudio.TextPrimary
+                    }}
+                  >
                     {template?.category === 'Format' ? 'Image' : 'Image Edit'}
                   </Typography>
                   
@@ -1172,13 +1260,25 @@ useEffect(() => {
                         
                         return (
                           <Box>
-                            <Typography variant="body2" gutterBottom>
+                            <Typography 
+                              variant="body2" 
+                              gutterBottom
+                              sx={{ color: (theme) => theme.colors.VisualStudio.TextSecondary }}
+                            >
                               Vehicle Model
                             </Typography>
                             <Button
                               variant="outlined"
                               fullWidth
                               onClick={() => handleImageSelect(vehicleElement.id)}
+                              sx={{
+                                color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                                borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                                '&:hover': {
+                                  borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                  backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                                }
+                              }}
                             >
                               {editableValues[vehicleElement.id] && typeof editableValues[vehicleElement.id] === 'object'
                                 ? removeKIAFromName((editableValues[vehicleElement.id] as BrandAsset).name)
@@ -1195,7 +1295,14 @@ useEffect(() => {
                               
                               return (
                                 <Box sx={{ mt: 2 }}>
-                                  <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'normal' }}>
+                                  <Typography 
+                                    variant="subtitle2" 
+                                    sx={{ 
+                                      mb: 1, 
+                                      fontWeight: 'normal',
+                                      color: (theme) => theme.colors.VisualStudio.TextSecondary
+                                    }}
+                                  >
                                     Vehicle Color
                                   </Typography>
                                   <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1 }}>
@@ -1231,7 +1338,7 @@ useEffect(() => {
                                         }}
                                       />
                                       <Box sx={{ p: 1, textAlign: 'center' }}>
-                                        <Typography component="p" variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important' }}>
+                                        <Typography component="p" variant="caption" sx={{ fontSize: '10px', lineHeight: '1.2 !important', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                                           {color.displayName}
                                         </Typography>
                                       </Box>
@@ -1252,13 +1359,21 @@ useEffect(() => {
                         
                         return (
                           <Box sx={{ mt: 2 }}>
-                            <Typography variant="body2" gutterBottom>
+                            <Typography variant="body2" gutterBottom sx={{ color: (theme) => theme.colors.VisualStudio.TextSecondary }}>
                               Background Image
                             </Typography>
                             <Button
                               variant="outlined"
                               fullWidth
                               onClick={() => handleImageSelect(bgElement.id)}
+                              sx={{
+                                color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                                borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                                '&:hover': {
+                                  borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                  backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                                }
+                              }}
                             >
                               {editableValues[bgElement.id] && typeof editableValues[bgElement.id] === 'object'
                                 ? removeKIAFromName((editableValues[bgElement.id] as BrandAsset).name)
@@ -1270,13 +1385,21 @@ useEffect(() => {
                       
                       {/* 3. Logo Image */}
                       <Box sx={{ mt: 2 }}>
-                        <Typography variant="body2" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{ color: (theme) => theme.colors.VisualStudio.TextSecondary }}>
                           Logo Image
                         </Typography>
                         <Button
                           variant="outlined"
                           fullWidth
                           onClick={() => handleImageSelect('brandLogo')}
+                          sx={{
+                            color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                            borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                            '&:hover': {
+                              borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                              backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                            }
+                          }}
                         >
                           {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
                             ? removeKIAFromName((editableValues['brandLogo'] as BrandAsset).name)
@@ -1289,7 +1412,7 @@ useEffect(() => {
                     <>
                       {template.editableElements.images.map((imageElement) => (
                         <Box key={imageElement.id}>
-                          <Typography variant="body2" gutterBottom>
+                          <Typography variant="body2" gutterBottom sx={{ color: (theme) => theme.colors.VisualStudio.TextSecondary }}>
                             {imageElement.label || 
                              (imageElement.id === 'logo' ? 'Logo' :
                               imageElement.id === 'main' ? 'Main Image' :
@@ -1303,6 +1426,14 @@ useEffect(() => {
                             variant="outlined"
                             fullWidth
                             onClick={() => handleImageSelect(imageElement.id)}
+                            sx={{
+                              color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                              borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                              '&:hover': {
+                                borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                              }
+                            }}
                           >
                             {editableValues[imageElement.id] && typeof editableValues[imageElement.id] === 'object'
                               ? removeKIAFromName((editableValues[imageElement.id] as BrandAsset).name)
@@ -1313,13 +1444,21 @@ useEffect(() => {
                       
                       {/* Logo Image - Always show for all templates */}
                       <Box>
-                        <Typography variant="body2" gutterBottom>
+                        <Typography variant="body2" gutterBottom sx={{ color: (theme) => theme.colors.VisualStudio.TextSecondary }}>
                           Logo Image
                         </Typography>
                         <Button
                           variant="outlined"
                           fullWidth
                           onClick={() => handleImageSelect('brandLogo')}
+                          sx={{
+                            color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                            borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                            '&:hover': {
+                              borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                              backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
+                            }
+                          }}
                         >
                           {editableValues['brandLogo'] && typeof editableValues['brandLogo'] === 'object'
                             ? removeKIAFromName((editableValues['brandLogo'] as BrandAsset).name)
@@ -1336,9 +1475,9 @@ useEffect(() => {
           {/* Motif 섹션 - Format일 때만 표시 */}
           {template?.category === 'Format' && (
             <>
-              <Divider />
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Motif
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
@@ -1373,8 +1512,8 @@ useEffect(() => {
           {/* 템플릿 선택 섹션 - 템플릿 변형이 있는 경우 표시 */}
           {availableTemplateVariants.length > 0 && (
             <>
-              <Divider />
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                 Layout
               </Typography>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1 }}>
@@ -1398,12 +1537,12 @@ useEffect(() => {
                       sx={{
                         cursor: 'pointer',
                         border: selectedTemplateVariant === variant.templateVariant ? '2px solid' : '1px solid',
-                        borderColor: selectedTemplateVariant === variant.templateVariant ? 'primary.main' : 'divider',
+                        borderColor: selectedTemplateVariant === variant.templateVariant ? (theme) => theme.colors.VisualStudio.SelectedBorder : (theme) => theme.colors.VisualStudio.TextSecondary,
                         borderRadius: 1,
                         overflow: 'hidden',
                         transition: 'all 0.2s ease',
                         '&:hover': {
-                          borderColor: 'primary.main',
+                          borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
                           transform: 'scale(1.02)',
                         }
                       }}
@@ -1425,7 +1564,7 @@ useEffect(() => {
                         <TemplatePreview variant={variant} />
                       </Box>
                       <Box sx={{ p: 0.5, textAlign: 'center' }}>
-                        <Typography variant="caption" sx={{ fontSize: '11px' }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
+                        <Typography variant="caption" sx={{ fontSize: '11px', color: (theme) => theme.colors.VisualStudio.TextSecondary }} fontWeight={selectedTemplateVariant === variant.templateVariant ? 'bold' : 'normal'}>
                           {variant.templateVariant === 'default' && 'Default'}
                           {variant.templateVariant === 'center' && 'Center Logo'}
                           {variant.templateVariant === 'centerCar' && 'Center Car'}
@@ -1441,9 +1580,9 @@ useEffect(() => {
           {template?.category === 'Format' && 
            !(template.format.id === 'banner-horizontal' && selectedTemplateVariant === 'center') && (
             <>
-              <Divider />
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Information
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
@@ -1474,7 +1613,27 @@ useEffect(() => {
                     value={editableValues['dealerName'] || ''}
                     placeholder="Dealer name"
                     onChange={(e) => handleTextChange('dealerName', e.target.value)}
-                    sx={{ mb: 2 }}
+                    sx={{ 
+                      mb: 2,
+                      '& .MuiOutlinedInput-root': {
+                        color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                        '& fieldset': {
+                          borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                        },
+                        '&:hover fieldset': {
+                          borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1F7AFC',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: (theme) => theme.colors.VisualStudio.TextSecondary,
+                        '&.Mui-focused': {
+                          color: '#1F7AFC',
+                        },
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
@@ -1482,6 +1641,26 @@ useEffect(() => {
                     value={editableValues['dealerPhone'] || ''}
                     placeholder="010-1234-5678"
                     onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: (theme) => theme.colors.VisualStudio.TextPrimary,
+                        '& fieldset': {
+                          borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                        },
+                        '&:hover fieldset': {
+                          borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1F7AFC',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: (theme) => theme.colors.VisualStudio.TextSecondary,
+                        '&.Mui-focused': {
+                          color: '#1F7AFC',
+                        },
+                      },
+                    }}
                   />
                 </>
               )}
@@ -1493,11 +1672,11 @@ useEffect(() => {
 
       
 
-        {/* 중앙 캔버스 영역 */}
+        {/* 중앙 캔버스 영역 - KIA Visual Studio 스타일 */}
         <Box 
           sx={{ 
             flex: 1, 
-            bgcolor: 'grey.100', 
+            background: (theme: any) => `linear-gradient(135deg, ${theme.colors.VisualStudio.MainBackground} 0%, ${theme.colors.VisualStudio.PanelBackground} 100%)`,
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
