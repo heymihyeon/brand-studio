@@ -369,8 +369,10 @@ const BrandAsset: React.FC = () => {
               <Typography variant="h6" sx={{ fontSize: '18px' }}>Brand Logos</Typography>
               <Button
                 variant="contained"
+                size="large"
                 startIcon={<AddIcon />}
                 onClick={() => setLogoDialogOpen(true)}
+                sx={{ boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
               >
                 Add Logo
               </Button>
@@ -414,8 +416,10 @@ const BrandAsset: React.FC = () => {
               <Typography variant="h6" sx={{ fontSize: '18px' }}>Brand Colors</Typography>
               <Button
                 variant="contained"
+                size="large"
                 startIcon={<AddIcon />}
                 onClick={() => setColorDialogOpen(true)}
+                sx={{ boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
               >
                 Add Color Palette
               </Button>
@@ -465,8 +469,10 @@ const BrandAsset: React.FC = () => {
               <Typography variant="h6" sx={{ fontSize: '18px' }}>Vehicle Models</Typography>
               <Button
                 variant="contained"
+                size="large"
                 startIcon={<AddIcon />}
                 onClick={() => setVehicleDialogOpen(true)}
+                sx={{ boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
               >
                 Add Vehicle Model
               </Button>
@@ -510,8 +516,10 @@ const BrandAsset: React.FC = () => {
               <Typography variant="h6" sx={{ fontSize: '18px' }}>Background Images</Typography>
               <Button
                 variant="contained"
+                size="large"
                 startIcon={<AddIcon />}
                 onClick={() => setBackgroundDialogOpen(true)}
+                sx={{ boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
               >
                 Add Background Image
               </Button>
