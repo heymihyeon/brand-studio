@@ -210,9 +210,18 @@ const BrandAsset: React.FC = () => {
     setBackgroundImages(presetBackgrounds);
     localStorage.setItem('brandBackgrounds', JSON.stringify(presetBackgrounds));
     
-    // Load profanity words
+    // Load profanity words with defaults
+    const defaultProfanityWords = ['damn', 'shit', 'crap', 'hell', 'asshole'];
     if (savedProfanity) {
-      setProfanityWords(JSON.parse(savedProfanity));
+      const savedWords = JSON.parse(savedProfanity);
+      // Merge with defaults, avoiding duplicates
+      const allWords = [...new Set([...defaultProfanityWords, ...savedWords])];
+      setProfanityWords(allWords);
+      localStorage.setItem('profanityWords', JSON.stringify(allWords));
+    } else {
+      // Set defaults for first time
+      setProfanityWords(defaultProfanityWords);
+      localStorage.setItem('profanityWords', JSON.stringify(defaultProfanityWords));
     }
   }, []);
 

@@ -1043,7 +1043,7 @@ useEffect(() => {
           justifyContent: 'space-between',
           px: 3,
           pt: 2,
-          pb: 0,
+          pb: 2,
         }}
       >
         {/* 좌측: 뒤로가기 버튼과 현재 포맷 이름 */}
@@ -1113,7 +1113,19 @@ useEffect(() => {
       
       {/* 비속어 감지 알림 */}
       {hasProfanity && (
-        <Alert severity="error" sx={{ mt: 2 }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            mt: 0,
+            backgroundColor: (theme) => theme.colors.Gray[900],
+            color: (theme) => theme.colors.VisualStudio.TextPrimary,
+            border: '1px solid #f44336',
+            borderRadius: 0,
+            '& .MuiAlert-icon': {
+              color: '#f44336'
+            }
+          }}
+        >
           Profanity detected. Please modify the text before saving or exporting.
         </Alert>
       )}
