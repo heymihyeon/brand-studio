@@ -1110,6 +1110,7 @@ useEffect(() => {
             fullWidth
             onClick={() => setFormatSelectorOpen(true)}
             sx={{
+              py: '8px',
               backgroundColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
               color: (theme) => theme.colors.VisualStudio.TextPrimary,
               '&:hover': {
@@ -1189,27 +1190,26 @@ useEffect(() => {
                       sx={{
                         ...(template?.category === 'Format' && (textElement.type === 'heading' || textElement.type === 'subheading') ? {
                           '& .MuiInputBase-root': {
-                            maxHeight: '56px',
-                            overflow: 'auto'
+                            height: '42px',
                           }
                         } : {}),
                         '& .MuiOutlinedInput-root': {
-                          backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground,
+                          backgroundColor: 'transparent',
                           color: (theme) => theme.colors.VisualStudio.TextPrimary,
                           '& fieldset': {
-                            borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
                           },
                           '&:hover fieldset': {
-                            borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
                           },
                           '&.Mui-focused fieldset': {
-                            borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                            borderColor: 'rgba(255, 255, 255, 1)',
                           },
                         },
                         '& .MuiInputLabel-root': {
                           color: (theme) => theme.colors.VisualStudio.TextSecondary,
                           '&.Mui-focused': {
-                            color: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                            color: 'rgba(255, 255, 255, 1)',
                           },
                         },
                       }}
@@ -1217,7 +1217,7 @@ useEffect(() => {
                   ))}
                 
                 <>
-                  <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+                  <Divider sx={{ backgroundColor: (theme) => theme.colors.Gray[900] }} />
                   <Typography 
                     variant="subtitle1" 
                     sx={{ 
@@ -1251,10 +1251,11 @@ useEffect(() => {
                               fullWidth
                               onClick={() => handleImageSelect(vehicleElement.id)}
                               sx={{
+                                py: '8px',
                                 color: (theme) => theme.colors.VisualStudio.TextPrimary,
                                 borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
                                 '&:hover': {
-                                  borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                  borderColor: 'rgba(255, 255, 255, 1)',
                                   backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
                                 }
                               }}
@@ -1275,10 +1276,9 @@ useEffect(() => {
                               return (
                                 <Box sx={{ mt: 2 }}>
                                   <Typography 
-                                    variant="subtitle2" 
+                                    variant="body2" 
+                                    gutterBottom
                                     sx={{ 
-                                      mb: 1, 
-                                      fontWeight: 'normal',
                                       color: (theme) => theme.colors.VisualStudio.TextSecondary
                                     }}
                                   >
@@ -1298,12 +1298,12 @@ useEffect(() => {
                                       sx={{
                                         cursor: 'pointer',
                                         border: (selectedVehicleColor === color.id || editableValues[`${vehicleElement.id}_color`] === color.id) ? '2px solid' : '1px solid',
-                                        borderColor: (selectedVehicleColor === color.id || editableValues[`${vehicleElement.id}_color`] === color.id) ? 'primary.main' : 'divider',
+                                        borderColor: (selectedVehicleColor === color.id || editableValues[`${vehicleElement.id}_color`] === color.id) ? (theme) => theme.colors.VisualStudio.SelectedBorder : 'rgba(255, 255, 255, 0.2)',
                                         borderRadius: 1,
                                         overflow: 'hidden',
                                         transition: 'all 0.2s ease',
                                         '&:hover': {
-                                          borderColor: 'primary.main',
+                                          borderColor: 'rgba(255, 255, 255, 1)',
                                           transform: 'scale(1.02)',
                                         }
                                       }}
@@ -1346,10 +1346,11 @@ useEffect(() => {
                               fullWidth
                               onClick={() => handleImageSelect(bgElement.id)}
                               sx={{
+                                py: '8px',
                                 color: (theme) => theme.colors.VisualStudio.TextPrimary,
                                 borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
                                 '&:hover': {
-                                  borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                  borderColor: 'rgba(255, 255, 255, 1)',
                                   backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
                                 }
                               }}
@@ -1372,10 +1373,11 @@ useEffect(() => {
                           fullWidth
                           onClick={() => handleImageSelect('brandLogo')}
                           sx={{
+                            py: '8px',
                             color: (theme) => theme.colors.VisualStudio.TextPrimary,
                             borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
                             '&:hover': {
-                              borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                              borderColor: 'rgba(255, 255, 255, 1)',
                               backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
                             }
                           }}
@@ -1406,10 +1408,11 @@ useEffect(() => {
                             fullWidth
                             onClick={() => handleImageSelect(imageElement.id)}
                             sx={{
+                              py: '8px',
                               color: (theme) => theme.colors.VisualStudio.TextPrimary,
                               borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
                               '&:hover': {
-                                borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                                borderColor: 'rgba(255, 255, 255, 1)',
                                 backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
                               }
                             }}
@@ -1431,10 +1434,11 @@ useEffect(() => {
                           fullWidth
                           onClick={() => handleImageSelect('brandLogo')}
                           sx={{
+                            py: '8px',
                             color: (theme) => theme.colors.VisualStudio.TextPrimary,
                             borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
                             '&:hover': {
-                              borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                              borderColor: 'rgba(255, 255, 255, 1)',
                               backgroundColor: (theme) => theme.colors.VisualStudio.HoverBackground,
                             }
                           }}
@@ -1454,7 +1458,7 @@ useEffect(() => {
           {/* Motif 섹션 - Format일 때만 표시 */}
           {template?.category === 'Format' && (
             <>
-              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.Gray[900] }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Motif
@@ -1491,7 +1495,7 @@ useEffect(() => {
           {/* 템플릿 선택 섹션 - 템플릿 변형이 있는 경우 표시 */}
           {availableTemplateVariants.length > 0 && (
             <>
-              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.Gray[900] }} />
               <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                 Layout
               </Typography>
@@ -1516,12 +1520,12 @@ useEffect(() => {
                       sx={{
                         cursor: 'pointer',
                         border: selectedTemplateVariant === variant.templateVariant ? '2px solid' : '1px solid',
-                        borderColor: selectedTemplateVariant === variant.templateVariant ? (theme) => theme.colors.VisualStudio.SelectedBorder : (theme) => theme.colors.VisualStudio.TextSecondary,
+                        borderColor: selectedTemplateVariant === variant.templateVariant ? (theme) => theme.colors.VisualStudio.SelectedBorder : 'rgba(255, 255, 255, 0.2)',
                         borderRadius: 1,
                         overflow: 'hidden',
                         transition: 'all 0.2s ease',
                         '&:hover': {
-                          borderColor: (theme) => theme.colors.VisualStudio.SelectedBorder,
+                          borderColor: 'rgba(255, 255, 255, 1)',
                           transform: 'scale(1.02)',
                         }
                       }}
@@ -1559,7 +1563,7 @@ useEffect(() => {
           {template?.category === 'Format' && 
            !(template.format.id === 'banner-horizontal' && selectedTemplateVariant === 'center') && (
             <>
-              <Divider sx={{ backgroundColor: (theme) => theme.colors.VisualStudio.PanelBackground }} />
+              <Divider sx={{ backgroundColor: (theme) => theme.colors.Gray[900] }} />
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '16px', color: (theme) => theme.colors.VisualStudio.TextPrimary }}>
                   Information
@@ -1594,22 +1598,26 @@ useEffect(() => {
                     onChange={(e) => handleTextChange('dealerName', e.target.value)}
                     sx={{ 
                       mb: 2,
+                      '& .MuiInputBase-root': {
+                        height: '42px',
+                      },
                       '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'transparent',
                         color: (theme) => theme.colors.VisualStudio.TextPrimary,
                         '& fieldset': {
-                          borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
                         },
                         '&:hover fieldset': {
-                          borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
                         },
                         '&.Mui-focused fieldset': {
-                          borderColor: '#1F7AFC',
+                          borderColor: 'rgba(255, 255, 255, 1)',
                         },
                       },
                       '& .MuiInputLabel-root': {
                         color: (theme) => theme.colors.VisualStudio.TextSecondary,
                         '&.Mui-focused': {
-                          color: '#1F7AFC',
+                          color: 'rgba(255, 255, 255, 1)',
                         },
                       },
                     }}
@@ -1621,22 +1629,26 @@ useEffect(() => {
                     placeholder="010-1234-5678"
                     onChange={(e) => handleTextChange('dealerPhone', e.target.value)}
                     sx={{
+                      '& .MuiInputBase-root': {
+                        height: '42px',
+                      },
                       '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'transparent',
                         color: (theme) => theme.colors.VisualStudio.TextPrimary,
                         '& fieldset': {
-                          borderColor: (theme) => theme.colors.VisualStudio.TextSecondary,
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
                         },
                         '&:hover fieldset': {
-                          borderColor: (theme) => theme.colors.VisualStudio.TextPrimary,
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
                         },
                         '&.Mui-focused fieldset': {
-                          borderColor: '#1F7AFC',
+                          borderColor: 'rgba(255, 255, 255, 1)',
                         },
                       },
                       '& .MuiInputLabel-root': {
                         color: (theme) => theme.colors.VisualStudio.TextSecondary,
                         '&.Mui-focused': {
-                          color: '#1F7AFC',
+                          color: 'rgba(255, 255, 255, 1)',
                         },
                       },
                     }}
