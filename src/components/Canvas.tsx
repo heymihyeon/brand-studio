@@ -519,7 +519,7 @@ Authorized Signature: _____________________`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: 'transparent',
         overflow: 'hidden', // Square Banner는 Editor.tsx에서 overflow hidden 처리
       }}
     >

@@ -1697,7 +1697,7 @@ useEffect(() => {
                        template?.format?.id === 'banner-vertical' ? 720 : 'fit-content',
                 height: template?.format?.id === 'banner-square' ? 900 : 
                         template?.format?.id === 'banner-vertical' ? 900 : 'fit-content',
-                backgroundColor: 'white',
+                backgroundColor: 'transparent',
                 overflow: 'hidden', // Add overflow hidden
               }}
             >
